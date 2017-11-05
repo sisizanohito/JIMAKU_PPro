@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ExtensionManifest Version="4.0" ExtensionBundleId="com.adobe.PProPanel" ExtensionBundleVersion="11.1"
-ExtensionBundleName="Premiere Pro sample panel" 
+<ExtensionManifest Version="4.0" ExtensionBundleId="name.sisiza.nohito" ExtensionBundleVersion="11.1"
+ExtensionBundleName="JIMAKU" 
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<ExtensionList>
-		<Extension Id="com.adobe.PProPanel" Version="10.3.0" />
+		<Extension Id="name.sisiza.nohito" Version="10.3.0" />
 	</ExtensionList>
 	<ExecutionEnvironment>
 		<HostList>
@@ -18,11 +18,10 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	</ExecutionEnvironment>
 
 	<DispatchInfoList>
-		<Extension Id="com.adobe.PProPanel">
+		<Extension Id="name.sisiza.nohito">
 			<DispatchInfo >
 				<Resources>
 					<MainPath>./index.html</MainPath>
-					<ScriptPath>./PProPanel.jsx</ScriptPath>
 				</Resources>
 				<Lifecycle>
 					<AutoVisible>true</AutoVisible>
@@ -34,7 +33,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 				</CEFCommandLine>
 				<UI>
 					<Type>Panel</Type>
-					<Menu>PProPanel (SDK sample panel)</Menu>
+					<Menu>JIMAKU</Menu>
 					<Geometry>
 						<Size>
 							<Height>300</Height>
