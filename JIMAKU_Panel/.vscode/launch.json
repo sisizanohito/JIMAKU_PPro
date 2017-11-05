@@ -6,7 +6,9 @@
             "request": "attach",
             "name": "Attach to Chrome",
             "port": 7777,
-            "webRoot": "${workspaceRoot}"
+            "webRoot": "${workspaceRoot}",
+            "sourceMaps": true
+            
         }
     ]
 }

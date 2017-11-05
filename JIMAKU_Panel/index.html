@@ -7,20 +7,79 @@
 		<script src="./lib/CSInterface.js"></script>
 		<script src="./lib/jquery-1.9.1.js"></script>
 		<script src="./lib/Vulcan.js"></script>
-	
+		<link href="css/style.css" rel="stylesheet" type="text/css">
+
 	<style>
-		body{background: black;}
+		body{background: rgb(35, 35, 35);}
+		
 	</style>
 	<title>メッセージの表示</title>
 	<script type="text/javascript">
+	$( document ).ready(function() {
+
 		function message(){
 			var csInterface = new CSInterface();
 			csInterface.evalScript('alert("自動処理をはじめました")');
 		}
+
+		// File APIに対応しているか確認
+		if(window.File) {
+			var dropArea = document.getElementById('dropArea');
+			var thumb = document.getElementById('thumb');
+		
+			// エリア内にドラッグされたとき
+			dropArea.addEventListener('dragover', function(e) {
+				// ブラウザ上でファイルを開かないようにしておく
+				e.stopPropagation();
+				e.preventDefault();
+			}, false);
+		
+			// エリア内にドロップされたとき
+			dropArea.addEventListener('drop', function(e) {
+				// ブラウザ上でファイルを開かないようにしておく
+				e.stopPropagation();
+				e.preventDefault();
+		
+				// ファイルの情報を取得
+				var fileData = e.dataTransfer.files;
+		
+				for (var i = 0; i < fileData.length; i++) {
+					var file = fileData[i];
+		
+					// 選択されたファイルが画像かどうか確認
+					if(!file.type.match(/^image/)) {
+						alert('画像を選択してください');
+						return;
+					}
+		
+					var reader = new FileReader();
+					// ファイル読み取りに失敗したとき
+					reader.onerror = function() {
+						alert('ファイル読み取りに失敗しました')
+					}
+					// ファイル読み取りに成功したとき
+					reader.onload = function(ev) {
+						var div = document.createElement('div');
+						var insert = '<img src="' + ev.target.result + '"><br>';
+						insert += 'filename: ' + file.name + '<br>';
+						insert += 'filesize: ' + file.size;
+						div.innerHTML = insert;
+						thumb.appendChild(div);
+					}
+					// ファイル読み取りを実行
+					reader.readAsDataURL(file);
+				}
+			}, false);
+		}else{
+			console.log("File APIが使えません");
+		}
+	});
 	</script>
 	</head>
 	<body>
 		<button onclick="message()">メッセージを表示</button>
+		<div id="dropArea">画像ファイルをドラッグ＆ドロップ</div>
+		<div id="thumb">ここにサムネイルを表示します。</div>
 	</body>
 	
 </html>
