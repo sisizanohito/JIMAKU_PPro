@@ -15,6 +15,11 @@
 	</style>
 	<title>メッセージの表示</title>
 	<script type="text/javascript">
+	$(document).on('drop dragover', function (e) {
+		e.stopPropagation();
+		e.preventDefault();
+  	});
+
 	$( document ).ready(function() {
 
 		function message(){
@@ -27,12 +32,15 @@
 			var dropArea = document.getElementById('dropArea');
 			var thumb = document.getElementById('thumb');
 		
+			/*
 			// エリア内にドラッグされたとき
 			dropArea.addEventListener('dragover', function(e) {
 				// ブラウザ上でファイルを開かないようにしておく
 				e.stopPropagation();
 				e.preventDefault();
 			}, false);
+			*/
+
 		
 			// エリア内にドロップされたとき
 			dropArea.addEventListener('drop', function(e) {
