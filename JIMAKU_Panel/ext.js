@@ -4,17 +4,17 @@ function onLoaded() {
 	var appName = csInterface.hostEnvironment.appName;
 	var appVersion = csInterface.hostEnvironment.appVersion;
 	
-	document.getElementById("dragthing").style.backgroundColor = "lightblue";
+	//document.getElementById("dragthing").style.backgroundColor = "lightblue";
 	var caps = csInterface.getHostCapabilities();
 	
 	loadJSX();
 	
-	updateThemeWithAppSkinInfo(csInterface.hostEnvironment.appSkinInfo);
+	//updateThemeWithAppSkinInfo(csInterface.hostEnvironment.appSkinInfo);
 
 	// Update the color of the panel when the theme color of the product changed.
 	csInterface.addEventListener(CSInterface.THEME_COLOR_CHANGED_EVENT, onAppThemeColorChanged);
 	// Listen for event sent in response to rendering a sequence.
-	csInterface.addEventListener("com.adobe.csxs.events.PProPanelRenderEvent", function(event){
+	csInterface.addEventListener("com.adobe.csxs.events.JIMAKUPanelRenderEvent", function(event){
 		alert(event.data);
 	});
 
@@ -30,10 +30,10 @@ function onLoaded() {
 	        // You just received the text of every Text layer in the current AE comp.
 	    }
 	);
-	csInterface.evalScript('$._PPP_.getVersionInfo()', myVersionInfoFunction);	
-	csInterface.evalScript('$._PPP_.getActiveSequenceName()', myCallBackFunction);		
-	csInterface.evalScript('$._PPP_.getUserName()', myUserNameFunction);  
-	csInterface.evalScript('$._PPP_.getSequenceProxySetting()', myGetProxyFunction);
+	//csInterface.evalScript('$._PPP_.getVersionInfo()', myVersionInfoFunction);	
+	//csInterface.evalScript('$._PPP_.getActiveSequenceName()', myCallBackFunction);		
+	//csInterface.evalScript('$._PPP_.getUserName()', myUserNameFunction);  
+	//csInterface.evalScript('$._PPP_.getSequenceProxySetting()', myGetProxyFunction);
 	csInterface.evalScript('$._PPP_.keepPanelLoaded()');
 	csInterface.evalScript('$._PPP_.disableImportWorkspaceWithProjects()');
 	// register project item selected callback
@@ -195,7 +195,7 @@ function onAppThemeColorChanged(event) {
 	var skinInfo = JSON.parse(window.__adobe_cep__.getHostEnvironment()).appSkinInfo;
 	// Gets the style information such as color info from the skinInfo, 
 	// and redraw all UI controls of your extension according to the style info.
-	updateThemeWithAppSkinInfo(skinInfo);
+	//updateThemeWithAppSkinInfo(skinInfo);
 } 
 
 /**

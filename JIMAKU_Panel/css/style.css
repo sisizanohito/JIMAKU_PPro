@@ -7,3 +7,8 @@
 #thumb img {
     max-width: 300px;
 }
+
+#dropzone.dropover {
+	background-color: #cff;
+	color: #9cc;
+}

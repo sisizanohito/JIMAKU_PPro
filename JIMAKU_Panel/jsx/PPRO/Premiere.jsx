@@ -32,7 +32,7 @@ $._PPP_={
 	},
 
 	keepPanelLoaded : function() {
-		app.setExtensionPersistent("com.adobe.PProPanel", 0); // 0, while testing (to enable rapid reload); 1 for "Never unload me, even when not visible."
+		app.setExtensionPersistent("name.sisiza.JIMAKU", 0); // 0, while testing (to enable rapid reload); 1 for "Never unload me, even when not visible."
 	},
 
 	updateGrowingFile : function() {
@@ -256,11 +256,25 @@ $._PPP_={
 		};
 		return deepSearchBin(app.project.rootItem);
 	},
+	
+	getClip : function(root,name){
+			for (var i=root.children.numItems-1;i>=0;i--){
+					if(root.children[i].type==ProjectItemType.BIN){
+							target=getClip(root.children[i]);
+							if(target != 0){ return target;}
+					}
+					if(root.children[i].type==ProjectItemType.CLIP){
+							if(root.children[i].name == name){ return target;}
+							return root.children[i];
+					}
+				}
+			return 0;
+	},
 
 	importFiles : function() {
 		if (app.project) {
 			var fileOrFilesToImport	= File.openDialog (	"Choose files to import", 	// title
-														0, 							// filter available files? 
+														"*.wav", 							// filter available files? 
 														true); 						// allow multiple?
 
 			// New in 11.1; you can determine which bin will be targeted, before importing.
@@ -277,14 +291,32 @@ $._PPP_={
 					targetBin.select();
 					// We have an array of File objects; importFiles() takes an array of paths.
 					var importThese = [];
+					var importText = [];
 					if (importThese){
 						for (var i = 0; i < fileOrFilesToImport.length; i++) {
 							importThese[i] = fileOrFilesToImport[i].fsName;
+							var fs = importThese[i].split('.');
+							fs[fs.length -1]="txt";
+							importText[i] = fs.join(".");
 						}
 						app.project.importFiles(importThese, 
 												1,				// suppress warnings 
 												targetBin,
 												0);				// import as numbered stills
+
+						app.project.importFiles(importText, 
+												1,				// suppress warnings 
+												targetBin,
+												0);				// import as numbered stills
+					}
+					var seq = app.project.activeSequence;
+					var now = seq.getPlayerPosition();
+					var aTrack = seq.audioTracks[2];
+					for (var i = 0; i < importThese.length; i++) {
+							
+							var file_name = importThese[i].substring(importThese[i].lastIndexOf('/')+1, importThese[i].length);
+							var targetClip=$._PPP_.getClip(app.project.rootItem,file_name);
+							aTrack.insertClip(targetClip, now);
 					}
 				} else {
 					$._PPP_.updateEventPanel("Could not find or create target bin.");
@@ -1189,7 +1221,7 @@ $._PPP_={
 		var mylib		= new ExternalObject('lib:' + eoName);
 		var eventObj	= new CSXSEvent();
 
-		eventObj.type	= "com.adobe.csxs.events.PProPanelRenderEvent";
+		eventObj.type	= "com.adobe.csxs.events.JIMAKUPanelRenderEvent";
 		eventObj.data	= "Rendered Job " + jobID + ", to " + outputFilePath + ".";
 
 		eventObj.dispatch();
@@ -1207,7 +1239,7 @@ $._PPP_={
 		var mylib		= new ExternalObject('lib:' + eoName);
 		var eventObj	= new CSXSEvent();
 
-		eventObj.type	= "com.adobe.csxs.events.PProPanelRenderEvent";
+		eventObj.type	= "com.adobe.csxs.events.JIMAKUPanelRenderEvent";
 		eventObj.data	= "Job " + jobID + " failed, due to " + errorMessage + ".";
 		eventObj.dispatch();
 	},
@@ -1484,7 +1516,7 @@ $._PPP_={
 	},
 
 	getPPPInsertionBin : function () {
-		var nameToFind = "Here's where PProPanel puts things.";
+		var nameToFind = "JIMAKU";
 
 		var targetBin	= $._PPP_.searchForBinWithName(nameToFind);
 

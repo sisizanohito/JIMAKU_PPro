@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ExtensionManifest Version="4.0" ExtensionBundleId="name.sisiza.nohito" ExtensionBundleVersion="11.1"
+<ExtensionManifest Version="4.0" ExtensionBundleId="name.sisiza.JIMAKU" ExtensionBundleVersion="11.1"
 ExtensionBundleName="JIMAKU" 
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<ExtensionList>
-		<Extension Id="name.sisiza.nohito" Version="10.3.0" />
+		<Extension Id="name.sisiza.JIMAKU" Version="10.3.0" />
 	</ExtensionList>
 	<ExecutionEnvironment>
 		<HostList>
@@ -18,10 +18,11 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	</ExecutionEnvironment>
 
 	<DispatchInfoList>
-		<Extension Id="name.sisiza.nohito">
+		<Extension Id="name.sisiza.JIMAKU">
 			<DispatchInfo >
 				<Resources>
 					<MainPath>./index.html</MainPath>
+					<ScriptPath>./PProPanel.jsx</ScriptPath>
 				</Resources>
 				<Lifecycle>
 					<AutoVisible>true</AutoVisible>

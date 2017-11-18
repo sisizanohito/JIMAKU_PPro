@@ -1,7 +1,7 @@
 # Create panels for Premiere Pro
 ==============================
 
-*Last updated April 24 2017, current released version = Premiere Pro 11.1.*
+*Last updated November 1 2017, current released version = Premiere Pro 12.0, also known as "Premiere Pro CC 2018"
 
 ## What's Possible?
 
@@ -9,49 +9,62 @@ For the impatient, here are links to working sample code, showing what's
 possible for Premiere Pro panels:
 
 -   [Browse and import files from the
-    OS](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/Premiere.jsx#L215)
+    OS](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/PPRO/Premiere.jsx#L260)
 
 -   [Get and set all XMP
-    metadata](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/Premiere.jsx#L508)
+    metadata](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/PPRO/Premiere.jsx#L601)
     (including Premiere Pro's [private project
-    metadata](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/Premiere.jsx#L659))
+    metadata](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/PPRO/Premiere.jsx#L765))
     for any projectItem.
 
 -   [Import files via drag and
-    drop](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/ext.js#L47),
+    drop](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/ext.js#L43),
     from a panel into Premiere Pro (Project panel, or directly onto a timeline).
 
 -   [Preview any supported media in the Source
-    monitor](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/Premiere.jsx#L190)
+    monitor](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/PPRO/Premiere.jsx#L231)
     (without requiring that it be imported into the project).
 
 -   Access and modify [clip
-    markers](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/Premiere.jsx#L629),
+    markers](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/PPRO/Premiere.jsx#L727),
     and [sequence
-    markers](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/Premiere.jsx#L121).
+    markers](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/PPRO/Premiere.jsx#L163).
 
 -   [Create new
-    sequences](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/Premiere.jsx#L349)
+    sequences](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/PPRO/Premiere.jsx#L428)
     either from a preset, or with user interaction.
 
 -   [Open different
-    projects](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/Premiere.jsx#L288)
+    projects](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/PPRO/Premiere.jsx#L370)
     (while the panel remains active; this behavior is new as of Premiere Pro
     10.3).
 
 -   [Render a
-    sequence](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/Premiere.jsx#L412)
+    sequence](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/PPRO/Premiere.jsx#L492)
     to any destination(s), based on any preset(s), including ftp upload, and
     controlling metadata output.
 
 -   Export either a [given
-    sequence](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/Premiere.jsx#L164)
+    sequence](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/PPRO/Premiere.jsx#L206)
     or the entire project as Final Cut Pro 7 XML.
 
 -   [Save as a new
-    project](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/Premiere.jsx#L487),
+    project](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/PPRO/Premiere.jsx#L581),
     or create a new project containing only a specified sequence and its
     constituent media.
+
+## What's new in 12.0?
+
+- 	We've extended our new, not-in-the-QE-DOM Source monitor object, to close the [front-most](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/PPRO/Premiere.jsx#L1465) or [all open clips](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/PPRO/Premiere.jsx#L1469).
+
+- 	[Change the Label](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/PPRO/Premiere.jsx#L1473) assigned to projectItems. 
+
+- 	Query PPro for the [current insertion bin](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/PPRO/Premiere.jsx#L1486), the default target for items imported into the project (but not via drag). *Previously, you could set, but not get, the insertion bin.*
+
+- 	[Import Compositions](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/jsx/PPRO/Premiere.jsx#L1502) by name, from After Effects projects.
+
+-	Open PPro's Events panel to see PProPanel's feedback; I've minimized modal alerts.
+ 
 
 ## 1. Obtain and install these
 
@@ -61,7 +74,7 @@ possible for Premiere Pro panels:
     (available under 'previous versions').
 
 -   The [CEP Test
-    Panel](https://github.com/Adobe-CEP/Samples/tree/master/CEP_HTML_Test_Extension)
+    Panel](https://github.com/Adobe-CEP/CEP-Resources/tree/master/CEP_8.x/Samples/CEP_HTML_Test_Extension-8.0)
     shows the full capabilities of CEP panels.
 
 -   The [PProPanel](https://github.com/Adobe-CEP/Samples/tree/master/PProPanel)
@@ -78,14 +91,14 @@ possible for Premiere Pro panels:
 
 ## 2. Enable loading of unsigned panels
  
-*Note: Premiere Pro 11.1 has integrated CEP7, so even if you had unsigned panels
-loading before (using CEP6), you'll need to perform this step again, but for key CSXS.7 instead of CSXS.6.*
+*Note: Premiere Pro 12.0 has integrated CEP8, so even if you had unsigned panels
+loading before (using CEP6 or CEP7), you'll need to perform this step again, but for key CSXS.8.*
 
 On Mac, type the following into Terminal, then relaunch Finder (either via
 rebooting, or from the Force Quit dialog):
 
 ```
-defaults write /Users/<username>/Library/Preferences/com.adobe.CSXS.7.plist PlayerDebugMode 1
+defaults write /Users/<username>/Library/Preferences/com.adobe.CSXS.8.plist PlayerDebugMode 1
 ```
 
 On Windows, make the following registry entry (a new Key, of type String):
@@ -130,8 +143,8 @@ Pro's logs) here. Note that Mac Library path is the system's library, not the
 user's. Also, note that logging WILL impact performance.
 
 ```
-Windows: 	%\AppData\Local\Temp\csxs7-PPRO.log
-Mac: 		/Library/Logs/CSXS/csxs7-PPRO.log
+Windows: 	%\AppData\Local\Temp\csxs8-PPRO.log
+Mac: 		/Library/Logs/CSXS/csxs8-PPRO.log
 ```
 
 Set logging level in Windows Registry (see above), or MacOS X .plist:
