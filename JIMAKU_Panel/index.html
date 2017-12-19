@@ -13,23 +13,150 @@
 		body{background: rgb(35, 35, 35);}
 		
 	</style>
-	<title>メッセージの表示</title>
+	<title>JIMAKU</title>
 	<script type="text/javascript">
-	
-	function message(){
-			var csInterface = new CSInterface();
-			csInterface.evalScript('alert("自動処理をはじめました")');
+
+	function importWave(event){
+		var elem = $(event).parents("div");
+		var videoNum = elem[0].getElementsByTagName('select')[0];
+		console.log(videoNum.value);
+
+		var csInterface = new CSInterface();
+		var extPath 	= csInterface.getSystemPath(SystemPath.EXTENSION);
+		var OSVersion	= csInterface.getOSInformation();
+
+		if (extPath !== null){
+			extPath = extPath + '/Template.xml';
+			if (OSVersion.indexOf("Windows") >=0){
+				var sep = '\\\\';
+				extPath = extPath.replace(/\//g, sep);
+			}
+			csInterface.evalScript('$._PPP_.importWav("'+extPath+'")');
+		}
+			
 	}
+	
+
 
 	$( document ).ready(function() {
-
+		var elem = document.getElementsByClassName('range');
+		var rangeValue = function (elem, target) {
+			return function(evt){
+				var num = Number(elem.value);
+				target.innerHTML = Math.round(num/255 * 100) + "%";
+ 　　　}
+　 }
+　 for(var i = 0, max = elem.length; i < max; i++){
+ 　　　bar = elem[i].getElementsByTagName('input')[0];
+ 　　　target = elem[i].getElementsByTagName('span')[0];
+　　　 bar.addEventListener('input', rangeValue(bar, target));
+　 }
 	});
+	
 
 	</script>
 	</head>
 	<body onLoad="onLoaded()">
-		<button onclick="message()">メッセージを表示</button>
-		<button onClick="evalScript('$._PPP_.importFiles()')">Import Files</button>
+			<div><h2>JIMAKU</h2></div>
+			<div id="Yukari" class="Section">
+					<table class="OptonTable">
+						<tr>
+							<td rowspan="2" width="10%">ゆかり</td>
+							<td>トラック番号</td>
+							<td>座標</td>
+							<td>文字サイズ</td>
+							<td>文字色</td>
+							<td>背景色</td>
+							<td>背景不透明度</td>
+							<td>インポート</td>
+						</tr>
+						<tr>
+							<td>
+								<form>
+									ビデオ
+									<select>
+										<option value="0">1</option>
+										<option value="1">2</option>
+										<option value="2" selected>3</option>
+									</select>
+								</form>
+								<br>
+								<form>
+									オーディオ
+									<select>
+										<option value="0">1</option>
+										<option value="1">2</option>
+										<option value="2" selected>3</option>
+									</select>
+								</form>
+							</td>
+							<td>
+								X <input type="text" name="x" size="3" value="0.5" maxlength="10"><br>
+								Y <input type="text" name="y" size="3" value="0.5" maxlength="10">
+							</td>
+							<td><input type="text" size="3" value="20" maxlength="5"></td>
+							<td><input type="color" value="#000000"></td>
+							<td><input type="color" value="#ffffff"></td>
+							<td width="100">
+								<div class="range">
+									<span>0%</span>
+									<input type="range" min="0" max="255" step="1" value="0" >
+								</div>
+							</td>
+							<td><button onClick="importWave(this)">Import wav</button></td>
+						</tr>
+					</table>
+				</div>
+				<div id="ONE" class="Section">
+						<table class="OptonTable">
+						<tr>
+							<td rowspan="2" width="10%">ONE</td>
+							<td>トラック番号</td>
+							<td>座標</td>
+							<td>文字サイズ</td>
+							<td>文字色</td>
+							<td>背景色</td>
+							<td>背景不透明度</td>
+							<td>インポート</td>
+						</tr>
+						<tr>
+							<td>
+								<form>
+									ビデオ
+									<select>
+										<option value="0">1</option>
+										<option value="1">2</option>
+										<option value="2" selected>3</option>
+									</select>
+								</form>
+								<br>
+								<form>
+									オーディオ
+									<select>
+										<option value="0">1</option>
+										<option value="1">2</option>
+										<option value="2" selected>3</option>
+									</select>
+								</form>
+							</td>
+							<td>
+								X <input type="text" size="3" value="0.5" maxlength="10"><br>
+								Y <input type="text" size="3" value="0.5" maxlength="10">
+							</td>
+							<td><input type="text" size="3" value="20" maxlength="5"></td>
+							<td><input type="color" value="#000000"></td>
+							<td><input type="color" value="#ffffff"></td>
+							<td width="100">
+									<div class="range">
+										<span>0%</span>
+										<input type="range" min="0" max="255" step="1" value="0" >
+									</div>
+								</td>
+							<td><button onClick="importWave(this)">Import wav</button></td>
+						</tr>
+					</table>
+			</div>
+		
 	</body>
 	
 </html>

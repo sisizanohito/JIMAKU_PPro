@@ -1,14 +1,5 @@
-#dropArea {
-    width: 200px;
-    padding: 100px;
-    background: #eee;
+.OptonTable {
     text-align: center;
-}
-#thumb img {
-    max-width: 300px;
-}
-
-#dropzone.dropover {
-	background-color: #cff;
-	color: #9cc;
+    color: #ffffff;
+    width: 100%;
 }

@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<tt xmlns="http://www.w3.org/ns/ttml" xmlns:ttp="http://www.w3.org/ns/ttml#parameter" ttp:dropMode="nonDrop" ttp:frameRate="1000" ttp:timeBase="smpte" xmlns:ttm="http://www.w3.org/ns/ttml#metadata" xmlns:tts="http://www.w3.org/ns/ttml#styling">
+
+  <head>
+    <metadata/>
+    <styling>
+      <style tts:color="white" tts:fontFamily="monospace" tts:fontWeight="normal" tts:textAlign="left" xml:id="basic"/>
+    </styling>
+    <layout>
+      <region tts:backgroundColor="transparent" xml:id="pop1"/>
+      <region tts:backgroundColor="transparent" xml:id="paint"/>
+      <region tts:backgroundColor="transparent" xml:id="rollup2"/>
+      <region tts:backgroundColor="transparent" xml:id="rollup3"/>
+      <region tts:backgroundColor="transparent" xml:id="rollup4"/>
+    </layout>
+  </head>
+
+  <body>
+    <div>
+      <p begin="#begin#" end="#end#" region="pop1" style="basic" tts:origin="#X#% #Y#%">
+        <style tts:textAlign="center"/>
+        <span>#text#
+          <style tts:backgroundColor="#backgroundColor#" tts:color="#fontColor#" tts:fontSize="#size#px" tts:fontStyle="italic"/>
+        </span>
+      </p>
+    </div>
+  </body>
+
+</tt>
