@@ -1,22 +1,26 @@
-﻿var first = app.project.rootItem.children[4];
+﻿var first = app.project.rootItem.children[1];
 var seq = app.project.activeSequence;
 var aTrack1 = seq.audioTracks[2];
 var vTrack1 = seq.videoTracks[1];
 var clip1 = vTrack1.clips[0];
-//var com1 = clip1.components[0];
-//var com2 = clip1.components[1];
-//Track1.insertClip(first, '00;00;00;00');
+var vTrack3 = seq.videoTracks[2];
+var clip3 = vTrack3.clips[0];
+var com1 = clip3.components[0];
+var com2 = clip3.components[1];
+var pro= com2.properties[0];
+pro.setValue([1.0,1.2]);
+alert (pro.getValue())
 
 var clipFat = getClipFromeSequence("001_ONE.wav");
 var time=clipFat.duration;
-alert (time.seconds)
+//alert (time.seconds)
 
 var fileInfo = File("C:\\Users\\isiis\\Documents\\PProPluginProject\\JIMAKU_Panel\\Template.xml");
-alert (fileInfo.path);
+//alert (fileInfo.path);
 fileInfo.open ("r");
 var text = fileInfo.read();
 
-alert (replaceTemplate(text,"ああ","00:00:00.000",toHms(time.seconds),"10%" ,"40.925925925925924%"));
+//alert (replaceTemplate(text,"ああ","00:00:00.000",toHms(time.seconds),"10%" ,"40.925925925925924%"));
 fileInfo.close();
 
 function replaceTemplate(template,text,begin,end,x,y){

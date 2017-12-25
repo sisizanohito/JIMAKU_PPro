@@ -18,8 +18,14 @@
 
 	function importWave(event){
 		var elem = $(event).parents("div");
-		var videoNum = elem[0].getElementsByTagName('select')[0];
-		console.log(videoNum.value);
+		var videoTrack = elem[0].getElementsByTagName('select')[0].value;
+		var soundTrack = elem[0].getElementsByTagName('select')[1].value;
+		var x = elem[0].getElementsByTagName('input')[0].value;
+		var y = elem[0].getElementsByTagName('input')[1].value;
+		var fontSize = elem[0].getElementsByTagName('input')[2].value;
+		var fontColor = elem[0].getElementsByTagName('input')[3].value;
+		var backColor = elem[0].getElementsByTagName('input')[4].value;
+		var backAlpha = elem[0].getElementsByTagName('input')[5].value;
 
 		var csInterface = new CSInterface();
 		var extPath 	= csInterface.getSystemPath(SystemPath.EXTENSION);
@@ -58,7 +64,7 @@
 	</head>
 	<body onLoad="onLoaded()">
 			<div><h2>JIMAKU</h2></div>
-			<div id="Yukari" class="Section">
+			<div class="Section">
 					<table class="OptonTable">
 						<tr>
 							<td rowspan="2" width="10%">ゆかり</td>
@@ -75,18 +81,18 @@
 								<form>
 									ビデオ
 									<select>
-										<option value="0">1</option>
-										<option value="1">2</option>
-										<option value="2" selected>3</option>
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3" selected>3</option>
 									</select>
 								</form>
 								<br>
 								<form>
 									オーディオ
 									<select>
-										<option value="0">1</option>
-										<option value="1">2</option>
-										<option value="2" selected>3</option>
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3" selected>3</option>
 									</select>
 								</form>
 							</td>
@@ -107,7 +113,7 @@
 						</tr>
 					</table>
 				</div>
-				<div id="ONE" class="Section">
+				<div class="Section">
 						<table class="OptonTable">
 						<tr>
 							<td rowspan="2" width="10%">ONE</td>
@@ -124,18 +130,18 @@
 								<form>
 									ビデオ
 									<select>
-										<option value="0">1</option>
-										<option value="1">2</option>
-										<option value="2" selected>3</option>
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3" selected>3</option>
 									</select>
 								</form>
 								<br>
 								<form>
 									オーディオ
 									<select>
-										<option value="0">1</option>
-										<option value="1">2</option>
-										<option value="2" selected>3</option>
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3" selected>3</option>
 									</select>
 								</form>
 							</td>
