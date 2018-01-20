@@ -8,12 +8,12 @@ var clip3 = vTrack3.clips[0];
 var com1 = clip3.components[0];
 var com2 = clip3.components[1];
 var pro= com2.properties[0];
-pro.setValue([1.0,1.2]);
-alert (pro.getValue())
+//pro.setValue([0.5,0.5]);
+//alert (com2.properties[1].getValue())
 
-var clipFat = getClipFromeSequence("001_ONE.wav");
+var clipFat = getClipFromeSequence("001_ONE.xml");
 var time=clipFat.duration;
-//alert (time.seconds)
+alert (time.seconds)
 
 var fileInfo = File("C:\\Users\\isiis\\Documents\\PProPluginProject\\JIMAKU_Panel\\Template.xml");
 //alert (fileInfo.path);
@@ -34,7 +34,7 @@ function replaceTemplate(template,text,begin,end,x,y){
 
 function getClipFromeSequence(name){
     var seq = app.project.activeSequence;
-    var  audio= seq.audioTracks[2];
+    var  audio= seq.videoTracks[2];
     for (var i=audio.clips.numItems-1;i>=0;i--){
         var clip =audio.clips[i];
         if(clip.name == name){ return clip; } 

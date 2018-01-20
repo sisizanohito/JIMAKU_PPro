@@ -272,11 +272,9 @@ $._PPP_={
 			return 0;
 	},
 
-	getClipFromeSequence : function(name){
-		var seq = app.project.activeSequence;
-		var  audio= seq.audioTracks[2];
-		for (var i=audio.clips.numItems-1;i>=0;i--){
-			var clip =audio.clips[i];
+	getClipFromeSequence : function(name,Track){
+		for (var i=Track.clips.numItems-1;i>=0;i--){
+			var clip =Track.clips[i];
 			if(clip.name == name){ 
 				return clip; 
 				} 
@@ -290,7 +288,7 @@ $._PPP_={
         template=template.replace(/#X#/g , x) ;
         template=template.replace(/#Y#/g , y) ;
 		template=template.replace(/#backgroundColor#/g , bColor) ;
-		template=template.replace(/#fontColor#/g , bColor) ;
+		template=template.replace(/#fontColor#/g , fColor) ;
 		template=template.replace(/#size#/g , size) ;
         return template;
 	},
@@ -378,7 +376,7 @@ $._PPP_={
 		}
 	},
 
-	importWav : function(tmpPath) {
+	importWav : function(tmpPath,videoTrack,soundTrack,x,y,bColor,fColor,size,scale) {
 		if (app.project) {
 			var fileOrFilesToImport	= File.openDialog (	"Choose files to import", 	// title
 														"*.wav", 							// filter available files? 
@@ -426,19 +424,19 @@ $._PPP_={
 					}
 					var seq = app.project.activeSequence;
 					var now = seq.getPlayerPosition();
-					var aTrack = seq.audioTracks[2];
-					var vTrack = seq.videoTracks[2];
+					var aTrack = seq.audioTracks[soundTrack];
+					var vTrack = seq.videoTracks[videoTrack];
 					for (var i = 0; i < importThese.length; i++) {
 							var file_name = importThese[i].substring(importThese[i].lastIndexOf('\\')+1, importThese[i].length);
 							var targetClip=$._PPP_.getClip(app.project.rootItem,file_name);
 							aTrack.insertClip(targetClip, now);
 							
-							var inClip=$._PPP_.getClipFromeSequence(file_name);
-							var dtime= $._PPP_.toHms(inClip.duration.seconds);
+							var AinClip=$._PPP_.getClipFromeSequence(file_name,aTrack);
+							var dtime= $._PPP_.toHms(AinClip.duration.seconds);
 							var myFile= File(exportText[i]);
 							myFile.encoding = "UTF-8";
 							myFile.open ("w");
-							var content=$._PPP_.replaceTemplate(template,importJimaku[i],"00:00:00.000",dtime,"10" ,"40.925925925925924");
+							var content=$._PPP_.replaceTemplate(template,importJimaku[i],"00:00:00.000",dtime,0 ,0,bColor,fColor,size);
 							myFile.write(content);
 							myFile.close();
 							app.project.importFiles(exportText, 
@@ -448,6 +446,12 @@ $._PPP_={
 							file_name = exportText[i].substring(exportText[i].lastIndexOf('\\')+1, exportText[i].length);
 							var targetClip=$._PPP_.getClip(app.project.rootItem,file_name);
 							vTrack.insertClip(targetClip, now);
+							var VinClip=$._PPP_.getClipFromeSequence(file_name,vTrack);
+							var motion = VinClip.components[1];
+							var motionPosition= motion.properties[0];
+							var motionSize= motion.properties[1];
+							motionPosition.setValue([x,y]);
+							motionSize.setValue(scale);
 					}
 				} else {
 					$._PPP_.updateEventPanel("Could not find or create target bin.");
@@ -455,6 +459,24 @@ $._PPP_={
 			} 
 		}
 	},
+	
+	JIMAKUColorPicker : function() {
+		var hexToRGB = function(hex) {
+		var r = hex >> 16;
+		var g = hex >> 8 & 0xFF;
+		var b = hex & 0xFF;
+		return [r, g, b];
+		};
+
+		var color_decimal = $.colorPicker();
+		var color_hexadecimal =color_decimal.toString(16);
+		var color_rgb = hexToRGB(parseInt(color_hexadecimal, 16));
+		var color_fixHex = "#"+ ("0" + Number(color_rgb[0]).toString(16)).slice(-2) + ("0" + Number(color_rgb[1]).toString(16)).slice(-2) +("0" + Number(color_rgb[2]).toString(16)).slice(-2);
+		return color_fixHex;
+		//var color_that_ae_add_solid_understands = [color_rgb[0] / 255, color_rgb[1] / 255, color_rgb[2] / 255];
+	},
+	
+
 
 	muteFun : function() {
 		if (app.project.activeSequence){

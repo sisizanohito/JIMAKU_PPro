@@ -15,7 +15,6 @@
 	</style>
 	<title>JIMAKU</title>
 	<script type="text/javascript">
-
 	function importWave(event){
 		var elem = $(event).parents("div");
 		var videoTrack = elem[0].getElementsByTagName('select')[0].value;
@@ -23,9 +22,15 @@
 		var x = elem[0].getElementsByTagName('input')[0].value;
 		var y = elem[0].getElementsByTagName('input')[1].value;
 		var fontSize = elem[0].getElementsByTagName('input')[2].value;
-		var fontColor = elem[0].getElementsByTagName('input')[3].value;
-		var backColor = elem[0].getElementsByTagName('input')[4].value;
-		var backAlpha = elem[0].getElementsByTagName('input')[5].value;
+		var scale = elem[0].getElementsByTagName('input')[3].value;
+		var fontColor = elem[0].getElementsByTagName('input')[4].value;
+		var backColor = elem[0].getElementsByTagName('input')[5].value;
+		var fontAlpha = elem[0].getElementsByTagName('input')[6].value;
+		var backAlpha = elem[0].getElementsByTagName('input')[7].value;
+		fontColor = fontColor + ("0" + Number(fontAlpha).toString(16)).slice(-2);
+		backColor = backColor + ("0" + Number(backAlpha).toString(16)).slice(-2);;
+
+		var parameter = (Number(videoTrack)-1)+','+(Number(soundTrack)-1)+','+x+','+y+',"'+backColor+'","'+fontColor+'",'+fontSize+','+scale;
 
 		var csInterface = new CSInterface();
 		var extPath 	= csInterface.getSystemPath(SystemPath.EXTENSION);
@@ -37,12 +42,22 @@
 				var sep = '\\\\';
 				extPath = extPath.replace(/\//g, sep);
 			}
-			csInterface.evalScript('$._PPP_.importWav("'+extPath+'")');
+			csInterface.evalScript('$._PPP_.importWav("'+extPath+'",'+parameter+')');
 		}
 			
 	}
 	
+	var barElement;
+	function SetElement(event){
+		var csInterface = new CSInterface();
+		barElement=$(event)[0];
+		csInterface.evalScript('$._PPP_.JIMAKUColorPicker()',SetValue);
+	}
 
+	function SetValue(result){
+		console.log(result)
+		barElement.value = result;
+	}
 
 	$( document ).ready(function() {
 		var elem = document.getElementsByClassName('range');
@@ -50,13 +65,13 @@
 			return function(evt){
 				var num = Number(elem.value);
 				target.innerHTML = Math.round(num/255 * 100) + "%";
- 　　　}
-　 }
-　 for(var i = 0, max = elem.length; i < max; i++){
- 　　　bar = elem[i].getElementsByTagName('input')[0];
- 　　　target = elem[i].getElementsByTagName('span')[0];
-　　　 bar.addEventListener('input', rangeValue(bar, target));
-　 }
+	　　　}
+	　 }
+	　 for(var i = 0, max = elem.length; i < max; i++){
+	　　　bar = elem[i].getElementsByTagName('input')[0];
+	　　　target = elem[i].getElementsByTagName('span')[1];
+	　　　 bar.addEventListener('input', rangeValue(bar, target));
+	　 }
 	});
 	
 
@@ -70,10 +85,10 @@
 							<td rowspan="2" width="10%">ゆかり</td>
 							<td>トラック番号</td>
 							<td>座標</td>
-							<td>文字サイズ</td>
+							<td>サイズ</td>
 							<td>文字色</td>
 							<td>背景色</td>
-							<td>背景不透明度</td>
+							<td>不透明度</td>
 							<td>インポート</td>
 						</tr>
 						<tr>
@@ -100,13 +115,22 @@
 								X <input type="text" name="x" size="3" value="0.5" maxlength="10"><br>
 								Y <input type="text" name="y" size="3" value="0.5" maxlength="10">
 							</td>
-							<td><input type="text" size="3" value="20" maxlength="5"></td>
-							<td><input type="color" value="#000000"></td>
-							<td><input type="color" value="#ffffff"></td>
+							<td>
+								<span>文字　　</span><input type="text" name="x" size="3" value="40" maxlength="10"><br>
+								<span>フレーム</span><input type="text" name="y" size="3" value="300" maxlength="10">
+							</td>
+							<td><input type="color" value="#000000" onClick="SetElement(this)"></td>
+							<td><input type="color" value="#ffffff" onClick="SetElement(this)"></td>
 							<td width="100">
 								<div class="range">
-									<span>0%</span>
-									<input type="range" min="0" max="255" step="1" value="0" >
+									<span>文字</span>
+									<span>100%</span>
+									<input type="range" min="0" max="255" step="1" value="255" >
+								</div>
+								<div class="range">
+										<span>背景</span>
+										<span>100%</span>
+										<input type="range" min="0" max="255" step="1" value="255" >
 								</div>
 							</td>
 							<td><button onClick="importWave(this)">Import wav</button></td>
@@ -119,10 +143,10 @@
 							<td rowspan="2" width="10%">ONE</td>
 							<td>トラック番号</td>
 							<td>座標</td>
-							<td>文字サイズ</td>
+							<td>サイズ</td>
 							<td>文字色</td>
 							<td>背景色</td>
-							<td>背景不透明度</td>
+							<td>不透明度</td>
 							<td>インポート</td>
 						</tr>
 						<tr>
@@ -149,15 +173,24 @@
 								X <input type="text" size="3" value="0.5" maxlength="10"><br>
 								Y <input type="text" size="3" value="0.5" maxlength="10">
 							</td>
-							<td><input type="text" size="3" value="20" maxlength="5"></td>
-							<td><input type="color" value="#000000"></td>
-							<td><input type="color" value="#ffffff"></td>
+							<td>
+								<span>文字　　</span><input type="text" name="x" size="3" value="40" maxlength="10"><br>
+								<span>フレーム</span><input type="text" name="y" size="3" value="300" maxlength="10">
+							</td>
+							<td><input type="color" value="#000000" onClick="SetElement(this)"></td>
+							<td><input type="color" value="#ffffff" onClick="SetElement(this)"></td>
 							<td width="100">
 									<div class="range">
-										<span>0%</span>
-										<input type="range" min="0" max="255" step="1" value="0" >
+										<span>文字</span>
+										<span>100%</span>
+										<input type="range" min="0" max="255" step="1" value="255" >
 									</div>
-								</td>
+									<div class="range">
+											<span>背景</span>
+											<span>100%</span>
+											<input type="range" min="0" max="255" step="1" value="255" >
+									</div>
+							</td>
 							<td><button onClick="importWave(this)">Import wav</button></td>
 						</tr>
 					</table>

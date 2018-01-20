@@ -1,5 +1,6 @@
 ﻿
 var A = getClip(app.project.rootItem,"001_ONE.xml");
+A.setScaleToFrameSize();
 //alert (A.getXMPMetadata());
   var myFile=File("C:\\Users\\isiis\\Desktop\\run.xml");
   myFile.open ("w");

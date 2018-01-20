@@ -20,7 +20,7 @@
       <p begin="#begin#" end="#end#" region="pop1" style="basic" tts:origin="#X#% #Y#%">
         <style tts:textAlign="center"/>
         <span>#text#
-          <style tts:backgroundColor="#backgroundColor#" tts:color="#fontColor#" tts:fontSize="#size#px" tts:fontStyle="italic"/>
+          <style tts:backgroundColor="#backgroundColor#" tts:color="#fontColor#" tts:fontSize="#size#px"/>
         </span>
       </p>
     </div>
