@@ -25,10 +25,10 @@
 		var scale = elem[0].getElementsByTagName('input')[3].value;
 		var fontColor = elem[0].getElementsByTagName('input')[4].value;
 		var backColor = elem[0].getElementsByTagName('input')[5].value;
-		var fontAlpha = elem[0].getElementsByTagName('input')[6].value;
-		var backAlpha = elem[0].getElementsByTagName('input')[7].value;
+		var fontAlpha = 255;
+		var backAlpha = elem[0].getElementsByTagName('input')[6].value;
 		fontColor = fontColor + ("0" + Number(fontAlpha).toString(16)).slice(-2);
-		backColor = backColor + ("0" + Number(backAlpha).toString(16)).slice(-2);;
+		backColor = backColor + ("0" + Number(backAlpha).toString(16)).slice(-2);
 
 		var parameter = (Number(videoTrack)-1)+','+(Number(soundTrack)-1)+','+x+','+y+',"'+backColor+'","'+fontColor+'",'+fontSize+','+scale;
 
@@ -123,11 +123,6 @@
 							<td><input type="color" value="#ffffff" onClick="SetElement(this)"></td>
 							<td width="100">
 								<div class="range">
-									<span>文字</span>
-									<span>100%</span>
-									<input type="range" min="0" max="255" step="1" value="255" >
-								</div>
-								<div class="range">
 										<span>背景</span>
 										<span>100%</span>
 										<input type="range" min="0" max="255" step="1" value="255" >
@@ -180,11 +175,6 @@
 							<td><input type="color" value="#000000" onClick="SetElement(this)"></td>
 							<td><input type="color" value="#ffffff" onClick="SetElement(this)"></td>
 							<td width="100">
-									<div class="range">
-										<span>文字</span>
-										<span>100%</span>
-										<input type="range" min="0" max="255" step="1" value="255" >
-									</div>
 									<div class="range">
 											<span>背景</span>
 											<span>100%</span>

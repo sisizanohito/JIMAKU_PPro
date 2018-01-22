@@ -62,13 +62,22 @@ $._PPP_={
 	message : function (msg) {
 		$.writeln(msg);	 // Using '$' object will invoke ExtendScript Toolkit, if installed.
 	},
+
+	getProjectPath : function(){
+		var path = app.project.path;
+		path =path .slice (4);
+		var pattern = /^(.*\\)/g;
+		var dir = path.match(pattern);
+		$.writeln(dir);
+		return dir;
+	},
 	
 	getPPPInsertionBin : function () {
 		var nameToFind = "JIMAKU";
 
 		var targetBin	= $._PPP_.searchForBinWithName(nameToFind);
 
-		if (targetBin === 0) {
+		if (targetBin === undefined) {
 			// If panel can't find the target bin, it creates it.
 			app.project.rootItem.createBin(nameToFind);
 			targetBin	= $._PPP_.searchForBinWithName(nameToFind);
@@ -146,13 +155,6 @@ $._PPP_={
 														"*.wav", 							// filter available files? 
 														true); 						// allow multiple?
 
-			// New in 11.1; you can determine which bin will be targeted, before importing.
-
-			var currentTargetBin = app.project.getInsertionBin();
-
-			if (currentTargetBin.nodeId === app.project.rootItem.nodeId){
-				// If we're here, then the target bin is the root of the project.
-			}
 			if (fileOrFilesToImport) {
 				// Of course, panels are welcome to override that default insertion bin behavior... :)
 				var targetBin = $._PPP_.getPPPInsertionBin();
