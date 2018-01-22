@@ -153,7 +153,7 @@ $._PPP_={
 		if (app.project) {
 			var fileOrFilesToImport	= File.openDialog (	"音声を選んでください", 	// title
 														"*.wav", 							// filter available files? 
-														true); 						// allow multiple?
+														false); 						// allow multiple?
 
 			if (fileOrFilesToImport) {
 				// Of course, panels are welcome to override that default insertion bin behavior... :)
@@ -169,19 +169,22 @@ $._PPP_={
 					var template = fileInfo.read();
 					fileInfo.close();
 					if (importThese){
-						for (var i = 0; i < fileOrFilesToImport.length; i++) {
-							importThese[i] = fileOrFilesToImport[i].fsName;
-							var fs = importThese[i].split('.');
-							fs[fs.length -1]="txt";
-							var importText = fs.join(".");
-							fs[fs.length -1]="xml";
-							exportText[i] = fs.join(".");
-							var ftext = File(importText);
-							ftext.open ("r");
-							importJimaku[i] = ftext.read();														
-							ftext.close();
-						}
-						app.project.importFiles(importThese, 
+						importThese = fileOrFilesToImport.fsName;
+						
+						var fs = importThese.split('.');
+						fs[fs.length -1]="txt";
+						var importText = fs.join(".");
+						fs[fs.length -1]="xml";
+						exportText = fs.join(".");
+						var ftext = File(importText);
+						ftext.open ("r");
+						importJimaku = ftext.read();														
+						ftext.close();
+						alert(fileOrFilesToImport.fsName);
+						alert(importThese);
+						alert(importJimaku);
+						alert(exportText);
+						app.project.importFiles([importThese], 
 												1,				// suppress warnings 
 												targetBin,
 												0);				// import as numbered stills
@@ -192,33 +195,33 @@ $._PPP_={
 					var now = seq.getPlayerPosition();
 					var aTrack = seq.audioTracks[soundTrack];
 					var vTrack = seq.videoTracks[videoTrack];
-					for (var i = 0; i < importThese.length; i++) {
-							var file_name = importThese[i].substring(importThese[i].lastIndexOf('\\')+1, importThese[i].length);
-							var targetClip=$._PPP_.getClip(app.project.rootItem,file_name);
-							aTrack.insertClip(targetClip, now);
-							
-							var AinClip=$._PPP_.getClipFromeSequence(file_name,aTrack);
-							var dtime= $._PPP_.toHms(AinClip.duration.seconds);
-							var myFile= File(exportText[i]);
-							myFile.encoding = "UTF-8";
-							myFile.open ("w");
-							var content=$._PPP_.replaceTemplate(template,importJimaku[i],"00:00:00.000",dtime,0 ,0,bColor,fColor,size);
-							myFile.write(content);
-							myFile.close();
-							app.project.importFiles(exportText, 
-												0,				// suppress warnings 
-												targetBin,
-												0);				// import as numbered stills
-							file_name = exportText[i].substring(exportText[i].lastIndexOf('\\')+1, exportText[i].length);
-							var targetClip=$._PPP_.getClip(app.project.rootItem,file_name);
-							vTrack.insertClip(targetClip, now);
-							var VinClip=$._PPP_.getClipFromeSequence(file_name,vTrack);
-							var motion = VinClip.components[1];
-							var motionPosition= motion.properties[0];
-							var motionSize= motion.properties[1];
-							motionPosition.setValue([x,y]);
-							motionSize.setValue(scale);
-					}
+					
+					var file_name = importThese.substring(importThese.lastIndexOf('\\')+1, importThese.length);
+					var targetClip=$._PPP_.getClip(app.project.rootItem,file_name);
+					aTrack.insertClip(targetClip, now);
+					
+					var AinClip=$._PPP_.getClipFromeSequence(file_name,aTrack);
+					var dtime= $._PPP_.toHms(AinClip.duration.seconds);
+					var myFile= File(exportText);
+					myFile.encoding = "UTF-8";
+					myFile.open ("w");
+					var content=$._PPP_.replaceTemplate(template,importJimaku,"00:00:00.000",dtime,0 ,0,bColor,fColor,size);
+					myFile.write(content);
+					myFile.close();
+					app.project.importFiles([exportText], 
+										0,				// suppress warnings 
+										targetBin,
+										0);				// import as numbered stills
+					file_name = exportText.substring(exportText.lastIndexOf('\\')+1, exportText.length);
+					var targetClip=$._PPP_.getClip(app.project.rootItem,file_name);
+					vTrack.insertClip(targetClip, now);
+					var VinClip=$._PPP_.getClipFromeSequence(file_name,vTrack);
+					var motion = VinClip.components[1];
+					var motionPosition= motion.properties[0];
+					var motionSize= motion.properties[1];
+					motionPosition.setValue([x,y]);
+					motionSize.setValue(scale);
+					
 				} else {
 					$._PPP_.updateEventPanel("Could not find or create target bin.");
 				}
