@@ -35,9 +35,9 @@ function onLoaded() {
 	//csInterface.evalScript('$._PPP_.getUserName()', myUserNameFunction);  
 	//csInterface.evalScript('$._PPP_.getSequenceProxySetting()', myGetProxyFunction);
 	csInterface.evalScript('$._PPP_.keepPanelLoaded()');
-	csInterface.evalScript('$._PPP_.disableImportWorkspaceWithProjects()');
+	//csInterface.evalScript('$._PPP_.disableImportWorkspaceWithProjects()');
 	// register project item selected callback
-	csInterface.evalScript('$._PPP_.registerProjectPanelChangedFxn()');
+	//csInterface.evalScript('$._PPP_.registerProjectPanelChangedFxn()');
 }
 
 function dragHandler(event){

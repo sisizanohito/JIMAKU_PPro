@@ -1,10 +1,10 @@
 ﻿
 var A = getClip(app.project.rootItem,"001_ONE.xml");
 A.setScaleToFrameSize();
-//alert (A.getXMPMetadata());
-  var myFile=File("C:\\Users\\isiis\\Desktop\\run.xml");
+alert (A.findItemsMatchingMediaPath());
+  //var myFile=File("C:\\Users\\isiis\\Desktop\\run.xml");
   myFile.open ("w");
-  var content=A.getXMPMetadata();
+  var content=A.getMediaPath();
   myFile.write(content);
   myFile.close();
 function getClip(root,name){
