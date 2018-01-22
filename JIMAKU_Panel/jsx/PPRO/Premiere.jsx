@@ -149,84 +149,89 @@ $._PPP_={
 			return path;
 	},
 
-	importWav : function(tmpPath,videoTrack,soundTrack,x,y,bColor,fColor,size,scale) {
-		if (app.project) {
-			var fileOrFilesToImport	= File.openDialog (	"音声を選んでください", 	// title
+	importResources : function(targetBin){
+
+		var fileOrFilesToImport	= File.openDialog (	"音声を選んでください", 	// title
 														"*.wav", 							// filter available files? 
 														false); 						// allow multiple?
-
 			if (fileOrFilesToImport) {
 				// Of course, panels are welcome to override that default insertion bin behavior... :)
-				var targetBin = $._PPP_.getPPPInsertionBin();
+				
 				if (targetBin) {
 					targetBin.select();
 					// We have an array of File objects; importFiles() takes an array of paths.
-					var importThese = [];
-					var importJimaku = [];
-					var exportText = [];
-					var fileInfo = File(tmpPath);
-					fileInfo.open ("r");
-					var template = fileInfo.read();
-					fileInfo.close();
-					if (importThese){
-						importThese = fileOrFilesToImport.fsName;
-						
-						var fs = importThese.split('.');
-						fs[fs.length -1]="txt";
-						var importText = fs.join(".");
-						fs[fs.length -1]="xml";
-						exportText = fs.join(".");
-						var ftext = File(importText);
-						ftext.open ("r");
-						importJimaku = ftext.read();														
-						ftext.close();
-						alert(fileOrFilesToImport.fsName);
-						alert(importThese);
-						alert(importJimaku);
-						alert(exportText);
-						app.project.importFiles([importThese], 
-												1,				// suppress warnings 
-												targetBin,
-												0);				// import as numbered stills
-
-
-					}
-					var seq = app.project.activeSequence;
-					var now = seq.getPlayerPosition();
-					var aTrack = seq.audioTracks[soundTrack];
-					var vTrack = seq.videoTracks[videoTrack];
-					
-					var file_name = importThese.substring(importThese.lastIndexOf('\\')+1, importThese.length);
-					var targetClip=$._PPP_.getClip(app.project.rootItem,file_name);
-					aTrack.insertClip(targetClip, now);
-					
-					var AinClip=$._PPP_.getClipFromeSequence(file_name,aTrack);
-					var dtime= $._PPP_.toHms(AinClip.duration.seconds);
-					var myFile= File(exportText);
-					myFile.encoding = "UTF-8";
-					myFile.open ("w");
-					var content=$._PPP_.replaceTemplate(template,importJimaku,"00:00:00.000",dtime,0 ,0,bColor,fColor,size);
-					myFile.write(content);
-					myFile.close();
-					app.project.importFiles([exportText], 
-										0,				// suppress warnings 
-										targetBin,
-										0);				// import as numbered stills
-					file_name = exportText.substring(exportText.lastIndexOf('\\')+1, exportText.length);
-					var targetClip=$._PPP_.getClip(app.project.rootItem,file_name);
-					vTrack.insertClip(targetClip, now);
-					var VinClip=$._PPP_.getClipFromeSequence(file_name,vTrack);
-					var motion = VinClip.components[1];
-					var motionPosition= motion.properties[0];
-					var motionSize= motion.properties[1];
-					motionPosition.setValue([x,y]);
-					motionSize.setValue(scale);
-					
-				} else {
+					var data = {
+					importThese : [],
+					importJimaku : [],
+					exportText :[],
+					};
+					data.importThese = fileOrFilesToImport.fsName;
+					var fs = data.importThese.split('.');
+					fs[fs.length -1]="txt";
+					var importText = fs.join(".");
+					fs[fs.length -1]="xml";
+					data.exportText = fs.join(".");
+					var ftext = File(importText);
+					ftext.open ("r");
+					data.importJimaku = ftext.read();														
+					ftext.close();
+					app.project.importFiles([data.importThese], 
+											1,				// suppress warnings 
+											targetBin,
+											0);				// import as numbered stills
+				
+					return data;
+				}else {
 					$._PPP_.updateEventPanel("Could not find or create target bin.");
+					return undefined;
 				}
-			} 
-		}
+			}
+			return undefined;
+	},
+
+	importWavCaption : function(tmpPath,videoTrack,soundTrack,x,y,bColor,fColor,size,scale) {
+		if (app.project) {
+			var targetBin = $._PPP_.getPPPInsertionBin();
+			var dataA = $._PPP_.importResources(targetBin);
+			var seq = app.project.activeSequence;
+			var now = seq.getPlayerPosition();
+			var aTrack = seq.audioTracks[soundTrack];
+			var vTrack = seq.videoTracks[videoTrack];
+
+				
+			var file_name = dataA.importThese.substring(dataA.importThese.lastIndexOf('\\')+1, dataA.importThese.length);
+			var targetClip=$._PPP_.getClip(app.project.rootItem,file_name);
+			aTrack.insertClip(targetClip, now);
+
+			var AinClip=$._PPP_.getClipFromeSequence(file_name,aTrack);
+			var dtime= $._PPP_.toHms(AinClip.duration.seconds);
+			
+			var fileInfo = File(tmpPath);
+			fileInfo.open ("r");
+			var template = fileInfo.read();
+			fileInfo.close();
+
+			var myFile= File(dataA.exportText);
+			myFile.encoding = "UTF-8";
+			myFile.open ("w");
+			var content=$._PPP_.replaceTemplate(template,dataA.importJimaku,"00:00:00.000",dtime,0 ,0,bColor,fColor,size);
+			myFile.write(content);
+			myFile.close();
+			app.project.importFiles([dataA.exportText], 
+								0,				// suppress warnings 
+								targetBin,
+								0);				// import as numbered stills
+
+			file_name = dataA.exportText.substring(dataA.exportText.lastIndexOf('\\')+1, dataA.exportText.length);
+			var targetClip=$._PPP_.getClip(app.project.rootItem,file_name);
+			vTrack.insertClip(targetClip, now);
+			var VinClip=$._PPP_.getClipFromeSequence(file_name,vTrack);
+			var motion = VinClip.components[1];
+			var motionPosition= motion.properties[0];
+			var motionSize= motion.properties[1];
+			motionPosition.setValue([x,y]);
+			motionSize.setValue(scale);
+		} 
 	},
 	
 	JIMAKUColorPicker : function() {

@@ -8,7 +8,6 @@ function onLoaded() {
 	var caps = csInterface.getHostCapabilities();
 	
 	loadJSX();
-	
 	//updateThemeWithAppSkinInfo(csInterface.hostEnvironment.appSkinInfo);
 
 	// Update the color of the panel when the theme color of the product changed.
@@ -208,11 +207,9 @@ function loadJSX() {
 	// get the appName of the currently used app. For Premiere Pro it's "PPRO"
 	var appName = csInterface.hostEnvironment.appName;
 	var extensionPath = csInterface.getSystemPath(SystemPath.EXTENSION);
-
 	// load general JSX script independent of appName
 	var extensionRootGeneral = extensionPath + '/jsx/';
 	csInterface.evalScript('$._ext.evalFiles("' + extensionRootGeneral + '")');
-
 	// load JSX scripts based on appName
 	var extensionRootApp = extensionPath + '/jsx/' + appName + '/';
 	csInterface.evalScript('$._ext.evalFiles("' + extensionRootApp + '")');
