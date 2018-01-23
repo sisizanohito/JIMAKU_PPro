@@ -59,6 +59,50 @@
 		barElement.value = result;
 	}
 
+	function SetVideo(){
+		var csInterface = new CSInterface();
+		csInterface.evalScript('$._PPP_.getVideoTrackNum()',SetVideoOption);
+	}
+
+	function SetAudio(){
+		var csInterface = new CSInterface();
+		csInterface.evalScript('$._PPP_.getAudioTtackNum()',SetAudioOption);
+	}
+
+	function SetVideoOption(result){
+		var element = document.getElementById('video');
+		SetOption(result,element);
+	}
+
+	function SetAudioOption(result){
+		var element = document.getElementById('audio');
+		SetOption(result,element);
+	}
+
+	function SetOption(result,element){
+		var index = element.value;
+		if (index > result){
+			index = result;
+		}
+		element.options.length = 0;
+		for(var i = 1; i<=result; i++){
+			var option = document.createElement("option");
+        	option.setAttribute("value", i);
+        	option.innerHTML = i; 
+			element.appendChild(option); 
+		}
+		element.value = 	index;
+	}
+
+	function removeChildren(x)
+	{
+		if (x.hasChildNodes()) {
+			while (x.childNodes.length > 0) {
+				x.removeChild(x.firstChild)
+			}
+		}
+	}
+
 	$( document ).ready(function() {
 		var elem = document.getElementsByClassName('range');
 		var rangeValue = function (elem, target) {
@@ -72,6 +116,8 @@
 	　　　target = elem[i].getElementsByTagName('span')[1];
 	　　　 bar.addEventListener('input', rangeValue(bar, target));
 	　 }
+		SetVideo();
+		SetAudio();
 	});
 	
 
@@ -95,7 +141,7 @@
 							<td>
 								<form>
 									ビデオ
-									<select>
+									<select id="video">
 										<option value="1">1</option>
 										<option value="2">2</option>
 										<option value="3" selected>3</option>
@@ -104,7 +150,7 @@
 								<br>
 								<form>
 									オーディオ
-									<select>
+									<select id="audio">
 										<option value="1">1</option>
 										<option value="2">2</option>
 										<option value="3" selected>3</option>
@@ -132,60 +178,7 @@
 						</tr>
 					</table>
 				</div>
-				<div class="Section">
-						<table class="OptonTable">
-						<tr>
-							<td rowspan="2" width="10%">ONE</td>
-							<td>トラック番号</td>
-							<td>座標</td>
-							<td>サイズ</td>
-							<td>文字色</td>
-							<td>背景色</td>
-							<td>不透明度</td>
-							<td>インポート</td>
-						</tr>
-						<tr>
-							<td>
-								<form>
-									ビデオ
-									<select>
-										<option value="1">1</option>
-										<option value="2">2</option>
-										<option value="3" selected>3</option>
-									</select>
-								</form>
-								<br>
-								<form>
-									オーディオ
-									<select>
-										<option value="1">1</option>
-										<option value="2">2</option>
-										<option value="3" selected>3</option>
-									</select>
-								</form>
-							</td>
-							<td>
-								X <input type="text" size="3" value="0.5" maxlength="10"><br>
-								Y <input type="text" size="3" value="0.5" maxlength="10">
-							</td>
-							<td>
-								<span>文字　　</span><input type="text" name="x" size="3" value="22" maxlength="10"><br>
-								<span>フレーム</span><input type="text" name="y" size="3" value="260" maxlength="10">
-							</td>
-							<td><input type="color" value="#000000" onClick="SetElement(this)"></td>
-							<td><input type="color" value="#ffffff" onClick="SetElement(this)"></td>
-							<td width="100">
-									<div class="range">
-											<span>背景</span>
-											<span>100%</span>
-											<input type="range" min="0" max="255" step="1" value="255" >
-									</div>
-							</td>
-							<td><button onClick="importWave(this)">Import wav</button></td>
-						</tr>
-					</table>
-			</div>
-		
+						
 	</body>
 	
 </html>

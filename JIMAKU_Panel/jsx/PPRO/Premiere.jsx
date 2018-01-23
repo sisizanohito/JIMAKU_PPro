@@ -63,6 +63,18 @@ $._PPP_={
 		$.writeln(msg);	 // Using '$' object will invoke ExtendScript Toolkit, if installed.
 	},
 
+	getAudioTtackNum : function() {
+		var Num = app.project.activeSequence.audioTracks.numTracks;
+		$.writeln("audioTrack:"+Num);
+		return Num;
+	},
+
+	getVideoTrackNum : function() {
+		var Num = app.project.activeSequence.videoTracks.numTracks;
+		$.writeln("videoTrack:"+Num);
+		return Num;
+	},
+
 	getProjectPath : function(){
 		var path = app.project.path;
 		path =path .slice (4);
