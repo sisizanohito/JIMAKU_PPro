@@ -193,44 +193,47 @@ $._PPP_={
 		if (app.project) {
 			var targetBin = $._PPP_.getPPPInsertionBin();
 			var dataA = $._PPP_.importResources(targetBin);
-			var seq = app.project.activeSequence;
-			var now = seq.getPlayerPosition();
-			var aTrack = seq.audioTracks[soundTrack];
-			var vTrack = seq.videoTracks[videoTrack];
+			if(targetBin && dataA){
+				var seq = app.project.activeSequence;
+				var now = seq.getPlayerPosition();
+				var aTrack = seq.audioTracks[soundTrack];
+				var vTrack = seq.videoTracks[videoTrack];
 
+				var file_name = dataA.importThese.substring(dataA.importThese.lastIndexOf('\\')+1, dataA.importThese.length);
+				var targetClip=$._PPP_.getClip(app.project.rootItem,file_name);
+				aTrack.insertClip(targetClip, now);
+
+				var AinClip=$._PPP_.getClipFromeSequence(file_name,aTrack);
+				var dtime= $._PPP_.toHms(AinClip.duration.seconds);
 				
-			var file_name = dataA.importThese.substring(dataA.importThese.lastIndexOf('\\')+1, dataA.importThese.length);
-			var targetClip=$._PPP_.getClip(app.project.rootItem,file_name);
-			aTrack.insertClip(targetClip, now);
+				var fileInfo = File(tmpPath);
+				fileInfo.open ("r");
+				var template = fileInfo.read();
+				fileInfo.close();
 
-			var AinClip=$._PPP_.getClipFromeSequence(file_name,aTrack);
-			var dtime= $._PPP_.toHms(AinClip.duration.seconds);
-			
-			var fileInfo = File(tmpPath);
-			fileInfo.open ("r");
-			var template = fileInfo.read();
-			fileInfo.close();
+				var myFile= File(dataA.exportText);
+				myFile.encoding = "UTF-8";
+				myFile.open ("w");
+				var content=$._PPP_.replaceTemplate(template,dataA.importJimaku,"00:00:00.000",dtime,0 ,0,bColor,fColor,size);
+				myFile.write(content);
+				myFile.close();
+				app.project.importFiles([dataA.exportText], 
+									0,				// suppress warnings 
+									targetBin,
+									0);				// import as numbered stills
 
-			var myFile= File(dataA.exportText);
-			myFile.encoding = "UTF-8";
-			myFile.open ("w");
-			var content=$._PPP_.replaceTemplate(template,dataA.importJimaku,"00:00:00.000",dtime,0 ,0,bColor,fColor,size);
-			myFile.write(content);
-			myFile.close();
-			app.project.importFiles([dataA.exportText], 
-								0,				// suppress warnings 
-								targetBin,
-								0);				// import as numbered stills
-
-			file_name = dataA.exportText.substring(dataA.exportText.lastIndexOf('\\')+1, dataA.exportText.length);
-			var targetClip=$._PPP_.getClip(app.project.rootItem,file_name);
-			vTrack.insertClip(targetClip, now);
-			var VinClip=$._PPP_.getClipFromeSequence(file_name,vTrack);
-			var motion = VinClip.components[1];
-			var motionPosition= motion.properties[0];
-			var motionSize= motion.properties[1];
-			motionPosition.setValue([x,y]);
-			motionSize.setValue(scale);
+				file_name = dataA.exportText.substring(dataA.exportText.lastIndexOf('\\')+1, dataA.exportText.length);
+				var targetClip=$._PPP_.getClip(app.project.rootItem,file_name);
+				vTrack.insertClip(targetClip, now);
+				var VinClip=$._PPP_.getClipFromeSequence(file_name,vTrack);
+				var motion = VinClip.components[1];
+				var motionPosition= motion.properties[0];
+				var motionSize= motion.properties[1];
+				motionPosition.setValue([x,y]);
+				motionSize.setValue(scale);
+			}else{
+				$._PPP_.updateEventPanel("import Cancel");
+			}
 		} 
 	},
 	
