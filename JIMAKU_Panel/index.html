@@ -1,155 +1,175 @@
 <!doctype html>
 
 <html>
-	<head>
-		<meta charset="utf-8">
-		<script src="./ext.js"></script>
-		<script src="./lib/CSInterface.js"></script>
-		<script src="./lib/jquery-1.9.1.js"></script>
-		<script src="./lib/Vulcan.js"></script>
-		<link href="css/style.css" rel="stylesheet" type="text/css">
+
+<head>
+	<meta charset="utf-8">
+	<script src="./ext.js"></script>
+	<script src="./lib/CSInterface.js"></script>
+	<script src="./lib/jquery-1.9.1.js"></script>
+	<script src="./lib/Vulcan.js"></script>
+	<link href="css/style.css" rel="stylesheet" type="text/css">
 
 	<style>
-		body{background: rgb(35, 35, 35);}
-		
+		body {
+			background: rgb(35, 35, 35);
+		}
 	</style>
 	<title>JIMAKU</title>
 	<script type="text/javascript">
-	function importWave(event){
-		var elem = $(event).parents("div");
-		var videoTrack = elem[0].getElementsByTagName('select')[0].value;
-		var soundTrack = elem[0].getElementsByTagName('select')[1].value;
-		var x = elem[0].getElementsByTagName('input')[0].value;
-		var y = elem[0].getElementsByTagName('input')[1].value;
-		var fontSize = elem[0].getElementsByTagName('input')[2].value;
-		var scale = elem[0].getElementsByTagName('input')[3].value;
-		var fontColor = elem[0].getElementsByTagName('input')[4].value;
-		var backColor = elem[0].getElementsByTagName('input')[5].value;
-		var fontAlpha = 255;
-		var backAlpha = elem[0].getElementsByTagName('input')[6].value;
-		fontColor = fontColor + ("0" + Number(fontAlpha).toString(16)).slice(-2);
-		backColor = backColor + ("0" + Number(backAlpha).toString(16)).slice(-2);
+		function importWave(event) {
+			var elem = $(event).parents("div");
+			var videoTrack = elem[0].getElementsByTagName('select')[0].value;
+			var soundTrack = elem[0].getElementsByTagName('select')[1].value;
+			var x = elem[0].getElementsByTagName('input')[0].value;
+			var y = elem[0].getElementsByTagName('input')[1].value;
+			var fontSize = elem[0].getElementsByTagName('input')[2].value;
+			var scale = elem[0].getElementsByTagName('input')[3].value;
+			var edgePx = elem[0].getElementsByTagName('input')[4].value;
+			var fontColor = elem[0].getElementsByTagName('input')[5].value;
+			var backColor = elem[0].getElementsByTagName('input')[6].value;
+			var edgeColor = elem[0].getElementsByTagName('input')[7].value;
+			var fontAlpha = 255;
+			var backAlpha = elem[0].getElementsByTagName('input')[8].value;
+			fontColor = fontColor + ("0" + Number(fontAlpha).toString(16)).slice(-2);
+			backColor = backColor + ("0" + Number(backAlpha).toString(16)).slice(-2);
 
-		var parameter = (Number(videoTrack)-1)+','+(Number(soundTrack)-1)+','+x+','+y+',"'+backColor+'","'+fontColor+'",'+fontSize+','+scale;
+			var parameter = (Number(videoTrack) - 1) + ',' + (Number(soundTrack) - 1) + ',' + x + ',' + y + ',"' + backColor +
+				'","' + fontColor + '",' + fontSize + ',' + scale;
 
-		var csInterface = new CSInterface();
-		var extPath 	= csInterface.getSystemPath(SystemPath.EXTENSION);
-		var OSVersion	= csInterface.getOSInformation();
+			var csInterface = new CSInterface();
+			var extPath = csInterface.getSystemPath(SystemPath.EXTENSION);
+			var OSVersion = csInterface.getOSInformation();
 
-		if (extPath !== null){
-			extPath = extPath + '/Template.xml';
-			if (OSVersion.indexOf("Windows") >=0){
-				var sep = '\\\\';
-				extPath = extPath.replace(/\//g, sep);
+			if (extPath !== null) {
+				extPath = extPath + '/Template.xml';
+				if (OSVersion.indexOf("Windows") >= 0) {
+					var sep = '\\\\';
+					extPath = extPath.replace(/\//g, sep);
+				}
+				csInterface.evalScript('$._PPP_.importWavCaption("' + extPath + '",' + parameter + ')');
 			}
-			csInterface.evalScript('$._PPP_.importWavCaption("'+extPath+'",'+parameter+')');
+
 		}
-			
-	}
-	
-	var barElement;
-	function SetElement(event){
-		var csInterface = new CSInterface();
-		barElement=$(event)[0];
-		csInterface.evalScript('$._PPP_.JIMAKUColorPicker()',SetValue);
-	}
 
-	function SetValue(result){
-		console.log(result)
-		barElement.value = result;
-	}
+		var barElement;
 
-	function SetVideo(){
-		var csInterface = new CSInterface();
-		csInterface.evalScript('$._PPP_.getVideoTrackNum()',SetVideoOption);
-	}
-
-	function SetAudio(){
-		var csInterface = new CSInterface();
-		csInterface.evalScript('$._PPP_.getAudioTtackNum()',SetAudioOption);
-	}
-
-	function SetVideoOption(result){
-		var element = document.getElementById('video');
-		SetOption(result,element);
-	}
-
-	function SetAudioOption(result){
-		var element = document.getElementById('audio');
-		SetOption(result,element);
-	}
-
-	function SetOption(result,element){
-		var index = element.value;
-		if (index > result){
-			index = result;
+		function SetElement(event) {
+			var csInterface = new CSInterface();
+			barElement = $(event)[0];
+			csInterface.evalScript('$._PPP_.JIMAKUColorPicker()', SetValue);
 		}
-		element.options.length = 0;
-		for(var i = 1; i<=result; i++){
-			var option = document.createElement("option");
-        	option.setAttribute("value", i);
-        	option.innerHTML = i; 
-			element.appendChild(option); 
-		}
-		element.value = 	index;
-	}
 
-	function removeChildren(x)
-	{
-		if (x.hasChildNodes()) {
-			while (x.childNodes.length > 0) {
-				x.removeChild(x.firstChild)
+		function SetValue(result) {
+			console.log(result)
+			barElement.value = result;
+		}
+
+		function SetVideo() {
+			var csInterface = new CSInterface();
+			csInterface.evalScript('$._PPP_.getVideoTrackNum()', SetVideoOption);
+		}
+
+		function SetAudio() {
+			var csInterface = new CSInterface();
+			csInterface.evalScript('$._PPP_.getAudioTtackNum()', SetAudioOption);
+		}
+
+		function SetVideoOption(result) {
+			var element = document.getElementById('video');
+			SetOption(result, element);
+		}
+
+		function SetAudioOption(result) {
+			var element = document.getElementById('audio');
+			SetOption(result, element);
+		}
+
+		function SetOption(result, element) {
+			var index = element.value;
+			if (index > result) {
+				index = result;
+			}
+			element.options.length = 0;
+			for (var i = 1; i <= result; i++) {
+				var option = document.createElement("option");
+				option.setAttribute("value", i);
+				option.innerHTML = i;
+				element.appendChild(option);
+			}
+			element.value = index;
+		}
+
+		function removeChildren(x) {
+			if (x.hasChildNodes()) {
+				while (x.childNodes.length > 0) {
+					x.removeChild(x.firstChild)
+				}
 			}
 		}
-	}
 
-	$( document ).ready(function() {
-		var elem = document.getElementsByClassName('range');
-		var rangeValue = function (elem, target) {
-			return function(evt){
-				var num = Number(elem.value);
-				target.innerHTML = Math.round(num/255 * 100) + "%";
-	　　　}
-	　 }
-	　 for(var i = 0, max = elem.length; i < max; i++){
-	　　　bar = elem[i].getElementsByTagName('input')[0];
-	　　　target = elem[i].getElementsByTagName('span')[1];
-	　　　 bar.addEventListener('input', rangeValue(bar, target));
-	　 }
-		SetVideo();
-		SetAudio();
-	});
-	
+		function Refresh() {
+			SetVideo();
+			SetAudio();
+		}
 
+		function Start() {
+			onLoaded();
+			Refresh();
+		}
+
+		$(document).ready(function () {
+			var elem = document.getElementsByClassName('range');
+			var rangeValue = function (elem, target) {
+				return function (evt) {
+					var num = Number(elem.value);
+					target.innerHTML = Math.round(num / 255 * 100) + "%";　　　
+				}　
+			}　
+			for (var i = 0, max = elem.length; i < max; i++) {　　　
+				bar = elem[i].getElementsByTagName('input')[0];　　　
+				target = elem[i].getElementsByTagName('span')[1];　　　
+				bar.addEventListener('input', rangeValue(bar, target));　
+			}
+		});
 	</script>
-	</head>
-	<body onLoad="onLoaded()">
-			<div><h2>JIMAKU</h2></div>
-			<div class="Section">
-					<table class="OptonTable">
+</head>
+
+<body onLoad="Start()">
+	<div>
+		<h2>JIMAKU</h2>
+		<input type="button" value="トラックを更新" onclick="Refresh()">
+	</div>
+	<div class="Section">
+		<table class="OptonTable">
+			<tr>
+				<td rowspan="2" width="10%">ゆかり</td>
+				<td>トラック番号</td>
+				<td>座標</td>
+				<td>サイズ</td>
+				<td>色</td>
+				<td>不透明度</td>
+				<td>インポート</td>
+			</tr>
+			<tr>
+				<td>
+					<table align="center">
 						<tr>
-							<td rowspan="2" width="10%">ゆかり</td>
-							<td>トラック番号</td>
-							<td>座標</td>
-							<td>サイズ</td>
-							<td>文字色</td>
-							<td>背景色</td>
-							<td>不透明度</td>
-							<td>インポート</td>
-						</tr>
-						<tr>
+							<td>ビデオ</td>
 							<td>
 								<form>
-									ビデオ
 									<select id="video">
 										<option value="1">1</option>
 										<option value="2">2</option>
 										<option value="3" selected>3</option>
 									</select>
 								</form>
-								<br>
+							</td>
+						</tr>
+						<tr>
+							<td>オーディオ</td>
+							<td>
 								<form>
-									オーディオ
 									<select id="audio">
 										<option value="1">1</option>
 										<option value="2">2</option>
@@ -157,28 +177,96 @@
 									</select>
 								</form>
 							</td>
-							<td>
-								X <input type="text" name="x" size="3" value="0.5" maxlength="10"><br>
-								Y <input type="text" name="y" size="3" value="0.5" maxlength="10">
-							</td>
-							<td>
-								<span>文字　　</span><input type="text" name="x" size="3" value="22" maxlength="10"><br>
-								<span>フレーム</span><input type="text" name="y" size="3" value="260" maxlength="10">
-							</td>
-							<td><input type="color" value="#000000" onClick="SetElement(this)"></td>
-							<td><input type="color" value="#ffffff" onClick="SetElement(this)"></td>
-							<td width="100">
-								<div class="range">
-										<span>背景</span>
-										<span>100%</span>
-										<input type="range" min="0" max="255" step="1" value="255" >
-								</div>
-							</td>
-							<td><button onClick="importWave(this)">Import wav</button></td>
+
 						</tr>
 					</table>
-				</div>
-						
-	</body>
-	
+				</td>
+				<td>
+					<table align="center">
+						<tr>
+							<td>X</td>
+							<td>
+								<input type="text" size="3" value="0.5" maxlength="10">
+							</td>
+						</tr>
+						<tr>
+							<td>Y</td>
+							<td>
+								<input type="text" size="3" value="0.5" maxlength="10">
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td>
+					<table align="center">
+						<tr>
+							<td>
+								<span>文字</span>
+							</td>
+							<td>
+								<input type="text" size="3" value="22" maxlength="10">
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span>フレーム</span>
+							</td>
+							<td>
+								<input type="text" size="3" value="260" maxlength="10">
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<span>エッジ</span>
+							</td>
+							<td>
+								<input type="text" size="3" value="0" maxlength="10">
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td>
+					<table align="center">
+						<tr>
+							<td>
+								<span>文字</span>
+							</td>
+							<td>
+								<input type="color" value="#000000" onClick="SetElement(this)">
+							</td>
+							<tr>
+								<td>
+									<span>背景</span>
+								</td>
+								<td>
+									<input type="color" value="#000000" onClick="SetElement(this)">
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<span>エッジ</span>
+								</td>
+								<td>
+									<input type="color" value="#000000" onClick="SetElement(this)">
+								</td>
+							</tr>
+						</tr>
+					</table>
+				</td>
+				<td width="100">
+					<div class="range">
+						<span>背景</span>
+						<span>100%</span>
+						<input type="range" min="0" max="255" step="1" value="255">
+					</div>
+				</td>
+				<td>
+					<button onClick="importWave(this)">Import wav</button>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+</body>
+
 </html>
