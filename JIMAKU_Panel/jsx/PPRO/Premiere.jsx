@@ -126,7 +126,7 @@ $._PPP_ = {
 		}
 		return 0;
 	},
-	replaceTemplate: function (template, text, begin, end, x, y, bColor, fColor, size) {
+	replaceTemplate: function (template, text, begin, end, x, y, bColor, fColor, eColor, size, edgePx) {
 		template = template.replace(/#text#/g, text);
 		template = template.replace(/#begin#/g, begin);
 		template = template.replace(/#end#/g, end);
@@ -134,7 +134,9 @@ $._PPP_ = {
 		template = template.replace(/#Y#/g, y);
 		template = template.replace(/#backgroundColor#/g, bColor);
 		template = template.replace(/#fontColor#/g, fColor);
+		template = template.replace(/#edgeColor#/g, eColor);
 		template = template.replace(/#size#/g, size);
+		template = template.replace(/#edgePx#/g, edgePx);
 		return template;
 	},
 
@@ -203,7 +205,7 @@ $._PPP_ = {
 		return undefined;
 	},
 
-	importWavCaption: function (tmpPath, videoTrack, soundTrack, x, y, bColor, fColor, size, scale) {
+	importWavCaption: function (tmpPath, videoTrack, soundTrack, x, y, bColor, fColor, eColor, size, scale, edgePx) {
 		if (app.project) {
 			var targetBin = $._PPP_.getPPPInsertionBin();
 			var dataA = $._PPP_.importResources(targetBin);
@@ -228,7 +230,7 @@ $._PPP_ = {
 				var myFile = File(dataA.exportText);
 				myFile.encoding = "UTF-8";
 				myFile.open("w");
-				var content = $._PPP_.replaceTemplate(template, dataA.importJimaku, "00:00:00.000", dtime, 0, 0, bColor, fColor, size);
+				var content = $._PPP_.replaceTemplate(template, dataA.importJimaku, "00:00:00.000", dtime, 0, 0, bColor, fColor, eColor, size, edgePx);
 				myFile.write(content);
 				myFile.close();
 				app.project.importFiles([dataA.exportText],

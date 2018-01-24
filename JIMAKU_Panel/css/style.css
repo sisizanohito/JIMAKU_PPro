@@ -1,5 +1,34 @@
+div {
+    /*
+    border: solid 8px red;
+    text-align: center;
+    line-height: 100px;
+    font-weight: bold;
+    */
+    box-sizing: border-box;
+    color: #ffffff;
+  }
 .OptonTable {
     text-align: center;
-    color: #ffffff;
     width: 100%;
+}
+
+.PresetTable {
+    border-collapse: collapse;
+    text-align: center;
+    width: 100%;
+}
+.PresetTable td{
+    border-bottom: solid 2px rgb(196, 190, 190);
+    border-left: 10px solid rgb(97, 93, 93);
+}
+#Presets,#Options {
+    float: left;
+}
+
+#Presets{
+    width: 10%;
+}
+#Options{
+    width: 90%
 }

@@ -33,9 +33,9 @@
 			var backAlpha = elem[0].getElementsByTagName('input')[8].value;
 			fontColor = fontColor + ("0" + Number(fontAlpha).toString(16)).slice(-2);
 			backColor = backColor + ("0" + Number(backAlpha).toString(16)).slice(-2);
-
+			edgeColor = edgeColor + ("0" + Number(255).toString(16)).slice(-2);
 			var parameter = (Number(videoTrack) - 1) + ',' + (Number(soundTrack) - 1) + ',' + x + ',' + y + ',"' + backColor +
-				'","' + fontColor + '",' + fontSize + ',' + scale;
+				'","' + fontColor + '","' + edgeColor + '",' + fontSize + ',' + scale + ',' + edgePx;
 
 			var csInterface = new CSInterface();
 			var extPath = csInterface.getSystemPath(SystemPath.EXTENSION);
@@ -136,14 +136,19 @@
 </head>
 
 <body onLoad="Start()">
-	<div>
-		<h2>JIMAKU</h2>
-		<input type="button" value="トラックを更新" onclick="Refresh()">
+	<div id="Presets">
+		<table class="PresetTable">
+			<tr>
+				<td>結月ゆかり</td>
+			</tr>
+			<tr>
+				<td>ONE</td>
+			</tr>
+		</table>
 	</div>
-	<div class="Section">
+	<div class="Section" id="Options">
 		<table class="OptonTable">
 			<tr>
-				<td rowspan="2" width="10%">ゆかり</td>
 				<td>トラック番号</td>
 				<td>座標</td>
 				<td>サイズ</td>
@@ -177,9 +182,10 @@
 									</select>
 								</form>
 							</td>
-
 						</tr>
 					</table>
+					<br>
+					<input type="button" value="トラックを更新" onclick="Refresh()">
 				</td>
 				<td>
 					<table align="center">
