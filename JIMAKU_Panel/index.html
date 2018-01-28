@@ -17,10 +17,28 @@
 	</style>
 	<title>JIMAKU</title>
 	<script type="text/javascript">
+		var JIMAKUparameter = function (name, videoTrack, audioTrack, x, y, fontSize, scale, edgePx, fontColor, backColor,
+			edgeColor, backAlpha) {
+			this.name = name;
+			this.videoTrack = videoTrack;
+			this.audioTrack = audioTrack;
+			this.x = x;
+			this.y = y;
+			this.fontSize = fontSize;
+			this.scale = scale;
+			this.edgePx = edgePx;
+			this.fontColor = fontColor;
+			this.backColor = backColor;
+			this.edgeColor = edgeColor;
+			this.backAlpha = backAlpha;
+		}
+		var Preset = 0; // Presetの指定
+		var JIMAKUData = []; // 空の配列
+
 		function importWave(event) {
 			var elem = $(event).parents("div");
 			var videoTrack = elem[0].getElementsByTagName('select')[0].value;
-			var soundTrack = elem[0].getElementsByTagName('select')[1].value;
+			var audioTrack = elem[0].getElementsByTagName('select')[1].value;
 			var x = elem[0].getElementsByTagName('input')[1].value;
 			var y = elem[0].getElementsByTagName('input')[2].value;
 			var fontSize = elem[0].getElementsByTagName('input')[3].value;
@@ -34,7 +52,7 @@
 			fontColor = fontColor + ("0" + Number(fontAlpha).toString(16)).slice(-2);
 			backColor = backColor + ("0" + Number(backAlpha).toString(16)).slice(-2);
 			edgeColor = edgeColor + ("0" + Number(255).toString(16)).slice(-2);
-			var parameter = (Number(videoTrack) - 1) + ',' + (Number(soundTrack) - 1) + ',' + x + ',' + y + ',"' + backColor +
+			var parameter = (Number(videoTrack) - 1) + ',' + (Number(audioTrack) - 1) + ',' + x + ',' + y + ',"' + backColor +
 				'","' + fontColor + '","' + edgeColor + '",' + fontSize + ',' + scale + ',' + edgePx;
 
 			var csInterface = new CSInterface();
@@ -113,7 +131,46 @@
 			SetAudio();
 		}
 
+		function SetOption(index) {
+			document.getElementById('presetName').innerHTML = JIMAKUData[index].name;
+			document.getElementById('video').value = JIMAKUData[index].videoTrack;
+			document.getElementById('audio').value = JIMAKUData[index].audioTrack;
+			document.getElementById('pos:x').value = JIMAKUData[index].x;
+			document.getElementById('pos:y').value = JIMAKUData[index].y;
+			document.getElementById('fontSize').value = JIMAKUData[index].fontSize;
+			document.getElementById('scale').value = JIMAKUData[index].scale;
+			document.getElementById('edgePx').value = JIMAKUData[index].edgePx;
+			document.getElementById('fontColor').value = JIMAKUData[index].fontColor;
+			document.getElementById('backColor').value = JIMAKUData[index].backColor;
+			document.getElementById('edgeColor').value = JIMAKUData[index].edgeColor;
+			document.getElementById('backAlpha').value = JIMAKUData[index].backAlpha;
+		}
+
+		function SaveOption(index) {
+			JIMAKUData[index].name = document.getElementById('presetName').innerHTML;
+			JIMAKUData[index].videoTrack = document.getElementById('video').value;
+			JIMAKUData[index].audioTrack = document.getElementById('audio').value;
+			JIMAKUData[index].x = document.getElementById('pos:x').value;
+			JIMAKUData[index].y = document.getElementById('pos:y').value;
+			JIMAKUData[index].fontSize = document.getElementById('fontSize').value;
+			JIMAKUData[index].scale = document.getElementById('scale').value;
+			JIMAKUData[index].edgePx = document.getElementById('edgePx').value;
+			JIMAKUData[index].fontColor = document.getElementById('fontColor').value;
+			JIMAKUData[index].backColor = document.getElementById('backColor').value;
+			JIMAKUData[index].edgeColor = document.getElementById('edgeColor').value;
+			JIMAKUData[index].backAlpha = document.getElementById('backAlpha').value;
+		}
+
+		function Save() {
+			SaveOption(Preset);
+			var presetTable = document.getElementById('PresetTable');
+			presetTable.rows[Preset].cells[0].innerText = JIMAKUData[Preset].name;
+		}
+
 		function Start() {
+			JIMAKUData.push(new JIMAKUparameter("結月ゆかり", 3, 3, 0.5, 0.5, 22, 260, 0, "#000000", "#000000", "#000000", 255));
+			console.log(JIMAKUData);
+			SetOption(Preset);
 			onLoaded();
 			Refresh();
 		}
@@ -137,17 +194,15 @@
 
 <body onLoad="Start()">
 	<div id="Presets">
-		<table class="PresetTable">
+		<table id="PresetTable">
 			<tr>
-				<td>結月ゆかり</td>
-			</tr>
-			<tr>
-				<td>ONE</td>
+				<td>---</td>
 			</tr>
 		</table>
 	</div>
 	<div class="Section" id="Options">
 		<table class="OptonTable">
+			<div contenteditable="true" id="presetName">aaa</div>
 			<tr>
 				<td>トラック番号</td>
 				<td>座標</td>
@@ -192,13 +247,13 @@
 						<tr>
 							<td>X</td>
 							<td>
-								<input type="text" size="3" value="0.5" maxlength="10">
+								<input type="text" size="3" value="0.5" maxlength="10" id="pos:x">
 							</td>
 						</tr>
 						<tr>
 							<td>Y</td>
 							<td>
-								<input type="text" size="3" value="0.5" maxlength="10">
+								<input type="text" size="3" value="0.5" maxlength="10" id="pos:y">
 							</td>
 						</tr>
 					</table>
@@ -210,7 +265,7 @@
 								<span>文字</span>
 							</td>
 							<td>
-								<input type="text" size="3" value="22" maxlength="10">
+								<input type="text" size="3" value="22" maxlength="10" id="fontSize">
 							</td>
 						</tr>
 						<tr>
@@ -218,7 +273,7 @@
 								<span>フレーム</span>
 							</td>
 							<td>
-								<input type="text" size="3" value="260" maxlength="10">
+								<input type="text" size="3" value="260" maxlength="10" id="scale">
 							</td>
 						</tr>
 						<tr>
@@ -226,7 +281,7 @@
 								<span>エッジ</span>
 							</td>
 							<td>
-								<input type="text" size="3" value="0" maxlength="10">
+								<input type="text" size="3" value="0" maxlength="10" id="edgePx">
 							</td>
 						</tr>
 					</table>
@@ -238,14 +293,14 @@
 								<span>文字</span>
 							</td>
 							<td>
-								<input type="color" value="#000000" onClick="SetElement(this)">
+								<input type="color" value="#000000" onClick="SetElement(this)" id="fontColor">
 							</td>
 							<tr>
 								<td>
 									<span>背景</span>
 								</td>
 								<td>
-									<input type="color" value="#000000" onClick="SetElement(this)">
+									<input type="color" value="#000000" onClick="SetElement(this)" id="backColor">
 								</td>
 							</tr>
 							<tr>
@@ -253,7 +308,7 @@
 									<span>エッジ</span>
 								</td>
 								<td>
-									<input type="color" value="#000000" onClick="SetElement(this)">
+									<input type="color" value="#000000" onClick="SetElement(this)" id="edgeColor">
 								</td>
 							</tr>
 						</tr>
@@ -263,7 +318,7 @@
 					<div class="range">
 						<span>背景</span>
 						<span>100%</span>
-						<input type="range" min="0" max="255" step="1" value="255">
+						<input type="range" min="0" max="255" step="1" value="255" id="backAlpha">
 					</div>
 				</td>
 				<td>
@@ -271,6 +326,11 @@
 				</td>
 			</tr>
 		</table>
+		<br>
+		<div align="center">
+			<button onClick="Save()">Save</button>
+		</div>
+
 	</div>
 
 </body>
