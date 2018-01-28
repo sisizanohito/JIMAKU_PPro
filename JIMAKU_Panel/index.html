@@ -75,7 +75,7 @@
 		function SetElement(event) {
 			var csInterface = new CSInterface();
 			barElement = $(event)[0];
-			csInterface.evalScript('$._PPP_.JIMAKUColorPicker()', SetValue);
+			csInterface.evalScript('$._PPP_.JIMAKUColorPicker("'+barElement.value+'")', SetValue);
 		}
 
 		function SetValue(result) {

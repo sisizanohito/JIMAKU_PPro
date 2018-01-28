@@ -253,19 +253,20 @@ $._PPP_ = {
 		}
 	},
 
-	JIMAKUColorPicker: function () {
+	JIMAKUColorPicker: function (value) {
 		var hexToRGB = function (hex) {
 			var r = hex >> 16;
 			var g = hex >> 8 & 0xFF;
 			var b = hex & 0xFF;
 			return [r, g, b];
 		};
-
-		var color_decimal = $.colorPicker();
+		var color_decimal = $.colorPicker(parseInt(value.slice(1),16));
+		if(color_decimal === -1){ //Cancel
+			color_decimal = parseInt(value.slice(1),16);
+		}
 		var color_hexadecimal = color_decimal.toString(16);
 		var color_rgb = hexToRGB(parseInt(color_hexadecimal, 16));
 		var color_fixHex = "#" + ("0" + Number(color_rgb[0]).toString(16)).slice(-2) + ("0" + Number(color_rgb[1]).toString(16)).slice(-2) + ("0" + Number(color_rgb[2]).toString(16)).slice(-2);
 		return color_fixHex;
-		//var color_that_ae_add_solid_understands = [color_rgb[0] / 255, color_rgb[1] / 255, color_rgb[2] / 255];
 	},
 };
