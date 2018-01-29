@@ -193,8 +193,14 @@
 				JIMAKUData.push(new JIMAKUparameter("---", 3, 3, 0.5, 0.5, 22, 260, 0, "#000000", "#000000", "#000000", 255));
 				SaveJSON();
 			}
-			var presetTable = document.getElementById('PresetTable');
-			presetTable.rows[Preset].cells[0].innerText = JIMAKUData[Preset].name;
+			var table = document.getElementById('PresetTable');
+			for(var i = 0;i<JIMAKUData.length;i++){//Preset名を設定
+				var rows = table.insertRow(table.rows.length-1);
+				var cell = rows.insertCell(-1);
+				cell.innerText = JIMAKUData[i].name;
+			}
+			Preset=0;
+			SetOption(Preset);
 		}
 
 		function Save() {
@@ -202,16 +208,23 @@
 			var presetTable = document.getElementById('PresetTable');
 			presetTable.rows[Preset].cells[0].innerText = JIMAKUData[Preset].name;
 			SaveJSON();
-
-			
 		}
 
 		function Start() {
 			LoadJSON();
-			console.log(JIMAKUData);
-			SetOption(Preset);
+
 			onLoaded();
 			Refresh();
+		}
+
+		function Addrows(){
+				var table = document.getElementById('PresetTable');
+				var rows = table.insertRow(table.rows.length-1);
+				var cell = rows.insertCell(-1);
+				cell.innerText = "---";
+				Preset++;
+				JIMAKUData.push(new JIMAKUparameter("---", 3, 3, 0.5, 0.5, 22, 260, 0, "#000000", "#000000", "#000000", 255));
+				SetOption(Preset);
 		}
 
 		$(document).ready(function () {
@@ -227,6 +240,10 @@
 				target = elem[i].getElementsByTagName('span')[1];　　　
 				bar.addEventListener('input', rangeValue(bar, target));　
 			}
+
+			$('#AddPreset').click(function() {
+				Addrows();
+			});
 		});
 	</script>
 </head>
@@ -235,7 +252,7 @@
 	<div id="Presets">
 		<table id="PresetTable">
 			<tr>
-				<td>---</td>
+				<td><button id="AddPreset">+</button></td>
 			</tr>
 		</table>
 	</div>
