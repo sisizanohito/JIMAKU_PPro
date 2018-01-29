@@ -53,6 +53,7 @@ $._PPP_ = {
 
 
 	updateEventPanel: function (message) {
+		$.writeln(message);
 		app.setSDKEventMessage(message, 'info');
 		//app.setSDKEventMessage('Here is some information.', 'info');
 		//app.setSDKEventMessage('Here is a warning.', 'warning');
