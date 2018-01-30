@@ -146,6 +146,9 @@
 			document.getElementById('backColor').value = JIMAKUData[index].backColor;
 			document.getElementById('edgeColor').value = JIMAKUData[index].edgeColor;
 			document.getElementById('backAlpha').value = JIMAKUData[index].backAlpha;
+			//非透過率の反映
+			var num = Number(JIMAKUData[index].backAlpha);
+			$("#backAlphaText")[0].innerHTML = Math.round(num / 255 * 100) + "%";　
 		}
 
 		function SaveOption(index) {
@@ -163,43 +166,46 @@
 			JIMAKUData[index].backAlpha = document.getElementById('backAlpha').value;
 		}
 
-		function SaveJSON(){
+		function SaveJSON() {
 			// CSInterfaceを使ってエクステンションのパスを取得
 			var cs = new CSInterface();
-			var path = cs.getSystemPath(SystemPath.EXTENSION)+JSONPath;
+			var path = cs.getSystemPath(SystemPath.EXTENSION) + JSONPath;
 
-			var JSONData=JSON.stringify(JIMAKUData, null, '    ');
+			var JSONData = JSON.stringify(JIMAKUData, null, '    ');
 			var result = window.cep.fs.writeFile(path, JSONData);
 			if (0 == result.err) {
 				//alert("出力成功");
-			}
-			else {
+			} else {
 				alert("保存失敗");
 			}
 		}
 
-		function LoadJSON(){
+		function LoadJSON() {
 			// CSInterfaceを使ってエクステンションのパスを取得
 			var cs = new CSInterface();
-			var path = cs.getSystemPath(SystemPath.EXTENSION)+JSONPath;
+			var path = cs.getSystemPath(SystemPath.EXTENSION) + JSONPath;
 
 			var resultRead = window.cep.fs.readFile(path);
-			if (0 == resultRead.err) {//成功
-				JIMAKUData =JSON.parse(resultRead.data);
-			}
-			else {//失敗
-			var callScript = '$._PPP_.updateEventPanel("'+"JIMAKUの初回起動"+'")';
+			if (0 == resultRead.err) { //成功
+				JIMAKUData = JSON.parse(resultRead.data);
+			} else { //失敗
+				var callScript = '$._PPP_.updateEventPanel("' + "JIMAKUの初回起動" + '")';
 				cs.evalScript(callScript);
 				JIMAKUData.push(new JIMAKUparameter("---", 3, 3, 0.5, 0.5, 22, 260, 0, "#000000", "#000000", "#000000", 255));
 				SaveJSON();
 			}
-			var table = document.getElementById('PresetTable');
-			for(var i = 0;i<JIMAKUData.length;i++){//Preset名を設定
-				var rows = table.insertRow(table.rows.length-1);
-				var cell = rows.insertCell(-1);
-				cell.innerText = JIMAKUData[i].name;
+
+			var $row = $("#PresetTable tr:not(.inputButton):last");
+			$row[0].cells[0].innerText = JIMAKUData[0].name; //1つ目に代入
+
+			for (var i = 1; i < JIMAKUData.length; i++) { //2つ目以上のPreset名を設定
+				var $row = $("#PresetTable tr:not(.inputButton):last");
+				var $newRow = $row.clone(true);
+				$newRow.insertAfter($row);
+				$newRow[0].cells[0].innerText = JIMAKUData[i].name;
+
 			}
-			Preset=0;
+			Preset = 0;
 			SetOption(Preset);
 		}
 
@@ -217,14 +223,31 @@
 			Refresh();
 		}
 
-		function Addrows(){
-				var table = document.getElementById('PresetTable');
-				var rows = table.insertRow(table.rows.length-1);
-				var cell = rows.insertCell(-1);
-				cell.innerText = "---";
-				Preset++;
-				JIMAKUData.push(new JIMAKUparameter("---", 3, 3, 0.5, 0.5, 22, 260, 0, "#000000", "#000000", "#000000", 255));
+		function AddPreset() {
+			var $row = $("#PresetTable tr:not(.inputButton):last");
+			var $newRow = $row.clone(true);
+			$newRow[0].cells[0].innerText = "---";
+			$newRow.insertAfter($row);
+			Preset = $("#PresetTable tr:not(.inputButton)").length - 1; //プリセットの合計-1
+			JIMAKUData.push(new JIMAKUparameter("---", 3, 3, 0.5, 0.5, 22, 260, 0, "#000000", "#000000", "#000000", 255));
+			SetOption(Preset);
+		}
+
+		function DeletePreset() {
+			var res = confirm("現在の["+JIMAKUData[Preset].name+"]を削除しますか?");
+			if (res == true) {
+				// OKなら削除
+				var $rows = $("#PresetTable tr:not(.inputButton)");
+				$rows.eq( Preset ).remove();//プリセット名を行ごと削除
+				JIMAKUData.splice(Preset,1);
+				var max =$rows.length - 2;//削除で-1 lengthで-1
+				if(max < Preset) Preset = max;
 				SetOption(Preset);
+				Save();
+			} else {
+				// キャンセル
+	
+			}
 		}
 
 		$(document).ready(function () {
@@ -241,8 +264,11 @@
 				bar.addEventListener('input', rangeValue(bar, target));　
 			}
 
-			$('#AddPreset').click(function() {
-				Addrows();
+			$("#PresetTable tr:not(.inputButton)").on('click', function () { //プリセットの切り替え
+				Save(); //移動するため現状を保存
+				var $tag_tr = $(this)[0];
+				Preset = $tag_tr.rowIndex;
+				SetOption(Preset);
 			});
 		});
 	</script>
@@ -252,13 +278,21 @@
 	<div id="Presets">
 		<table id="PresetTable">
 			<tr>
-				<td><button id="AddPreset">+</button></td>
+				<td>---</td>
+			</tr>
+			<tr class="inputButton">
+				<td>
+					<button onClick="AddPreset()">+</button>
+				</td>
 			</tr>
 		</table>
 	</div>
 	<div class="Section" id="Options">
 		<table class="OptonTable">
-			<div contenteditable="true" id="presetName">aaa</div>
+			<div contenteditable="true" id="presetName">---</div>
+			<div id="DeletePreset">
+				<button onClick="DeletePreset()">削除</button>
+			</div>
 			<tr>
 				<td>トラック番号</td>
 				<td>座標</td>
@@ -373,7 +407,7 @@
 				<td width="100">
 					<div class="range">
 						<span>背景</span>
-						<span>100%</span>
+						<span id="backAlphaText">100%</span>
 						<input type="range" min="0" max="255" step="1" value="255" id="backAlpha">
 					</div>
 				</td>

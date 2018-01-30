@@ -18,6 +18,13 @@ div {
     font-weight: bold;
     font-size: 200%;
     text-align: center;
+    width: 90%;
+    float: left;
+}
+#DeletePreset{
+    text-align: center;
+    width: 10%;
+    float: left;
 }
 
 #PresetTable {
@@ -25,6 +32,7 @@ div {
     text-align: center;
     width: 100%;
 }
+
 #PresetTable td{
     border-bottom: solid 2px rgb(196, 190, 190);
     border-left: 10px solid rgb(97, 93, 93);
