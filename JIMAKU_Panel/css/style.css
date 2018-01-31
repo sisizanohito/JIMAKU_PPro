@@ -1,3 +1,7 @@
+body {
+    display: block;
+    margin: 0px;
+}
 div {
     /*
     border: solid 8px red;
@@ -8,6 +12,15 @@ div {
     box-sizing: border-box;
     color: #ffffff;
   }
+
+.tabContent {
+	transition: all .3s;
+	opacity: 0;
+}
+.tabContent.show {
+	opacity: 1;
+}
+
 .OptonTable {
     text-align: center;
     width: 100%;
@@ -28,22 +41,63 @@ div {
 }
 
 #PresetTable {
+    color: #000000;
+    background-color: rgb(240, 240, 240);
     border-collapse: collapse;
     text-align: center;
     width: 100%;
+    
 }
 
 #PresetTable td{
     border-bottom: solid 2px rgb(196, 190, 190);
     border-left: 10px solid rgb(97, 93, 93);
 }
-#Presets,#Options {
+.Presets,.Option {
     float: left;
 }
 
-#Presets{
+.Presets{
+    padding: 0 0px;
+    margin: 0%;
     width: 10%;
+    height: 100vh;
+	overflow:hidden;
 }
-#Options{
-    width: 90%
+.Presets .mCSB_inside > .mCSB_container{
+    margin: 0%
+}
+.Option{
+    width: 90%;
+	
+}
+
+
+.tabs {
+    margin: 0%;
+	padding: 0 0 0 0%;
+}
+.tabs li {
+	display: inline-block;
+	list-style: none;
+    padding: 0;
+    border-left: solid 2px rgb(196, 190, 190);
+}
+.tabs li + li a {
+	margin-left: -6px;
+}
+.tabs a {
+	background-color: #ccc;
+	color: rgb(53, 52, 52);
+	display: block;
+	font-size: 14px;
+	padding: 7px 30px;
+	position: relative;
+	text-decoration: none;
+	transition: all .3s;
+}
+.tabs .current {
+	background-color: #eee;
+	font-weight: bold;
+	z-index: 1;
 }
