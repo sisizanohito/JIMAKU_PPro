@@ -85,8 +85,7 @@ $._PPP_ = {
 		return dir;
 	},
 
-	getPPPInsertionBin: function () {
-		var nameToFind = "JIMAKU";
+	getPPPInsertionBin: function (nameToFind) {
 
 		var targetBin = $._PPP_.searchForBinWithName(nameToFind);
 
@@ -208,7 +207,7 @@ $._PPP_ = {
 
 	importWavCaption: function (tmpPath, videoTrack, soundTrack, x, y, bColor, fColor, eColor, size, scale, edgePx) {
 		if (app.project) {
-			var targetBin = $._PPP_.getPPPInsertionBin();
+			var targetBin = $._PPP_.getPPPInsertionBin("JIMAKU");
 			var dataA = $._PPP_.importResources(targetBin);
 			if (targetBin && dataA) {
 				var seq = app.project.activeSequence;

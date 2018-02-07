@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ExtensionManifest Version="6.0" ExtensionBundleId="name.sisiza.JIMAKU" ExtensionBundleVersion="11.1"
-ExtensionBundleName="JIMAKU" 
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ExtensionManifest Version="7.0" ExtensionBundleId="name.sisiza.JIMAKU" ExtensionBundleVersion="11.1" ExtensionBundleName="JIMAKU" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<ExtensionList>
 		<Extension Id="name.sisiza.JIMAKU" Version="10.3.0" />
 	</ExtensionList>
 	<ExecutionEnvironment>
 		<HostList>
-			<Host Name="PPRO" Version="9.0" />
+			<Host Name="PPRO" Version="12" />
 		</HostList>
 		<LocaleList>
 			<Locale Code="All" />
@@ -16,7 +14,6 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			<RequiredRuntime Name="CSXS" Version="6.0" />
 		</RequiredRuntimeList>
 	</ExecutionEnvironment>
-
 	<DispatchInfoList>
 		<Extension Id="name.sisiza.JIMAKU">
 			<DispatchInfo >
