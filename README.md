@@ -6,14 +6,14 @@
 
 # License
 
-Copyright (c) Manos Malihutsakis, http://manos.malihu.gr
-Released under the MIT license
-http://opensource.org/licenses/mit-license.php
+Copyright (c) Manos Malihutsakis, http://manos.malihu.gr<br>
+Released under the MIT license<br>
+http://opensource.org/licenses/mit-license.php<br>
 
-Copyright (c) 2016 nekoneko-wanwan https://codepen.io/nekoneko-wanwan/pen/VverGR
-Released under the MIT license
-http://opensource.org/licenses/mit-license.php
+Copyright (c) 2016 nekoneko-wanwan https://codepen.io/nekoneko-wanwan/pen/VverGR<br>
+Released under the MIT license<br>
+http://opensource.org/licenses/mit-license.php<br>
 
-Copyright 2005, 2012 jQuery Foundation, Inc. and other contributors
-Released under the MIT license
-http://jquery.org/license
+Copyright 2005, 2012 jQuery Foundation, Inc. and other contributors<br>
+Released under the MIT license<br>
+http://jquery.org/license<br>
