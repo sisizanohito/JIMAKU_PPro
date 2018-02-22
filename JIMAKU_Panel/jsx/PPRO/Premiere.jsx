@@ -53,7 +53,7 @@ $._PPP_ = {
 
 
 	updateEventPanel: function (message) {
-		$.writeln(message);
+		//$.writeln(message);
 		app.setSDKEventMessage(message, 'info');
 		//app.setSDKEventMessage('Here is some information.', 'info');
 		//app.setSDKEventMessage('Here is a warning.', 'warning');
@@ -66,13 +66,11 @@ $._PPP_ = {
 
 	getAudioTtackNum: function () {
 		var Num = app.project.activeSequence.audioTracks.numTracks;
-		$.writeln("audioTrack:" + Num);
 		return Num;
 	},
 
 	getVideoTrackNum: function () {
 		var Num = app.project.activeSequence.videoTracks.numTracks;
-		$.writeln("videoTrack:" + Num);
 		return Num;
 	},
 
