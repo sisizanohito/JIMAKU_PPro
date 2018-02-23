@@ -4,7 +4,7 @@
 そして進捗はまだ無い
 強い人手伝って（懇願）
 
-# License
+# Credit
 
 Copyright (c) Manos Malihutsakis, http://manos.malihu.gr<br>
 Released under the MIT license<br>
