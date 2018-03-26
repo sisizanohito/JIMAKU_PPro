@@ -5,6 +5,7 @@
 <head>
 	<meta charset="utf-8">
 	<link href="css/style.css" rel="stylesheet" type="text/css">
+	<link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
 	<link href="css/jquery.mCustomScrollbar.css" rel="stylesheet" type="text/css" />
 	<script src="./ext.js"></script>
 	<script src="./lib/CSInterface.js"></script>
@@ -12,6 +13,7 @@
 	<script src="./lib/jquery-1.9.1.js"></script>
 	<script src="./lib/jquery.mCustomScrollbar.concat.min.js"></script>
 	<script src="./lib/jquery.mousewheel.js"></script>
+	<script src="./lib/bootstrap.min.js"></script>
 	<style>
 		body {
 			background: rgb(35, 35, 35);
@@ -362,7 +364,7 @@
 			<table class="OptonTable">
 				<div contenteditable="true" id="presetName">---</div>
 				<div id="DeletePreset">
-					<button onClick="DeletePreset()">削除</button>
+					<button onClick="DeletePreset()" class="btn btn-danger">Delete</button>
 				</div>
 				<tr>
 					<td>トラック番号</td>
@@ -370,7 +372,7 @@
 					<td>サイズ</td>
 					<td>色</td>
 					<td>不透明度</td>
-					<td>インポート</td>
+					<td></td>
 				</tr>
 				<tr>
 					<td>
@@ -401,7 +403,7 @@
 							</tr>
 						</table>
 						<br>
-						<input type="button" value="トラックを更新" onclick="Refresh()">
+						<input type="button" value="Refresh" onclick="Refresh()" class="btn default">
 					</td>
 					<td>
 						<table align="center">
@@ -483,19 +485,18 @@
 						</div>
 					</td>
 					<td>
-						<button onClick="importWave(this)">Import wav</button>
+						<button onClick="importWave(this)" class="btn default">Import wav</button>
 					</td>
 				</tr>
 			</table>
 			<br>
 			<div align="center">
-				<button onClick="Save()">Save</button>
+				<button onClick="Save()" class="btn default">Save</button>
 			</div>
 		</div>
 
 		<div id="tab2" class="tabContent">
-			<a href="examples/auto_hide_scrollbar_demo.html">リンク</a>
-			<span>タブ2</span>
+			<button type="button" class="btn default">Model Load</button>
 		</div>
 
 	</div>
