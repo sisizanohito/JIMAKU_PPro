@@ -13,13 +13,6 @@ div {
     color: #ffffff;
   }
 
-.tabContent {
-	transition: all .3s;
-	opacity: 0;
-}
-.tabContent.show {
-	opacity: 1;
-}
 
 .OptonTable {
     text-align: center;
@@ -72,32 +65,18 @@ div {
 	
 }
 
-
-.tabs {
-    margin: 0%;
-	padding: 0 0 0 0%;
+.tab-content{
+    margin: 1% 0% 0%;
 }
-.tabs li {
-	display: inline-block;
-	list-style: none;
-    padding: 0;
-    border-left: solid 2px rgb(196, 190, 190);
-}
-.tabs li + li a {
-	margin-left: -6px;
-}
-.tabs a {
+.nav-link {
 	background-color: #ccc;
-	color: rgb(53, 52, 52);
-	display: block;
-	font-size: 14px;
-	padding: 7px 30px;
-	position: relative;
-	text-decoration: none;
-	transition: all .3s;
+    color: rgb(53, 52, 52);
+    font-size: 14px;
+
 }
-.tabs .current {
-	background-color: #eee;
+.nav-link.active {
+    background-color: #eee;
 	font-weight: bold;
-	z-index: 1;
+	
 }
+

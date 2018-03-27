@@ -10,7 +10,7 @@
 	<script src="./ext.js"></script>
 	<script src="./lib/CSInterface.js"></script>
 	<script src="./lib/Vulcan.js"></script>
-	<script src="./lib/jquery-1.9.1.js"></script>
+	<script src="./lib/jquery-3.3.1.min.js"></script>
 	<script src="./lib/jquery.mCustomScrollbar.concat.min.js"></script>
 	<script src="./lib/jquery.mousewheel.js"></script>
 	<script src="./lib/bootstrap.min.js"></script>
@@ -274,59 +274,7 @@
 				SetOption(Preset);
 			});
 
-			$(function () {
 
-				var tabSet = function () {
-					var $tabs = $('.tabs');
-					var $content = $('.tabContent');
-					var TAB_CURRENT = 'current';
-					var CONTENT_CURRENT = 'show';
-					var id_arr = $content.map(function () {
-						return '#' + $(this).attr('id');
-					}).get();
-
-					var initialize = function () {
-						$tabs.find('li:first > a').addClass(TAB_CURRENT);
-						$($content[0]).addClass(CONTENT_CURRENT);
-					};
-
-
-					/**
-					 * タブのクリックイベント
-					 * 1. クリックされたタブのhref, 該当するcontentを取得
-					 * 2. 既にクリック済みの状態であればスキップ
-					 * 3. 一旦タブ・contentの専用classを全削除
-					 * 4. クリックしたタブのスタイルを変更、該当するcontentを表示（それぞれ専用のclassを付与）
-					 */
-					var addEvent = function () {
-						$tabs.find('a').on('click', function (e) {
-							var href = $(this).attr('href'); // 1
-							var $targetContent = $(href); // 1
-
-							// 2
-							if ($(this).hasClass(TAB_CURRENT)) {
-								return false;
-							}
-
-							// 3
-							$tabs.find('a').removeClass(TAB_CURRENT);
-							$content.removeClass(CONTENT_CURRENT);
-
-							// 4
-							$(this).addClass(TAB_CURRENT);
-							$targetContent.addClass(CONTENT_CURRENT);
-
-							return false;
-						});
-					};
-
-
-					return [initialize(), addEvent()];
-				};
-
-				tabSet();
-
-			});
 
 			$(".Presets").mCustomScrollbar({ //プリセットのスクロールバー
 				autoHideScrollbar: true,
@@ -352,118 +300,92 @@
 		</table>
 	</div>
 	<div class="Option">
-		<ul class="tabs">
-			<li>
-				<a href="#tab1">字幕</a>
+		<ul class="nav nav-tabs nav-justified">
+			<li class="nav-item">
+				<a href="#tab1" class="nav-link active" data-toggle="tab">字幕</a>
 			</li>
-			<li>
-				<a href="#tab2">立ち絵</a>
+			<li class="nav-item">
+				<a href="#tab2" class="nav-link" data-toggle="tab">立ち絵</a>
 			</li>
 		</ul>
-		<div id="tab1" class="tabContent">
-			<table class="OptonTable">
-				<div contenteditable="true" id="presetName">---</div>
-				<div id="DeletePreset">
-					<button onClick="DeletePreset()" class="btn btn-danger">Delete</button>
-				</div>
-				<tr>
-					<td>トラック番号</td>
-					<td>座標</td>
-					<td>サイズ</td>
-					<td>色</td>
-					<td>不透明度</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>
-						<table align="center">
-							<tr>
-								<td>ビデオ</td>
-								<td>
-									<form>
-										<select id="video">
-											<option value="1">1</option>
-											<option value="2">2</option>
-											<option value="3" selected>3</option>
-										</select>
-									</form>
-								</td>
-							</tr>
-							<tr>
-								<td>オーディオ</td>
-								<td>
-									<form>
-										<select id="audio">
-											<option value="1">1</option>
-											<option value="2">2</option>
-											<option value="3" selected>3</option>
-										</select>
-									</form>
-								</td>
-							</tr>
-						</table>
-						<br>
-						<input type="button" value="Refresh" onclick="Refresh()" class="btn default">
-					</td>
-					<td>
-						<table align="center">
-							<tr>
-								<td>X</td>
-								<td>
-									<input type="text" size="3" value="0.5" maxlength="10" id="pos:x">
-								</td>
-							</tr>
-							<tr>
-								<td>Y</td>
-								<td>
-									<input type="text" size="3" value="0.5" maxlength="10" id="pos:y">
-								</td>
-							</tr>
-						</table>
-					</td>
-					<td>
-						<table align="center">
-							<tr>
-								<td>
-									<span>文字</span>
-								</td>
-								<td>
-									<input type="text" size="3" value="22" maxlength="10" id="fontSize">
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<span>フレーム</span>
-								</td>
-								<td>
-									<input type="text" size="3" value="260" maxlength="10" id="scale">
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<span>エッジ</span>
-								</td>
-								<td>
-									<input type="text" size="3" value="0" maxlength="10" id="edgePx">
-								</td>
-							</tr>
-						</table>
-					</td>
-					<td>
-						<table align="center">
-							<tr>
-								<td>
-									<span>文字</span>
-								</td>
-								<td>
-									<input type="color" value="#000000" onClick="SetElement(this)" id="fontColor">
-								</td>
+		<div class="tab-content">
+			<div id="tab1" class="tab-pane active fade show">
+				<table class="OptonTable">
+					<div contenteditable="true" id="presetName">---</div>
+					<div id="DeletePreset">
+						<button onClick="DeletePreset()" class="btn btn-danger">Delete</button>
+					</div>
+					<tr>
+						<td>トラック番号</td>
+						<td>座標</td>
+						<td>サイズ</td>
+						<td>色</td>
+						<td>不透明度</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<table align="center">
+								<tr>
+									<td>ビデオ</td>
+									<td>
+										<form>
+											<select id="video">
+												<option value="1">1</option>
+												<option value="2">2</option>
+												<option value="3" selected>3</option>
+											</select>
+										</form>
+									</td>
+								</tr>
+								<tr>
+									<td>オーディオ</td>
+									<td>
+										<form>
+											<select id="audio">
+												<option value="1">1</option>
+												<option value="2">2</option>
+												<option value="3" selected>3</option>
+											</select>
+										</form>
+									</td>
+								</tr>
+							</table>
+							<br>
+							<input type="button" value="Refresh" onclick="Refresh()" class="btn default">
+						</td>
+						<td>
+							<table align="center">
+								<tr>
+									<td>X</td>
+									<td>
+										<input type="text" size="3" value="0.5" maxlength="10" id="pos:x">
+									</td>
+								</tr>
+								<tr>
+									<td>Y</td>
+									<td>
+										<input type="text" size="3" value="0.5" maxlength="10" id="pos:y">
+									</td>
+								</tr>
+							</table>
+						</td>
+						<td>
+							<table align="center">
 								<tr>
 									<td>
-										<span>背景</span>
+										<span>文字</span>
 									</td>
 									<td>
-										<input type="color" value="#000000" onClick="SetElement(this)" id="backColor">
+										<input type="text" size="3" value="22" maxlength="10" id="fontSize">
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<span>フレーム</span>
+									</td>
+									<td>
+										<input type="text" size="3" value="260" maxlength="10" id="scale">
 									</td>
 								</tr>
 								<tr>
@@ -471,34 +393,61 @@
 										<span>エッジ</span>
 									</td>
 									<td>
-										<input type="color" value="#000000" onClick="SetElement(this)" id="edgeColor">
+										<input type="text" size="3" value="0" maxlength="10" id="edgePx">
 									</td>
 								</tr>
-							</tr>
-						</table>
-					</td>
-					<td width="100">
-						<div class="range">
-							<span>背景</span>
-							<span id="backAlphaText">100%</span>
-							<input type="range" min="0" max="255" step="1" value="255" id="backAlpha">
-						</div>
-					</td>
-					<td>
-						<button onClick="importWave(this)" class="btn default">Import wav</button>
-					</td>
-				</tr>
-			</table>
-			<br>
-			<div align="center">
-				<button onClick="Save()" class="btn default">Save</button>
+							</table>
+						</td>
+						<td>
+							<table align="center">
+								<tr>
+									<td>
+										<span>文字</span>
+									</td>
+									<td>
+										<input type="color" value="#000000" onClick="SetElement(this)" id="fontColor">
+									</td>
+									<tr>
+										<td>
+											<span>背景</span>
+										</td>
+										<td>
+											<input type="color" value="#000000" onClick="SetElement(this)" id="backColor">
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span>エッジ</span>
+										</td>
+										<td>
+											<input type="color" value="#000000" onClick="SetElement(this)" id="edgeColor">
+										</td>
+									</tr>
+								</tr>
+							</table>
+						</td>
+						<td width="100">
+							<div class="range">
+								<span>背景</span>
+								<span id="backAlphaText">100%</span>
+								<input type="range" min="0" max="255" step="1" value="255" id="backAlpha">
+							</div>
+						</td>
+						<td>
+							<button onClick="importWave(this)" class="btn default">Import wav</button>
+						</td>
+					</tr>
+				</table>
+				<br>
+				<div align="center">
+					<button onClick="Save()" class="btn default">Save</button>
+				</div>
+			</div>
+
+			<div id="tab2" class="tab-pane fade" >
+				<button type="button" class="btn default">Model Load</button>
 			</div>
 		</div>
-
-		<div id="tab2" class="tabContent">
-			<button type="button" class="btn default">Model Load</button>
-		</div>
-
 	</div>
 
 </body>
