@@ -33,25 +33,6 @@ $._PPP_ = {
 		}
 	},
 
-	searchForBinWithName: function (nameToFind) {
-		// deep-search a folder by name in project
-		var deepSearchBin = function (inFolder) {
-			if (inFolder && inFolder.name === nameToFind && inFolder.type === 2) {
-				return inFolder;
-			} else {
-				for (var i = 0; i < inFolder.children.numItems; i++) {
-					if (inFolder.children[i] && inFolder.children[i].type === 2) {
-						var foundBin = deepSearchBin(inFolder.children[i]);
-						if (foundBin) return foundBin;
-					}
-				}
-			}
-			return undefined;
-		};
-		return deepSearchBin(app.project.rootItem);
-	},
-
-
 	updateEventPanel: function (message) {
 		//$.writeln(message);
 		app.setSDKEventMessage(message, 'info');
@@ -83,19 +64,42 @@ $._PPP_ = {
 		return dir;
 	},
 
-	getPPPInsertionBin: function (nameToFind) {
+	getDeepBin: function (path, mkFlag) {
+		var spath = path.split("/");
+		var root = app.project.rootItem;
+		for (var i = 0; i < spath.length; i++) {
+			root = $._PPP_.getPPPInsertionBin(spath[i], root, mkFlag);
+			if (!root) {
+				return root;
+			}
+		}
+		return root;
+	},
 
-		var targetBin = $._PPP_.searchForBinWithName(nameToFind);
+	getPPPInsertionBin: function (nameToFind, root, mkFlag) {
 
-		if (targetBin === undefined) {
+		var targetBin = $._PPP_.searchForBinWithName(nameToFind, root);
+
+		if (targetBin === undefined && mkFlag === true) {
 			// If panel can't find the target bin, it creates it.
-			app.project.rootItem.createBin(nameToFind);
-			targetBin = $._PPP_.searchForBinWithName(nameToFind);
+			root.createBin(nameToFind);
+			targetBin = $._PPP_.searchForBinWithName(nameToFind, root);
 		}
-		if (targetBin) {
-			targetBin.select();
-			return targetBin;
-		}
+		return targetBin;
+	},
+
+	searchForBinWithName: function (nameToFind, root) {
+		// deep-search a folder by name in project
+		var deepSearchBin = function (inFolder) {
+			for (var i = 0; i < inFolder.children.numItems; i++) {
+				if (inFolder.children[i] && inFolder.children[i].type === 2 && inFolder.children[i].name === nameToFind) {
+					return inFolder.children[i];
+				}
+			}
+
+			return undefined;
+		};
+		return deepSearchBin(root);
 	},
 
 	getClip: function (root, name) {
@@ -205,7 +209,7 @@ $._PPP_ = {
 
 	importWavCaption: function (tmpPath, videoTrack, soundTrack, x, y, bColor, fColor, eColor, size, scale, edgePx) {
 		if (app.project) {
-			var targetBin = $._PPP_.getPPPInsertionBin("JIMAKU");
+			var targetBin = $._PPP_.getDeepBin("JIMAKU",true);
 			var dataA = $._PPP_.importResources(targetBin);
 			if (targetBin && dataA) {
 				var seq = app.project.activeSequence;
@@ -258,13 +262,13 @@ $._PPP_ = {
 			var b = hex & 0xFF;
 			return [r, g, b];
 		};
-		var color_decimal = $.colorPicker(parseInt(value.slice(1),16));
-		if(color_decimal === -1){ //Cancel
-			color_decimal = parseInt(value.slice(1),16);
+		var color_decimal = $.colorPicker(parseInt(value.slice(1), 16));
+		if (color_decimal === -1) { //Cancel
+			color_decimal = parseInt(value.slice(1), 16);
 		}
 		var color_hexadecimal = color_decimal.toString(16);
 		var color_rgb = hexToRGB(parseInt(color_hexadecimal, 16));
 		var color_fixHex = "#" + ("0" + Number(color_rgb[0]).toString(16)).slice(-2) + ("0" + Number(color_rgb[1]).toString(16)).slice(-2) + ("0" + Number(color_rgb[2]).toString(16)).slice(-2);
 		return color_fixHex;
-	},
+	}
 };
