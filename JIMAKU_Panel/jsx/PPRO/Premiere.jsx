@@ -220,7 +220,7 @@ $._PPP_ = {
 				var vTrack = seq.videoTracks[videoTrack];
 
 				var file_name = dataA.importThese.substring(dataA.importThese.lastIndexOf('\\') + 1, dataA.importThese.length);
-				var targetClip = $._PPP_.getClip(app.project.rootItem, file_name);
+				var targetClip = $._PPP_.getClip(targetBin, file_name);
 				aTrack.insertClip(targetClip, now);
 
 				var AinClip = $._PPP_.getClipFromeSequence(file_name, aTrack);
@@ -251,6 +251,7 @@ $._PPP_ = {
 				var motionSize = motion.properties[1];
 				motionPosition.setValue([x, y]);
 				motionSize.setValue(scale);
+				seq.setPlayerPosition(VinClip.end.ticks);
 			} else {
 				$._PPP_.updateEventPanel("import Cancel");
 			}
