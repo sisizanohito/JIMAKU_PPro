@@ -3,17 +3,19 @@ function onLoaded() {
 	var csInterface = new CSInterface();
 	var appName = csInterface.hostEnvironment.appName;
 	var appVersion = csInterface.hostEnvironment.appVersion;
+
+	var APIVersion = csInterface.getCurrentApiVersion();
 	
-	//document.getElementById("dragthing").style.backgroundColor = "lightblue";
 	var caps = csInterface.getHostCapabilities();
 	
 	loadJSX();
-	//updateThemeWithAppSkinInfo(csInterface.hostEnvironment.appSkinInfo);
+	
+	updateThemeWithAppSkinInfo(csInterface.hostEnvironment.appSkinInfo);
 
 	// Update the color of the panel when the theme color of the product changed.
 	csInterface.addEventListener(CSInterface.THEME_COLOR_CHANGED_EVENT, onAppThemeColorChanged);
 	// Listen for event sent in response to rendering a sequence.
-	csInterface.addEventListener("com.adobe.csxs.events.JIMAKUPanelRenderEvent", function(event){
+	csInterface.addEventListener("com.adobe.csxs.events.PProPanelRenderEvent", function(event){
 		alert(event.data);
 	});
 
@@ -29,14 +31,15 @@ function onLoaded() {
 	        // You just received the text of every Text layer in the current AE comp.
 	    }
 	);
-	//csInterface.evalScript('$._PPP_.getVersionInfo()', myVersionInfoFunction);	
-	//csInterface.evalScript('$._PPP_.getActiveSequenceName()', myCallBackFunction);		
-	//csInterface.evalScript('$._PPP_.getUserName()', myUserNameFunction);  
+
 	//csInterface.evalScript('$._PPP_.getSequenceProxySetting()', myGetProxyFunction);
-	csInterface.evalScript('$._PPP_.keepPanelLoaded()');
+	//csInterface.evalScript('$._PPP_.keepPanelLoaded()');
 	//csInterface.evalScript('$._PPP_.disableImportWorkspaceWithProjects()');
-	// register project item selected callback
+	
 	//csInterface.evalScript('$._PPP_.registerProjectPanelChangedFxn()');
+	//csInterface.evalScript('$._PPP_.registerItemAddedFxn()');
+	//csInterface.evalScript('$._PPP_.registerProjectChangedFxn()');
+	//csInterface.evalScript('$._PPP_.confirmPProHostVersion()');
 }
 
 function dragHandler(event){
@@ -62,11 +65,6 @@ function myCallBackFunction (data) {
 	seq_display.innerHTML	= boilerPlate + data;
 }
 
-function myUserNameFunction (data) {
-	// Updates username with whatever ExtendScript function returns.
-	var user_name		= document.getElementById("username");
-	user_name.innerHTML	= data;
-}
 
 function myGetProxyFunction (data) {
 	// Updates proxy_display based on current sequence's value.
@@ -84,23 +82,17 @@ function mySetProxyFunction (data) {
 	csInterface.evalScript('$._PPP_.getSequenceProxySetting()', myGetProxyFunction);
 }
 	 
-function myVersionInfoFunction (data) {
-	var boilerPlate		= "PPro Version: ";
-	var v_string		= document.getElementById("version_string");
-	v_string.innerHTML	= boilerPlate + data;
-}
-
 /**
  * Update the theme with the AppSkinInfo retrieved from the host product.
  */
 
 function updateThemeWithAppSkinInfo(appSkinInfo) {
-
+	
 	//Update the background color of the panel
 
 	var panelBackgroundColor = appSkinInfo.panelBackgroundColor.color;
-	document.body.bgColor = toHex(panelBackgroundColor);
-
+	document.body.style.backgroundColor  = toHex(panelBackgroundColor);
+/*
 	var styleId 			= "ppstyle";
 	var gradientBg			= "background-image: -webkit-linear-gradient(top, " + toHex(panelBackgroundColor, 40) + " , " + toHex(panelBackgroundColor, 10) + ");";
 	var gradientDisabledBg	= "background-image: -webkit-linear-gradient(top, " + toHex(panelBackgroundColor, 15) + " , " + toHex(panelBackgroundColor, 5) + ");";
@@ -114,6 +106,7 @@ function updateThemeWithAppSkinInfo(appSkinInfo) {
 		var inputBackgroundColor;
 		var gradientHighlightBg;
 
+		
 		if(isPanelThemeLight) {
 			fontColor				= "#000000;";
 			disabledFontColor		= "color:" + toHex(panelBackgroundColor, -70) + ";";
@@ -146,6 +139,7 @@ function updateThemeWithAppSkinInfo(appSkinInfo) {
 		addRule(styleId, "input[type=text]", "background-color: " + inputBackgroundColor + ";");
 		addRule(styleId, "input[type=text]:focus", "background-color: #ffffff;");
 		addRule(styleId, "input[type=text]:focus", "color: #000000;");
+		*/
 }
 
 function addRule(stylesheetId, selector, rule) {
@@ -194,7 +188,7 @@ function onAppThemeColorChanged(event) {
 	var skinInfo = JSON.parse(window.__adobe_cep__.getHostEnvironment()).appSkinInfo;
 	// Gets the style information such as color info from the skinInfo, 
 	// and redraw all UI controls of your extension according to the style info.
-	//updateThemeWithAppSkinInfo(skinInfo);
+	updateThemeWithAppSkinInfo(skinInfo);
 } 
 
 /**
@@ -207,9 +201,11 @@ function loadJSX() {
 	// get the appName of the currently used app. For Premiere Pro it's "PPRO"
 	var appName = csInterface.hostEnvironment.appName;
 	var extensionPath = csInterface.getSystemPath(SystemPath.EXTENSION);
+
 	// load general JSX script independent of appName
 	var extensionRootGeneral = extensionPath + '/jsx/';
 	csInterface.evalScript('$._ext.evalFiles("' + extensionRootGeneral + '")');
+
 	// load JSX scripts based on appName
 	var extensionRootApp = extensionPath + '/jsx/' + appName + '/';
 	csInterface.evalScript('$._ext.evalFiles("' + extensionRootApp + '")');

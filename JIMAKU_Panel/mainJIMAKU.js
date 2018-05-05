@@ -35,7 +35,7 @@ var JSONPath = "/JIMAKU.json";
 			fontColor = fontColor + ("0" + Number(fontAlpha).toString(16)).slice(-2);
 			backColor = backColor + ("0" + Number(backAlpha).toString(16)).slice(-2);
 			edgeColor = edgeColor + ("0" + Number(255).toString(16)).slice(-2);
-			var parameter = (Number(videoTrack) - 1) + ',' + (Number(audioTrack) - 1) + ',' + x + ',' + y + ',"' + backColor +
+			var parameter = Preset + ','+ (Number(videoTrack) - 1) + ',' + (Number(audioTrack) - 1) + ',' + x + ',' + y + ',"' + backColor +
 				'","' + fontColor + '","' + edgeColor + '",' + fontSize + ',' + scale + ',' + edgePx;
 
 			var csInterface = new CSInterface();

@@ -1,3 +1,5 @@
+#include "PPro_API_Constants.jsx"
+
 $._PPP_ = {
 
 	getVersionInfo: function () {
@@ -207,9 +209,9 @@ $._PPP_ = {
 		return undefined;
 	},
 
-	importWavCaption: function (tmpPath, videoTrack, soundTrack, x, y, bColor, fColor, eColor, size, scale, edgePx) {
+	importWavCaption: function (tmpPath, Preset, videoTrack, soundTrack, x, y, bColor, fColor, eColor, size, scale, edgePx) {
 		if (app.project) {
-			var targetBin = $._PPP_.getDeepBin("JIMAKU",true);
+			var targetBin = $._PPP_.getDeepBin("JIMAKU/"+Preset+"/voices&captions",true);
 			var dataA = $._PPP_.importResources(targetBin);
 			if (targetBin && dataA) {
 				var seq = app.project.activeSequence;
@@ -270,5 +272,40 @@ $._PPP_ = {
 		var color_rgb = hexToRGB(parseInt(color_hexadecimal, 16));
 		var color_fixHex = "#" + ("0" + Number(color_rgb[0]).toString(16)).slice(-2) + ("0" + Number(color_rgb[1]).toString(16)).slice(-2) + ("0" + Number(color_rgb[2]).toString(16)).slice(-2);
 		return color_fixHex;
+	},
+
+	importMoGRT : function () {
+		var activeSeq = app.project.activeSequence;
+		if (activeSeq) {
+			var filterString = "";
+			if (Folder.fs === 'Windows'){
+				filterString = "Motion Graphics Templates:*.mogrt";
+			}
+			var mogrtToImport	= 	File.openDialog (	"Choose MoGRT", 	// title
+														filterString, 					// filter available files? 
+														false);				// allow multiple?
+			if (mogrtToImport){
+				var targetTime		= activeSeq.getPlayerPosition();
+				var vidTrackOffset  = 0;
+				var audTrackOffset	= 0;
+				var newTrackItem 	= activeSeq.importMGT(	mogrtToImport.fsName, 
+															targetTime.ticks, 
+															vidTrackOffset,
+															audTrackOffset);
+				if (newTrackItem){
+					var moComp = newTrackItem.getMGTComponent();
+					if (moComp){
+						var params			= 	moComp.properties;
+						var srcTextParam	=	params.getParamForDisplayName("Source Text");
+						if (srcTextParam){
+							var val	= srcTextParam.getValue();
+							srcTextParam.setValue("New value set by PProPanel!");
+						}
+					}
+				}
+			} else {
+				app.setSDKEventMessage('Unable to import ' + mogrtToImport.fsName + '.', 'error');  
+			}
+		} 
 	}
 };
