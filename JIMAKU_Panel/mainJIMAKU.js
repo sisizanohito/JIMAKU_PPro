@@ -1,5 +1,6 @@
 var JSONPath = "/JIMAKU.json";
-var JIMAKUparameter = function (name, videoTrack, audioTrack, x, y, fontSize, scale, edgePx, fontColor, backColor, edgeColor, backAlpha, imageVideoTrack, imageX, imageY, imageScale) {
+var JIMAKUparameter = function (name, videoTrack, audioTrack, x, y, fontSize, scale, edgePx, fontColor, backColor, edgeColor, backAlpha,
+	imageVideoTrack, imageX, imageY, imageScale,imageCheck, modelPath) {
 	this.name = name;
 	this.videoTrack = videoTrack;
 	this.audioTrack = audioTrack;
@@ -16,6 +17,8 @@ var JIMAKUparameter = function (name, videoTrack, audioTrack, x, y, fontSize, sc
 	this.imageX = imageX;
 	this.imageY = imageY;
 	this.imageScale = imageScale;
+	this.imageCheck = imageCheck;
+	this.modelPath = modelPath;
 }
 var Preset = 0; // Presetの指定
 var JIMAKUData = []; // 空の配列
@@ -140,6 +143,15 @@ function SetOption(index) {
 	document.getElementById('Image_pos:x').value = JIMAKUData[index].imageX;
 	document.getElementById('Image_pos:y').value = JIMAKUData[index].imageY;
 	document.getElementById('Image_scale').value = JIMAKUData[index].imageScale;
+	chk_status = JIMAKUData[index].imageCheck;
+	if(!chk_status){
+		//チェックボックスをOFFにする（チェックを外す）。
+		$("#Image_check").prop("checked", false);
+	}else{
+		//チェックボックスをONにする（チェックする）。
+		$("#Image_check").prop("checked", true);
+	}
+	ShowImage();
 }
 
 function SaveOption(index) {
@@ -160,6 +172,7 @@ function SaveOption(index) {
 	JIMAKUData[index].imageX = document.getElementById('Image_pos:x').value;
 	JIMAKUData[index].imageY = document.getElementById('Image_pos:y').value;
 	JIMAKUData[index].imageScale = document.getElementById('Image_scale').value;
+	JIMAKUData[index].imageCheck =  $("#Image_check").prop("checked");
 }
 
 function SaveJSON() {
@@ -187,7 +200,7 @@ function LoadJSON() {
 	} else { //失敗
 		var callScript = '$._PPP_.updateEventPanel("' + "JIMAKUの初回起動" + '")';
 		cs.evalScript(callScript);
-		JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 0.5, 0.5, 22, 260, 0, "#000000", "#000000", "#000000", 255, 3, 0.5, 0.5, 100));
+		JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 0.5, 0.5, 22, 260, 0, "#000000", "#000000", "#000000", 255, 3, 0.5, 0.5, 100, true, null));
 		SaveJSON();
 	}
 
@@ -224,7 +237,7 @@ function AddPreset() {
 	$newRow[0].cells[0].innerText = "---";
 	$newRow.insertAfter($row);
 	Preset = $("#PresetTable tr:not(.inputButton)").length - 1; //プリセットの合計-1
-	JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 0.5, 0.5, 22, 260, 0, "#000000", "#000000", "#000000", 255, 3, 0.5, 0.5, 100));
+	JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 0.5, 0.5, 22, 260, 0, "#000000", "#000000", "#000000", 255, 3, 0.5, 0.5, 100, true, null));
 	SetOption(Preset);
 }
 
@@ -245,15 +258,32 @@ function DeletePreset() {
 	}
 }
 
-function ShowImage() {
+function LoadImage(){
 	var filetypes = new Array();
 	filetypes[0] = 'png';
 	filetypes[1] = 'jpg';
 	var result = window.cep.fs.showOpenDialog(false, false, "SELECT Image", "", filetypes);
+	if(PathExists(result.data)){
+		JIMAKUData[Preset].modelPath = result.data;
+		ShowImage();
+	}
+	
+}
+
+function ShowImage() {
 	var ImageArea = document.getElementById('ImageArea');
-	ImageArea.innerHTML = '<img src="file://' + result.data + '" class="Image">';
+	ImageArea.innerHTML ="";
+	if(!PathExists(JIMAKUData[Preset].modelPath)){
+		return;
+	}//画像が読み込めていないのならサムネを更新しない
+	ImageArea.innerHTML = '<img src="file://' + JIMAKUData[Preset].modelPath + '" class="Image">';
 
 }
+
+function PathExists(path)    
+{   
+	return (window.cep.fs.stat(path).err != window.cep.fs.ERR_NOT_FOUND) && (path != null) && (path != "");  
+}  
 
 $(document).ready(function () {
 	var elem = document.getElementsByClassName('range');
