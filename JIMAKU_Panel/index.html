@@ -16,7 +16,6 @@
 	<script src="./lib/bootstrap.min.js"></script>
 	<script src="./mainJIMAKU.js"></script>
 	<style>
-
 	</style>
 	<title>JIMAKU</title>
 </head>
@@ -43,14 +42,18 @@
 			<li class="nav-item">
 				<a href="#tab2" class="nav-link" data-toggle="tab">立ち絵</a>
 			</li>
+			<li class="nav-item">
+				<a href="#tab3" class="nav-link" data-toggle="tab">設定</a>
+			</li>
 		</ul>
+
+			<div contenteditable="true" id="presetName">---</div>
+			<button onClick="Save()" id="Save" class="btn default">Save</button>
+
+
 		<div class="tab-content">
 			<div id="tab1" class="tab-pane active">
 				<table class="OptonTable">
-					<div contenteditable="true" id="presetName">---</div>
-					<div id="DeletePreset">
-						<button onClick="DeletePreset()" class="btn btn-danger">Delete</button>
-					</div>
 					<tr>
 						<td>トラック番号</td>
 						<td>座標</td>
@@ -68,8 +71,8 @@
 										<form>
 											<select id="video">
 												<option value="1">1</option>
-												<option value="2">2</option>
-												<option value="3" selected>3</option>
+												<option value="2" selected>2</option>
+												<option value="3">3</option>
 											</select>
 										</form>
 									</td>
@@ -80,8 +83,8 @@
 										<form>
 											<select id="audio">
 												<option value="1">1</option>
-												<option value="2">2</option>
-												<option value="3" selected>3</option>
+												<option value="2" selected>2</option>
+												<option value="3">3</option>
 											</select>
 										</form>
 									</td>
@@ -174,14 +177,66 @@
 						</td>
 					</tr>
 				</table>
-				<br>
-				<div align="center">
-					<button onClick="Save()" class="btn default">Save</button>
-				</div>
 			</div>
 
-			<div id="tab2" class="tab-pane" >
-				<button onClick="evalScript('$._PPP_.importMoGRT()')" type="button" class="btn default">Model Load</button>
+			<div id="tab2" class="tab-pane">
+
+					
+					<table class="OptonTable">
+					<tr>
+						<td>サムネ</td>
+						<td>トラック番号</td>
+						<td>座標</td>
+						<td>サイズ</td>
+					</tr>
+					<tr>
+						<td>
+								<div id="demo2" class="ShowImage" >demo2</div>
+						</td>
+						<td>
+							<table align="center">
+								<tr>
+									<td>ビデオ</td>
+									<td>
+										<form>
+											<select id="Image_video">
+												<option value="1">1</option>
+												<option value="2">2</option>
+												<option value="3" selected>3</option>
+											</select>
+										</form>
+									</td>
+								</tr>
+								</table>
+							<br>
+							<input type="button" value="Refresh" onclick="Refresh()" class="btn default">
+						</td>
+						<td>
+							<table align="center">
+								<tr>
+									<td>X</td>
+									<td>
+										<input type="text" size="3" value="0.5" maxlength="10" id="Image_pos:x">
+									</td>
+								</tr>
+								<tr>
+									<td>Y</td>
+									<td>
+										<input type="text" size="3" value="0.5" maxlength="10" id="Image_pos:y">
+									</td>
+								</tr>
+							</table>
+						</td>
+						<td>
+							<input type="text" size="3" value="260" maxlength="10" id="Image_scale">
+						</td>
+					</tr>
+				</table>
+				
+				<button onClick="ShowImage()" type="button" class="btn default">Model Load</button>
+			</div>
+			<div id="tab3" class="tab-pane">
+				<button onClick="DeletePreset()" id="Delete" class="btn btn-danger">Delete</button>
 			</div>
 		</div>
 	</div>

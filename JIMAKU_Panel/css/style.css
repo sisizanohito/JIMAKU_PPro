@@ -17,6 +17,7 @@ div {
 .OptonTable {
     text-align: center;
     width: 100%;
+    clear: both;
 }
 
 #presetName{
@@ -26,8 +27,15 @@ div {
     text-align: center;
     width: 90%;
     float: left;
+    display: flex;
+    align-items: center; /* 縦方向中央揃え */
+    justify-content: center; /* 横方向中央揃え */
 }
-#DeletePreset{
+#Delete{
+    text-align: center;
+}
+
+#Save{
     text-align: center;
     width: 10%;
     float: left;
@@ -77,6 +85,18 @@ div {
 .nav-link.active {
     background-color: #eee;
 	font-weight: bold;
-	
+}
+
+.ShowImage{
+    width: 200px;
+    height: 200px;
+    margin: 0% auto;
+}
+
+.Image{
+    width: 100%;
+    height: 100%;
+    margin: 0% auto;
+    object-fit: contain;
 }
 
