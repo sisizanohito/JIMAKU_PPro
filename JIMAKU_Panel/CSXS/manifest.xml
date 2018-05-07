@@ -23,6 +23,8 @@
 					<CEFCommandLine>
 						<Parameter>--allow-file-access</Parameter>
 						<Parameter>--allow-file-access-from-files</Parameter>
+						<Parameter>--enable-nodejs</Parameter>
+						<Parameter>--mixed-context</Parameter>  
 					</CEFCommandLine>
 				</Resources>
 				<Lifecycle>
@@ -33,8 +35,8 @@
 					<Menu>JIMAKU</Menu>
 					<Geometry>
 						<Size>
-							<Height>300</Height>
-							<Width>180</Width>
+							<Height>500</Height>
+							<Width>700</Width>
 						</Size>
 					</Geometry>
 				</UI>

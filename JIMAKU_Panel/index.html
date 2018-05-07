@@ -10,11 +10,33 @@
 	<script src="./ext.js"></script>
 	<script src="./lib/CSInterface.js"></script>
 	<script src="./lib/Vulcan.js"></script>
-	<script src="./lib/jquery-3.3.1.min.js"></script>
+	<script>  
+		// for electron
+		if (typeof module !== 'undefined') {  
+		  window.__tempModuleExports__ = module.exports;
+		  module.exports = false;
+		}
+	</script> 
+	<script src="./lib/jquery-3.3.1.js"></script>
 	<script src="./lib/jquery.mCustomScrollbar.concat.min.js"></script>
 	<script src="./lib/jquery.mousewheel.js"></script>
 	<script src="./lib/bootstrap.min.js"></script>
-	<script src="./mainJIMAKU.js"></script>
+	<script src="./lib/psd.js"></script>
+	<script>  
+		// for electron
+		if (window.__tempModuleExports__) {  
+		  module.exports = window.__tempModuleExports__;
+		  window.__tempModuleExports__ = null;
+		  delete window.__tempModuleExports__;
+		}
+		</script>
+		
+		<script>  
+		$(function() {
+		  console.log($ !== undefined);
+		});
+		</script>
+		<script src="./mainJIMAKU.js"></script>  
 	<style>
 	</style>
 	<title>JIMAKU</title>
@@ -231,6 +253,7 @@
 					</tr>
 				</table>
 				<button onClick="LoadImage()" type="button" class="btn default">Model Load</button><br>
+				<button onClick="LoadPSD()" type="button" class="btn default">PSD Load</button><br>
 				<input type="checkbox" value="" id="Image_check" checked>音声と一緒に立ち絵を出力
 			</div>
 			<div id="tab3" class="tab-pane">

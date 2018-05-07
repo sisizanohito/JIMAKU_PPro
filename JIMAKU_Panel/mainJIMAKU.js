@@ -258,6 +258,21 @@ function DeletePreset() {
 	}
 }
 
+function LoadPSD(){
+	var path = require('path');
+	var PSD  = require('psd');
+	var result = window.cep.fs.showOpenDialog(false, false, "SELECT PSD", "", ["psd"]);
+
+	var psd = PSD.fromFile(result.data[0]);
+	psd.parse();
+	var tree =psd.tree();
+	console.log(tree.export());
+	png = psd.image.toPng(); // get PNG object
+	psd.image.saveAsPng('C:/Program Files/Adobe/Adobe Premiere Pro CC 2018/CEP/extensions/JIMAKU_Panel/out/output.png').then(function () {
+		console.log('Exported!');
+	});
+}
+
 function LoadImage(){
 	var filetypes = new Array();
 	filetypes[0] = 'png';
@@ -273,11 +288,11 @@ function LoadImage(){
 function ShowImage() {
 	var ImageArea = document.getElementById('ImageArea');
 	ImageArea.innerHTML ="";
-	if(!PathExists(JIMAKUData[Preset].modelPath)){
+	if(!PathExists(JIMAKUData[Preset].modelPath)){//画像が読み込めていないのならサムネを更新しない
 		return;
-	}//画像が読み込めていないのならサムネを更新しない
+	}
 	ImageArea.innerHTML = '<img src="file://' + JIMAKUData[Preset].modelPath + '" class="Image">';
-
+	
 }
 
 function PathExists(path)    
