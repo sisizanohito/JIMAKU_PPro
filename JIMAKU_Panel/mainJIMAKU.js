@@ -265,13 +265,34 @@ function LoadPSD(){
 
 	var psd = PSD.fromFile(result.data[0]);
 	psd.parse();
-	var tree =psd.tree();
-	console.log(tree.export());
-	png = psd.image.toPng(); // get PNG object
-	psd.image.saveAsPng('C:/Program Files/Adobe/Adobe Premiere Pro CC 2018/CEP/extensions/JIMAKU_Panel/out/output.png').then(function () {
-		console.log('Exported!');
-	});
+	var root =psd.tree();
+	var png = psd.image.toPng()
+	console.log(root.export());
+	var PSDArea = document.getElementById('PSDArea');
+	dataUrl = toBase64(png);
+    image = new Image();
+    image.width = psd.image.width();
+    image.height = psd.image.height();
+    image.src = dataUrl;
+	PSDArea.appendChild(image);
 }
+
+function toBase64(png) {
+    var canvas, context, i, imageData, j, len, pixel, pixelData, ref;
+    canvas = document.createElement('canvas');
+    canvas.width = png.width;
+    canvas.height = png.height;
+    context = canvas.getContext('2d');
+    imageData = context.getImageData(0, 0, png.width, png.height);
+    pixelData = imageData.data;
+    ref = png.data;
+    for (i = j = 0, len = ref.length; j < len; i = ++j) {
+      pixel = ref[i];
+      pixelData[i] = pixel;
+    }
+    context.putImageData(imageData, 0, 0);
+    return canvas.toDataURL('image/png');
+  }
 
 function LoadImage(){
 	var filetypes = new Array();
@@ -282,7 +303,6 @@ function LoadImage(){
 		JIMAKUData[Preset].modelPath = result.data;
 		ShowImage();
 	}
-	
 }
 
 function ShowImage() {
