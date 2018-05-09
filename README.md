@@ -22,3 +22,8 @@ psd.js(https://github.com/meltingice/psd.js)<br>
 Copyright (c) 2014 Ryan LeFevre<br>
 The MIT License (MIT)<br>
 https://github.com/meltingice/psd.js/blob/master/LICENSE.txt<br>
+
+jsTree<br>
+Copyright (c) 2014 Ivan Bozhanov<br>
+The MIT License (MIT)<br>
+https://raw.githubusercontent.com/vakata/jstree/master/LICENSE-MIT
