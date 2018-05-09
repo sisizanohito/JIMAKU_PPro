@@ -17,3 +17,8 @@ Bootstrap v4.0.0 (https://getbootstrap.com)<br>
 Copyright 2011-2018 The Bootstrap Authors<br>
 Copyright 2011-2018 Twitter, Inc.<br>
 Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)<br>
+
+psd.js(https://github.com/meltingice/psd.js)<br>
+Copyright (c) 2014 Ryan LeFevre<br>
+The MIT License (MIT)<br>
+https://github.com/meltingice/psd.js/blob/master/LICENSE.txt<br>
