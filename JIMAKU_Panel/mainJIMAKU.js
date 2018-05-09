@@ -1,6 +1,11 @@
-var JSONPath = "/JIMAKU.json";
+const PATH = require('path');
+const PSD = require('psd');
+const FILECOPY = require('filecopy')
+const JSONPath = "/JIMAKU.json";
+const MODELPath = "/model";
+
 var JIMAKUparameter = function (name, videoTrack, audioTrack, x, y, fontSize, scale, edgePx, fontColor, backColor, edgeColor, backAlpha,
-	imageVideoTrack, imageX, imageY, imageScale,imageCheck, modelPath) {
+	imageVideoTrack, imageX, imageY, imageScale, imageCheck, modelPath) {
 	this.name = name;
 	this.videoTrack = videoTrack;
 	this.audioTrack = audioTrack;
@@ -19,9 +24,21 @@ var JIMAKUparameter = function (name, videoTrack, audioTrack, x, y, fontSize, sc
 	this.imageScale = imageScale;
 	this.imageCheck = imageCheck;
 	this.modelPath = modelPath;
+	this.modelname = "";
 }
 var Preset = 0; // Presetの指定
 var JIMAKUData = []; // 空の配列
+
+//モデルタイプ群
+const Model_PSD = 0;
+const Model_ZIP = 1;
+const Model_KYARA = 2;
+var Model = function (name, data, type) {
+	this.data = name;
+	this.data = data;
+	this.data = type;
+}
+var ModelData = [];
 
 
 function importWave(event) {
@@ -144,10 +161,10 @@ function SetOption(index) {
 	document.getElementById('Image_pos:y').value = JIMAKUData[index].imageY;
 	document.getElementById('Image_scale').value = JIMAKUData[index].imageScale;
 	chk_status = JIMAKUData[index].imageCheck;
-	if(!chk_status){
+	if (!chk_status) {
 		//チェックボックスをOFFにする（チェックを外す）。
 		$("#Image_check").prop("checked", false);
-	}else{
+	} else {
 		//チェックボックスをONにする（チェックする）。
 		$("#Image_check").prop("checked", true);
 	}
@@ -172,7 +189,7 @@ function SaveOption(index) {
 	JIMAKUData[index].imageX = document.getElementById('Image_pos:x').value;
 	JIMAKUData[index].imageY = document.getElementById('Image_pos:y').value;
 	JIMAKUData[index].imageScale = document.getElementById('Image_scale').value;
-	JIMAKUData[index].imageCheck =  $("#Image_check").prop("checked");
+	JIMAKUData[index].imageCheck = $("#Image_check").prop("checked");
 }
 
 function SaveJSON() {
@@ -258,67 +275,101 @@ function DeletePreset() {
 	}
 }
 
-function LoadPSD(){
-	var path = require('path');
-	var PSD  = require('psd');
-	var result = window.cep.fs.showOpenDialog(false, false, "SELECT PSD", "", ["psd"]);
-
-	var psd = PSD.fromFile(result.data[0]);
+function LoadPSD(path) {
+	var psd = PSD.fromFile(path);
 	psd.parse();
-	var root =psd.tree();
+	var root = psd.tree();
 	var png = psd.image.toPng()
 	console.log(root.export());
-	var PSDArea = document.getElementById('PSDArea');
+	var PSDArea = document.getElementById('ImageArea');
 	dataUrl = toBase64(png);
-    image = new Image();
-    image.width = psd.image.width();
-    image.height = psd.image.height();
-    image.src = dataUrl;
-	PSDArea.appendChild(image);
+	image = new Image();
+	image.width = psd.image.width();
+	image.height = psd.image.height();
+	image.src = dataUrl;
+	var child = PSDArea.appendChild(image);
+	child.classList.add('Image');
 }
 
 function toBase64(png) {
-    var canvas, context, i, imageData, j, len, pixel, pixelData, ref;
-    canvas = document.createElement('canvas');
-    canvas.width = png.width;
-    canvas.height = png.height;
-    context = canvas.getContext('2d');
-    imageData = context.getImageData(0, 0, png.width, png.height);
-    pixelData = imageData.data;
-    ref = png.data;
-    for (i = j = 0, len = ref.length; j < len; i = ++j) {
-      pixel = ref[i];
-      pixelData[i] = pixel;
-    }
-    context.putImageData(imageData, 0, 0);
-    return canvas.toDataURL('image/png');
-  }
+	var canvas, context, i, imageData, j, len, pixel, pixelData, ref;
+	canvas = document.createElement('canvas');
+	canvas.width = png.width;
+	canvas.height = png.height;
+	context = canvas.getContext('2d');
+	imageData = context.getImageData(0, 0, png.width, png.height);
+	pixelData = imageData.data;
+	ref = png.data;
+	for (i = j = 0, len = ref.length; j < len; i = ++j) {
+		pixel = ref[i];
+		pixelData[i] = pixel;
+	}
+	context.putImageData(imageData, 0, 0);
+	return canvas.toDataURL('image/png');
+}
 
-function LoadImage(){
+function LoadImage() {
 	var filetypes = new Array();
 	filetypes[0] = 'png';
 	filetypes[1] = 'jpg';
-	var result = window.cep.fs.showOpenDialog(false, false, "SELECT Image", "", filetypes);
-	if(PathExists(result.data)){
-		JIMAKUData[Preset].modelPath = result.data;
-		ShowImage();
+	filetypes[1] = 'psd';
+	var result = window.cep.fs.showOpenDialog(false, false, "SELECT IMAGE", "", filetypes);
+	var path = result.data[0];
+	if (PathExists(path)) { //モデルファイルをコピー
+		var basename = PATH.basename(path, PATH.extname(path));
+		var cs = new CSInterface();
+		var dir = PATH.join(cs.getSystemPath(SystemPath.EXTENSION) , MODELPath, basename);
+		if (PathExists(dir)) {
+			var callScript = '$._PPP_.updateEventPanel("' + "同じファイル名はロードできません" + '")';
+			cs.evalScript(callScript);
+			ShowImage();
+			return;
+		}
+		//window.cep.fs.makedir(dir);//フォルダを作成
+		var copyPath = PATH.join(dir, PATH.basename(path));
+		FILECOPY(path, copyPath, {
+			mkdirp: true
+		}).then(() => {
+			console.log("Copy done.")
+			JIMAKUData[Preset].modelPath = copyPath;
+			ShowImage();
+		});
 	}
+}
+
+function LoadModel(){
+	var cs = new CSInterface();
+	var path = cs.getSystemPath(SystemPath.EXTENSION) + MODELPath;
+
+
 }
 
 function ShowImage() {
 	var ImageArea = document.getElementById('ImageArea');
-	ImageArea.innerHTML ="";
-	if(!PathExists(JIMAKUData[Preset].modelPath)){//画像が読み込めていないのならサムネを更新しない
+	ImageArea.innerHTML = "";
+	if (!PathExists(JIMAKUData[Preset].modelPath)) { //画像が読み込めていないのならサムネを更新しない
 		return;
 	}
-	ImageArea.innerHTML = '<img src="file://' + JIMAKUData[Preset].modelPath + '" class="Image">';
-	
+	var extname = PATH.extname(JIMAKUData[Preset].modelPath); //拡張子の抽出
+	switch (extname) {
+		case ".png":
+		case ".jpg":
+			ImageArea.innerHTML = '<img src="file://' + JIMAKUData[Preset].modelPath + '" class="Image">';
+			break;
+		case ".psd":
+			LoadPSD(JIMAKUData[Preset].modelPath)
+			break;
+		default:
+			alert("ファイルが読み込めませんでした");
+			break;
+	}
+
+
 }
 
-function PathExists(path)    
-{   
-	return (window.cep.fs.stat(path).err != window.cep.fs.ERR_NOT_FOUND) && (path != null) && (path != "");  
-}  
+function PathExists(path) {
+	return (window.cep.fs.stat(path).err != window.cep.fs.ERR_NOT_FOUND) && (path != null) && (path != "");
+}
 
 $(document).ready(function () {
 	var elem = document.getElementsByClassName('range');
