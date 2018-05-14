@@ -1,11 +1,5 @@
-const PATH = require('path');
-const PSD = require('psd');
-const FILECOPY = require('filecopy')
-const JSONPath = "/JIMAKU.json";
-const MODELPath = "/model";
-
 var JIMAKUparameter = function (name, videoTrack, audioTrack, x, y, fontSize, scale, edgePx, fontColor, backColor, edgeColor, backAlpha,
-	imageVideoTrack, imageX, imageY, imageScale, imageCheck, modelPath) {
+	imageVideoTrack, imageX, imageY, imageScale, imageCheck) {
 	this.name = name;
 	this.videoTrack = videoTrack;
 	this.audioTrack = audioTrack;
@@ -23,20 +17,22 @@ var JIMAKUparameter = function (name, videoTrack, audioTrack, x, y, fontSize, sc
 	this.imageY = imageY;
 	this.imageScale = imageScale;
 	this.imageCheck = imageCheck;
-	this.modelPath = modelPath;
 	this.modelname = "";
 }
 var Preset = 0; // Presetの指定
 var JIMAKUData = []; // 空の配列
 
-//モデルタイプ群
+//モデルタイプ
 const Model_PSD = 0;
 const Model_ZIP = 1;
 const Model_KYARA = 2;
-var Model = function (name, data, type) {
-	this.data = name;
+var Model = function (name, data, parameter) {
+	this.name = name;
 	this.data = data;
-	this.data = type;
+	this.parameter = parameter;
+}
+var ModelParameter = function (type) {
+	this.type = type;
 }
 var ModelData = [];
 
@@ -85,7 +81,7 @@ function SetElement(event) {
 }
 
 function SetValue(result) {
-	console.log(result)
+	//console.log(result)
 	barElement.value = result;
 }
 
@@ -192,12 +188,11 @@ function SaveOption(index) {
 	JIMAKUData[index].imageCheck = $("#Image_check").prop("checked");
 }
 
-function SaveJSON() {
-	// CSInterfaceを使ってエクステンションのパスを取得
-	var cs = new CSInterface();
-	var path = cs.getSystemPath(SystemPath.EXTENSION) + JSONPath;
-
-	var JSONData = JSON.stringify(JIMAKUData, null, '    ');
+//jsonファイルに保存
+//path 絶対パス
+//data jsonで保存するもの
+function SaveJSON(path,data) {
+	var JSONData = JSON.stringify(data, null, '    ');
 	var result = window.cep.fs.writeFile(path, JSONData);
 	if (0 == result.err) {
 		//alert("出力成功");
@@ -217,8 +212,8 @@ function LoadJSON() {
 	} else { //失敗
 		var callScript = '$._PPP_.updateEventPanel("' + "JIMAKUの初回起動" + '")';
 		cs.evalScript(callScript);
-		JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 0.5, 0.5, 22, 260, 0, "#000000", "#000000", "#000000", 255, 3, 0.5, 0.5, 100, true, null));
-		SaveJSON();
+		JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 0.5, 0.5, 22, 260, 0, "#000000", "#000000", "#000000", 255, 3, 0.5, 0.5, 100, true));
+		SaveJSON(path,JIMAKUData);
 	}
 
 	var $row = $("#PresetTable tr:not(.inputButton):last");
@@ -236,16 +231,20 @@ function LoadJSON() {
 }
 
 function Save() {
+	// CSInterfaceを使ってエクステンションのパスを取得
+	var cs = new CSInterface();
+	var path = cs.getSystemPath(SystemPath.EXTENSION) + JSONPath;
 	SaveOption(Preset);
 	var presetTable = document.getElementById('PresetTable');
 	presetTable.rows[Preset].cells[0].innerText = JIMAKUData[Preset].name;
-	SaveJSON();
+	SaveJSON(path,JIMAKUData);
 }
 
 function Start() {
 	onLoaded();
-	LoadJSON();
+	LoadJSON();//プロパティのロード及び表示
 	Refresh();
+	LoadModel();//モデルの読み込み
 }
 
 function AddPreset() {
@@ -254,7 +253,7 @@ function AddPreset() {
 	$newRow[0].cells[0].innerText = "---";
 	$newRow.insertAfter($row);
 	Preset = $("#PresetTable tr:not(.inputButton)").length - 1; //プリセットの合計-1
-	JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 0.5, 0.5, 22, 260, 0, "#000000", "#000000", "#000000", 255, 3, 0.5, 0.5, 100, true, null));
+	JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 0.5, 0.5, 22, 260, 0, "#000000", "#000000", "#000000", 255, 3, 0.5, 0.5, 100, true));
 	SetOption(Preset);
 }
 
@@ -275,22 +274,7 @@ function DeletePreset() {
 	}
 }
 
-function LoadPSD(path) {
-	var psd = PSD.fromFile(path);
-	psd.parse();
-	var root = psd.tree();
-	var png = psd.image.toPng()
-	console.log(root.export());
-	var PSDArea = document.getElementById('ImageArea');
-	dataUrl = toBase64(png);
-	image = new Image();
-	image.width = psd.image.width();
-	image.height = psd.image.height();
-	image.src = dataUrl;
-	var child = PSDArea.appendChild(image);
-	child.classList.add('Image');
-}
-
+//pngデータをBase64に変換
 function toBase64(png) {
 	var canvas, context, i, imageData, j, len, pixel, pixelData, ref;
 	canvas = document.createElement('canvas');
@@ -308,7 +292,7 @@ function toBase64(png) {
 	return canvas.toDataURL('image/png');
 }
 
-function LoadImage() {
+function NewModel() {
 	var filetypes = new Array();
 	filetypes[0] = 'png';
 	filetypes[1] = 'jpg';
@@ -316,7 +300,8 @@ function LoadImage() {
 	var result = window.cep.fs.showOpenDialog(false, false, "SELECT IMAGE", "", filetypes);
 	var path = result.data[0];
 	if (PathExists(path)) { //モデルファイルをコピー
-		var basename = PATH.basename(path, PATH.extname(path));
+		var extname = PATH.extname(path); 
+		var basename = PATH.basename(path, extname);
 		var cs = new CSInterface();
 		var dir = PATH.join(cs.getSystemPath(SystemPath.EXTENSION) , MODELPath, basename);
 		if (PathExists(dir)) {
@@ -325,46 +310,188 @@ function LoadImage() {
 			ShowImage();
 			return;
 		}
-		//window.cep.fs.makedir(dir);//フォルダを作成
 		var copyPath = PATH.join(dir, PATH.basename(path));
 		FILECOPY(path, copyPath, {
 			mkdirp: true
 		}).then(() => {
-			console.log("Copy done.")
-			JIMAKUData[Preset].modelPath = copyPath;
+			var model_p = new ModelParameter(Model_ZIP);
+			switch (extname) {
+				case ".png"://仮
+				case ".jpg"://仮
+				case ".zip":
+					break;
+				case ".psd":
+					model_p.type = Model_PSD;
+					break;
+				default:
+					console.error("対応したファイルではありません");
+					return;
+					break;
+			}
+			var parameterPath = PATH.join(dir,ModelJSONPath);
+			SaveJSON(parameterPath,model_p);
+			AddModel(basename,dir);
+			JIMAKUData[Preset].modelname = basename;
 			ShowImage();
+			Save();
 		});
 	}
 }
 
 function LoadModel(){
+	console.log("ロード開始");
+	ModelData = [];
 	var cs = new CSInterface();
 	var path = cs.getSystemPath(SystemPath.EXTENSION) + MODELPath;
-
-
+	try {
+		var list = FS.readdirSync(path);
+		for (var i = 0; i < list.length; i++) {
+			var modelPath = PATH.join(path,list[i]);
+			if(isDir(modelPath)){
+				console.log(list[i]);
+				AddModel(list[i],modelPath);
+			}
+		}
+	}
+	catch (err) {
+		console.error(err);
+		console.error("モデル一覧の取得に失敗しました");
+			return;
+	}
+	console.log("ロード完了");
+	ShowImage();//サムネの表示
 }
+
+function AddModel(name,modelPath){
+	var json = PATH.join(modelPath,ModelJSONPath);
+	var resultRead = window.cep.fs.readFile(json);
+	if (0 == resultRead.err) { //成功
+		var parameter = JSON.parse(resultRead.data);
+		var data;
+		switch (parameter.type) {
+			case Model_ZIP:
+				data=LoadZip(modelPath);
+				break;
+			case Model_PSD:
+				data=LoadPSD(modelPath);
+				break;
+			default:
+			console.error("対応したファイルではありません");
+				return;
+				break;
+		}
+	} 
+	ModelData.push(new Model(name,data,parameter));
+	console.log(name+"ロード完了");
+}
+var isDir = function(filepath) {  
+	return PathExists(filepath) && FS.statSync(filepath).isDirectory();
+  };
+
+  var isFile = function(filepath) {  
+	return PathExists(filepath) && FS.statSync(filepath).isFile();
+  };
+
+  //仮
+  function LoadZip(path){
+	var data=[];
+	try {
+		var list = FS.readdirSync(path);
+		for (var i = 0; i < list.length; i++) {
+			var FilePath = PATH.join(path,list[i]);
+			if(isFile(FilePath)){
+				console.log(list[i]);
+				var extname = PATH.extname(list[i]); 
+				switch (extname) {
+					case ".png"://仮
+					case ".jpg"://仮
+						data.push(FilePath);
+						break;
+					default:
+						console.log("対応したファイルではありません");
+						break;
+				}
+			}
+		}
+	}
+	catch (err) {
+		console.error(err);
+		console.error("モデルファイル一覧の取得に失敗しました(zip)");
+		return;
+	}
+
+	return data;
+  }
+
+  function LoadPSD(path) {
+	var data;
+	try {
+		var list = FS.readdirSync(path);
+		for (var i = 0; i < list.length; i++) {
+			var FilePath = PATH.join(path,list[i]);
+			if(isFile(FilePath)){
+				console.log(list[i]);
+				var extname = PATH.extname(list[i]); 
+				switch (extname) {
+					case ".psd"://仮
+						var psd = PSD.fromFile(FilePath);
+						psd.parse();
+						data = psd;
+						break;
+					default:
+						console.log("対応したファイルではありません");
+						break;
+				}
+			}
+		}
+	}
+	catch (err) {
+		console.error(err);
+		console.error("モデルファイル一覧の取得に失敗しました(PSD)");
+		return;
+	}
+	return data;
+}
+
 
 function ShowImage() {
 	var ImageArea = document.getElementById('ImageArea');
 	ImageArea.innerHTML = "";
-	if (!PathExists(JIMAKUData[Preset].modelPath)) { //画像が読み込めていないのならサムネを更新しない
+	var model = ModelData.find(function(element) {
+		return JIMAKUData[Preset].modelname === element.name;
+	  });
+	
+	if (!model) { //モデルが読み込めないならサムネを更新しない
+		console.log("モデルが読み込めません");
 		return;
 	}
-	var extname = PATH.extname(JIMAKUData[Preset].modelPath); //拡張子の抽出
-	switch (extname) {
-		case ".png":
-		case ".jpg":
-			ImageArea.innerHTML = '<img src="file://' + JIMAKUData[Preset].modelPath + '" class="Image">';
+	switch (model.parameter.type) {
+		case Model_KYARA:
+		case Model_ZIP:
+			ImageArea.innerHTML = '<img src="file://' + model.data[0] + '" class="Image">';
 			break;
-		case ".psd":
-			LoadPSD(JIMAKUData[Preset].modelPath)
+		case Model_PSD:
+			ShowPSD(model.data);
 			break;
 		default:
-			alert("ファイルが読み込めませんでした");
+		console.error("ファイルが読み込めませんでした");
 			break;
 	}
+}
 
-
+function ShowPSD(data){
+	var psd = data;
+	var root = psd.tree();
+	var png = psd.image.toPng()
+	console.log(root.export());
+	var PSDArea = document.getElementById('ImageArea');
+	dataUrl = toBase64(png);
+	image = new Image();
+	image.width = psd.image.width();
+	image.height = psd.image.height();
+	image.src = dataUrl;
+	var child = PSDArea.appendChild(image);
+	child.classList.add('Image');
 }
 
 function PathExists(path) {
