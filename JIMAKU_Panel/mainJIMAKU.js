@@ -122,6 +122,21 @@ function SetSelect(result, element) {
 	element.value = index;
 }
 
+function SetSelectModel(element) {
+	var index = element.value;
+	if (index > ModelData.length) {
+		index = ModelData.length;
+	}
+	element.options.length = 0;
+	for (var i = 0; i < ModelData.length; i++) {
+		var option = document.createElement("option");
+		option.setAttribute("value", i);
+		option.innerHTML = ModelData[i].name;
+		element.appendChild(option);
+	}
+	element.value = index;
+}
+
 function removeChildren(x) {
 	if (x.hasChildNodes()) {
 		while (x.childNodes.length > 0) {
@@ -359,6 +374,8 @@ function LoadModel(){
 			return;
 	}
 	console.log("ロード完了");
+	var element = document.getElementById('Image_model');
+	SetSelectModel(element);
 	ShowImage();//サムネの表示
 }
 
