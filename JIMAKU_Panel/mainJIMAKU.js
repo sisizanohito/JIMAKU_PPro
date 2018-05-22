@@ -122,16 +122,17 @@ function SetSelect(result, element) {
 	element.value = index;
 }
 
-function SetSelectModel(element) {
+function SetSelectModel() {
+	var element = document.getElementById('Image_model');
 	var index = element.value;
 	if (index > ModelData.length) {
 		index = ModelData.length;
 	}
 	element.options.length = 0;
-	for (var i = 0; i < ModelData.length; i++) {
+	for (var i = 1; i <= ModelData.length; i++) {
 		var option = document.createElement("option");
 		option.setAttribute("value", i);
-		option.innerHTML = ModelData[i].name;
+		option.innerHTML = ModelData[i-1].name;
 		element.appendChild(option);
 	}
 	element.value = index;
@@ -179,6 +180,7 @@ function SetOption(index) {
 		//チェックボックスをONにする（チェックする）。
 		$("#Image_check").prop("checked", true);
 	}
+	SetCurrentSelect();
 	ShowImage();
 }
 
@@ -347,6 +349,8 @@ function NewModel() {
 			SaveJSON(parameterPath,model_p);
 			AddModel(basename,dir);
 			JIMAKUData[Preset].modelname = basename;
+			SetSelectModel();
+			SetCurrentSelect();
 			ShowImage();
 			Save();
 		});
@@ -374,8 +378,8 @@ function LoadModel(){
 			return;
 	}
 	console.log("ロード完了");
-	var element = document.getElementById('Image_model');
-	SetSelectModel(element);
+	SetSelectModel();
+	SetCurrentSelect();
 	ShowImage();//サムネの表示
 }
 
@@ -515,6 +519,23 @@ function PathExists(path) {
 	return (window.cep.fs.stat(path).err != window.cep.fs.ERR_NOT_FOUND) && (path != null) && (path != "");
 }
 
+function SetCurrentSelect(){
+	var select = document.getElementById( 'Image_model' );
+	var name = JIMAKUData[Preset].modelname;
+	if(name === ""){
+		select.selectedIndex = -1;
+		return;
+	}
+
+	var options = $('#Image_model').children();//オプションを取得
+	for (var i=0; i<options.length; i++) {
+		 if(name === options.eq(i).text()){
+			$('#Image_model').val(i+1);
+			return;
+		 }
+	  }
+}
+
 $(document).ready(function () {
 	var elem = document.getElementsByClassName('range');
 	var rangeValue = function (elem, target) {
@@ -536,11 +557,18 @@ $(document).ready(function () {
 		SetOption(Preset);
 	});
 
-
-
 	$(".Presets").mCustomScrollbar({ //プリセットのスクロールバー
 		autoHideScrollbar: true,
 		theme: "dark"
 	});
+
+	var select = document.getElementById( 'Image_model' );
+	select.onchange = function()
+	{
+		// 選択されているoption要素を取得する
+		var selectedItem = this.options[ this.selectedIndex ];
+		JIMAKUData[Preset].modelname = selectedItem.innerHTML;
+		ShowImage();
+	}
 
 });
