@@ -37,6 +37,12 @@ var ModelParameter = function (type) {
 var ModelData = [];
 
 
+var ModelTree = function(text){
+	this.text  = text ;
+	this.children = [];
+} 
+var TreeData;
+
 function importWave(event) {
 	var elem = $(event).parents("div");
 	var videoTrack = elem[0].getElementsByTagName('select')[0].value;
@@ -570,5 +576,12 @@ $(document).ready(function () {
 		JIMAKUData[Preset].modelname = selectedItem.innerHTML;
 		ShowImage();
 	}
+
+	TreeData = new ModelTree("ルート");
+	TreeData.children.push(new ModelTree("子1"));
+	TreeData.children.push(new ModelTree("子2"));
+	console.log("データツリー");
+	console.log(TreeData);
+	$('#tree1').jstree({"plugins" : ["wholerow","checkbox"],'core' : {'themes':{'stripes':true},'data':TreeData}});
 
 });
