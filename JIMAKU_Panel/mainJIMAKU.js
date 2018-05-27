@@ -186,7 +186,8 @@ function SetOption(index) {
 		//チェックボックスをONにする（チェックする）。
 		$("#Image_check").prop("checked", true);
 	}
-	SetCurrentSelect();
+	SetCurrentSelect();//モデルリストを現在のプリセットに変更
+	CreatModelTree();
 	ShowImage();
 }
 
@@ -386,6 +387,7 @@ function LoadModel(){
 	console.log("ロード完了");
 	SetSelectModel();
 	SetCurrentSelect();
+	CreatModelTree();
 	ShowImage();//サムネの表示
 }
 
@@ -480,16 +482,25 @@ var isDir = function(filepath) {
 	return data;
 }
 
-
-function ShowImage() {
-	var ImageArea = document.getElementById('ImageArea');
-	ImageArea.innerHTML = "";
+function GetModel(modelname){
 	var model = ModelData.find(function(element) {
-		return JIMAKUData[Preset].modelname === element.name;
+		return modelname === element.name;
 	  });
 	
 	if (!model) { //モデルが読み込めないならサムネを更新しない
 		console.log("モデルが読み込めません");
+		return;
+	}
+	return model;
+}
+
+
+function ShowImage() {
+	var ImageArea = document.getElementById('ImageArea');
+	ImageArea.innerHTML = "";
+	var model = GetModel(JIMAKUData[Preset].modelname);
+
+	if (!model) { //モデルが読み込めないならサムネを更新しない
 		return;
 	}
 	switch (model.parameter.type) {
@@ -542,6 +553,40 @@ function SetCurrentSelect(){
 	  }
 }
 
+function CreatModelTree(){
+	var model = GetModel(JIMAKUData[Preset].modelname);
+	if (!model) { //モデルが読み込めないなら
+		return;
+	}
+	if(model.parameter.type === Model_PSD){
+		CreatePSDTree();
+	}
+}
+
+function CreatePSDTree(){
+	var model = GetModel(JIMAKUData[Preset].modelname);
+	if (!model) { //モデルが読み込めないなら
+		return;
+	}
+	var psd = model.data;
+	var root = psd.tree();
+	DeepPSD(root,"");
+}
+
+function DeepPSD(node,name){
+	if(!node.isRoot()){//ルートじゃなかったら
+		name=name+"/"+node.get('name');
+		console.log(name);
+	}
+	if(node.hasChildren()){//子を持っているなら
+		var children = node.children();
+		for(var i=0;i<children.length;i++){
+			deepPSD(children[i],name);
+		}
+	}
+	return;
+}
+
 $(document).ready(function () {
 	var elem = document.getElementsByClassName('range');
 	var rangeValue = function (elem, target) {
@@ -574,14 +619,22 @@ $(document).ready(function () {
 		// 選択されているoption要素を取得する
 		var selectedItem = this.options[ this.selectedIndex ];
 		JIMAKUData[Preset].modelname = selectedItem.innerHTML;
+		CreatModelTree();
 		ShowImage();
 	}
 
+	/*
 	TreeData = new ModelTree("ルート");
 	TreeData.children.push(new ModelTree("子1"));
 	TreeData.children.push(new ModelTree("子2"));
 	console.log("データツリー");
 	console.log(TreeData);
-	$('#tree1').jstree({"plugins" : ["wholerow","checkbox"],'core' : {'themes':{'stripes':true},'data':TreeData}});
+	$('#tree1').jstree({"plugins" : ["checkbox","wholerow"],
+						"core" : {'themes':{'stripes':true},
+								  'data':TreeData,
+								  multiple: false
+								}
+					});
+	*/
 
 });

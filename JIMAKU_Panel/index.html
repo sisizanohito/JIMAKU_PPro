@@ -7,38 +7,38 @@
 	<link href="css/style.css" rel="stylesheet" type="text/css">
 	<link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
 	<link href="css/jquery.mCustomScrollbar.css" rel="stylesheet" type="text/css" />
-	<link href="lib/jstree/themes/default/style.css"  rel="stylesheet" type="text/css"/>
+	<link href="lib/jstree/themes/default/style.css" rel="stylesheet" type="text/css" />
 	<script src="./ext.js"></script>
 	<script src="./lib/CSInterface.js"></script>
 	<script src="./lib/Vulcan.js"></script>
-	<script>  
+	<script>
 		// for electron
-		if (typeof module !== 'undefined') {  
-		  window.__tempModuleExports__ = module.exports;
-		  module.exports = false;
+		if (typeof module !== 'undefined') {
+			window.__tempModuleExports__ = module.exports;
+			module.exports = false;
 		}
-	</script> 
+	</script>
 	<script src="./lib/jquery-3.3.1.js"></script>
 	<script src="./lib/jquery.mCustomScrollbar.concat.min.js"></script>
 	<script src="./lib/jquery.mousewheel.js"></script>
 	<script src="./lib/bootstrap.min.js"></script>
 	<script src="./lib/jstree/jstree.min.js"></script>
-	<script>  
+	<script>
 		// for electron
-		if (window.__tempModuleExports__) {  
-		  module.exports = window.__tempModuleExports__;
-		  window.__tempModuleExports__ = null;
-		  delete window.__tempModuleExports__;
+		if (window.__tempModuleExports__) {
+			module.exports = window.__tempModuleExports__;
+			window.__tempModuleExports__ = null;
+			delete window.__tempModuleExports__;
 		}
-		</script>
-		
-		<script>  
-		$(function() {
-		  console.log($ !== undefined);
+	</script>
+
+	<script>
+		$(function () {
+			console.log($ !== undefined);
 		});
-		</script>
-		<script src="./JIMAKULoad.js"></script>  
-		<script src="./mainJIMAKU.js"></script>  
+	</script>
+	<script src="./JIMAKULoad.js"></script>
+	<script src="./mainJIMAKU.js"></script>
 	<style>
 	</style>
 	<title>JIMAKU</title>
@@ -71,8 +71,8 @@
 			</li>
 		</ul>
 
-			<div contenteditable="true" id="presetName">---</div>
-			<button onClick="Save()" id="Save" class="btn default">Save</button>
+		<div contenteditable="true" id="presetName">---</div>
+		<button onClick="Save()" id="Save" class="btn default">Save</button>
 
 
 		<div class="tab-content">
@@ -204,7 +204,7 @@
 			</div>
 
 			<div id="tab2" class="tab-pane">
-					<table class="OptonTable">
+				<table class="OptonTable">
 					<tr>
 						<td>モデルリスト</td>
 						<td>モデル構造</td>
@@ -214,11 +214,12 @@
 					</tr>
 					<tr>
 						<td>
-								<form>
-										<select id="Image_model">
-										</select>
-								</form><br>
-								<div id="ImageArea" class="ShowImage" ></div>
+							<form>
+								<select id="Image_model">
+								</select>
+							</form>
+							<br>
+							<div id="ImageArea" class="ShowImage"></div>
 						</td>
 						<td>
 							<div id="tree1" class="Tree">
@@ -238,7 +239,7 @@
 										</form>
 									</td>
 								</tr>
-								</table>
+							</table>
 							<br>
 							<input type="button" value="Refresh" onclick="Refresh()" class="btn default">
 						</td>
@@ -263,7 +264,8 @@
 						</td>
 					</tr>
 				</table>
-				<button onClick="NewModel()" type="button" class="btn default">Model Load</button><br>
+				<button onClick="NewModel()" type="button" class="btn default">Model Load</button>
+				<br>
 				<input type="checkbox" value="" id="Image_check" checked>音声と一緒に立ち絵を出力
 			</div>
 			<div id="tab3" class="tab-pane">
