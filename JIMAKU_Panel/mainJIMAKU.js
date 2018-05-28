@@ -576,15 +576,65 @@ function CreatePSDTree(){
 function DeepPSD(node,name){
 	if(!node.isRoot()){//ルートじゃなかったら
 		name=name+"/"+node.get('name');
-		console.log(name);
+		//$('#ImageTree').prepend("<label>"+name+"</label><br>");
+		CreateTreeElement(name,node.hasChildren());
 	}
 	if(node.hasChildren()){//子を持っているなら
 		var children = node.children();
 		for(var i=0;i<children.length;i++){
-			deepPSD(children[i],name);
+			DeepPSD(children[i],name);
 		}
 	}
 	return;
+}
+
+function CreateTreeElement(path,groupFlag){
+	var splitPath = path.split("/");
+	splitPath.shift();//先頭の空白を削除
+	console.log(splitPath);
+	var root = $('#ImageTree');
+	SearchTree(root,splitPath,groupFlag);
+	return;
+}
+
+function SearchTree(node,splitPath,groupFlag){
+	if(splitPath.length > 0){
+		var name=splitPath[0];
+		var target = node.children('[name="'+name+'"]');
+		if(target.length == 0){//見つからなかった場合
+			if(splitPath.length > 1){//途中の場合
+				target=CreateNode(name,true);
+			}else{//終端の場合
+				target=CreateNode(name,groupFlag);
+			}
+			node.append(target);
+		}
+		splitPath.shift();
+		SearchTree(target,splitPath,groupFlag);
+	}
+	return;
+}
+
+function CreateNode(name,groupFlag){
+	var $node;
+	if(groupFlag){//type group
+		$node = $("<div>",{
+			name:name
+		});
+		var $label = $("<labl>",{
+			text:name
+		});
+		$node.append($label);
+	}else{//それ以外
+		$node = $("<div>",{
+			name:name
+		});
+		var $label = $("<labl>",{
+			text:name
+		});
+		$node.append($label);
+	}
+	return $node;
 }
 
 $(document).ready(function () {
