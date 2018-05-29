@@ -100,9 +100,12 @@ div {
 }
 
 .ShowImage{
-    width: 400px;
-    height: 400px;
+    width: 200px;
+    height: 200px;
     margin: 0% auto;
+    border: 2px solid rgb(0, 0, 0);
+    resize: both;
+    overflow:auto;
 }
 
 .Image{
@@ -114,7 +117,7 @@ div {
 
 .Tree{
     text-align: left;
-    height: 100vh;
+    height: 60vh;
     overflow:hidden;
     font-size: 90%;
 }
