@@ -554,6 +554,7 @@ function SetCurrentSelect(){
 }
 
 function CreatModelTree(){
+	$('#ImageTree').empty();//空にする
 	var model = GetModel(JIMAKUData[Preset].modelname);
 	if (!model) { //モデルが読み込めないなら
 		return;
@@ -576,7 +577,6 @@ function CreatePSDTree(){
 function DeepPSD(node,name){
 	if(!node.isRoot()){//ルートじゃなかったら
 		name=name+"/"+node.get('name');
-		//$('#ImageTree').prepend("<label>"+name+"</label><br>");
 		CreateTreeElement(name,node.hasChildren());
 	}
 	if(node.hasChildren()){//子を持っているなら
@@ -593,50 +593,111 @@ function CreateTreeElement(path,groupFlag){
 	splitPath.shift();//先頭の空白を削除
 	console.log(splitPath);
 	var root = $('#ImageTree');
-	SearchTree(root,splitPath,groupFlag);
+	SearchTree(root,0,splitPath,groupFlag);
 	return;
 }
 
-function SearchTree(node,splitPath,groupFlag){
-	if(splitPath.length > 0){
-		var name=splitPath[0];
+function SearchTree(node,index,splitPath,groupFlag){
+	if(splitPath.length > index){
+		var name=splitPath[index];
 		var target = node.children('[name="'+name+'"]');
+		var radioID = node.attr("name");
+		var value = "";
+		for(var i =index;i >= 0;i--){
+			value=PATH.posix.join(splitPath[i],value);
+		}
 		if(target.length == 0){//見つからなかった場合
-			if(splitPath.length > 1){//途中の場合
-				target=CreateNode(name,true);
-			}else{//終端の場合
-				target=CreateNode(name,groupFlag);
+			if(index == splitPath.length-1){//終端の場合
+				target=CreateNode(name,radioID,groupFlag,value);
+			}else{//途中の場合
+				target=CreateNode(name,radioID,true,value);
 			}
 			node.append(target);
 		}
-		splitPath.shift();
-		SearchTree(target,splitPath,groupFlag);
+		index++;
+		SearchTree(target,index,splitPath,groupFlag);
 	}
 	return;
 }
 
-function CreateNode(name,groupFlag){
+function CreateNode(name,radioID,groupFlag,value){
 	var $node;
+	var model = GetModel(JIMAKUData[Preset].modelname);
+	if (!model) { //モデルが読み込めないなら
+		return;
+	}
+	var psd = model.data;
+	var tree = psd.tree();
+	var child = tree.childrenAtPath(value)[0];
+	var layer = child.get("layer");
+	var visible = layer.visible;
+	
 	if(groupFlag){//type group
 		$node = $("<div>",{
 			name:name,
 			"class": "TreeNode"
 		});
-		var $label = $("<labl>",{
-			text:name
-		});
-		$node.append($label);
 	}else{//それ以外
 		$node = $("<div>",{
 			name:name,
 			"class": "TreeLeaf"
 		});
-		var $label = $("<labl>",{
-			text:name
-		});
-		$node.append($label);
 	}
+	var top = name.slice(0,1);//先頭文字
+	var $input;
+	switch (top) {
+		case "*":
+			name=name.slice(1);
+			$input = $("<input>",{
+				type:"radio",
+				name:radioID,
+				value:value
+			});
+			break;
+		case "!":
+			name=name.slice(1);
+			$input = $("<input>",{
+				type:"checkbox",
+				value:value
+			});
+			$input.hide();
+			break;
+		default:
+		$input = $("<input>",{
+			type:"checkbox",
+			value:value
+		});
+			break;
+	}
+	$input.on('change',PSDSet);
+	var $label = $("<labl>",{
+		text:name
+	});
+	if(visible){
+		$input.prop("checked",true);
+	}
+	$node.append($input);
+	$node.append($label);
+
 	return $node;
+}
+
+function PSDSet(){
+	var model = GetModel(JIMAKUData[Preset].modelname);
+	if (!model) { //モデルが読み込めないなら
+		return;
+	}
+	var psd = model.data;
+	var root = psd.tree();
+	
+	if ($(this).is(':checked')) {
+		alert("on:"+$(this).val());
+		if ($(this).attr('type') === "radio" ){
+			alert("radio");
+		}
+	}else{
+		alert("off:"+$(this).val());
+	}
 }
 
 $(document).ready(function () {

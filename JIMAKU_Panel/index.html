@@ -222,12 +222,13 @@
 								</select>
 							</form>
 							<br>
-							<div id="ImageArea" class="ShowImage"></div>
+							<div id="ImageArea" class="ShowImage"></div><br>
+							<button onClick="NewModel()" type="button" class="btn default">Model Load</button>
 						</td>
 						<td>
 							<div class="Tree">
-									<div id="ImageTree">
-										</div>
+									<div id="ImageTree" name="JIMAKU_Root">
+									</div>
 							</div>
 						</td>
 						<td>
@@ -269,8 +270,6 @@
 						</td>
 					</tr>
 				</table>
-				<button onClick="NewModel()" type="button" class="btn default">Model Load</button>
-				<br>
 				<input type="checkbox" value="" id="Image_check" checked>音声と一緒に立ち絵を出力
 			</div>
 			<div id="tab3" class="tab-pane">
