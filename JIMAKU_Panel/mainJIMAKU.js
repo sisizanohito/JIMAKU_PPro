@@ -619,7 +619,8 @@ function CreateNode(name,groupFlag){
 	var $node;
 	if(groupFlag){//type group
 		$node = $("<div>",{
-			name:name
+			name:name,
+			"class": "TreeNode"
 		});
 		var $label = $("<labl>",{
 			text:name
@@ -627,7 +628,8 @@ function CreateNode(name,groupFlag){
 		$node.append($label);
 	}else{//それ以外
 		$node = $("<div>",{
-			name:name
+			name:name,
+			"class": "TreeLeaf"
 		});
 		var $label = $("<labl>",{
 			text:name
@@ -658,10 +660,21 @@ $(document).ready(function () {
 		SetOption(Preset);
 	});
 
+	$(".tab-pane").mCustomScrollbar({ //プリセットのスクロールバー
+		autoHideScrollbar: true,
+		theme: "dark"
+	});
+
 	$(".Presets").mCustomScrollbar({ //プリセットのスクロールバー
 		autoHideScrollbar: true,
 		theme: "dark"
 	});
+
+	$(".Tree").mCustomScrollbar({ //プリセットのスクロールバー
+		autoHideScrollbar: true,
+		theme: "dark"
+	});
+	
 
 	var select = document.getElementById( 'Image_model' );
 	select.onchange = function()

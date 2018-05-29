@@ -21,12 +21,13 @@ div {
 }
 
 #presetName{
+    padding: 0%;
+    margin: 0%;
     color: #ca2222;
     font-weight: bold;
     font-size: 200%;
     text-align: center;
     width: 90%;
-    float: left;
     display: flex;
     align-items: center; /* 縦方向中央揃え */
     justify-content: center; /* 横方向中央揃え */
@@ -38,7 +39,6 @@ div {
 #Save{
     text-align: center;
     width: 10%;
-    float: left;
 }
 
 #PresetTable {
@@ -58,6 +58,11 @@ div {
     float: left;
 }
 
+.Utils{
+    display: flex;
+    width: 100%;
+}
+
 .Presets{
     padding: 0 0px;
     margin: 0%;
@@ -70,12 +75,19 @@ div {
 }
 .Option{
     width: 90%;
-	
+	height: 100%;
 }
 
 .tab-content{
+    height: 100%;
     margin: 1% 0% 0%;
 }
+
+.tab-pane{
+    overflow:hidden;
+    height: 80vh;
+}
+
 .nav-link {
 	background-color: #ccc;
     color: rgb(53, 52, 52);
@@ -102,4 +114,23 @@ div {
 
 .Tree{
     text-align: left;
+    height: 100vh;
+    overflow:hidden;
+    font-size: 90%;
+}
+
+.TreeNode{
+    font-weight: bold;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.TreeLeaf{
+    font-weight: normal;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.Tree .mCSB_inside > .mCSB_container{
+    margin: 0%
 }
