@@ -374,7 +374,7 @@ function LoadModel(){
 		for (var i = 0; i < list.length; i++) {
 			var modelPath = PATH.join(path,list[i]);
 			if(isDir(modelPath)){
-				console.log(list[i]);
+				//console.log(list[i]);
 				AddModel(list[i],modelPath);
 			}
 		}
@@ -429,7 +429,7 @@ var isDir = function(filepath) {
 		for (var i = 0; i < list.length; i++) {
 			var FilePath = PATH.join(path,list[i]);
 			if(isFile(FilePath)){
-				console.log(list[i]);
+				//console.log(list[i]);
 				var extname = PATH.extname(list[i]); 
 				switch (extname) {
 					case ".png"://仮
@@ -459,7 +459,7 @@ var isDir = function(filepath) {
 		for (var i = 0; i < list.length; i++) {
 			var FilePath = PATH.join(path,list[i]);
 			if(isFile(FilePath)){
-				console.log(list[i]);
+				//console.log(list[i]);
 				var extname = PATH.extname(list[i]); 
 				switch (extname) {
 					case ".psd"://仮
@@ -524,7 +524,7 @@ function ShowPSD(data){
 	console.log(root.export());
 	var PSDArea = document.getElementById('ImageArea');
 	dataUrl = toBase64(png);
-	image = new Image();
+	var image = new Image();
 	image.width = psd.image.width();
 	image.height = psd.image.height();
 	image.src = dataUrl;
@@ -591,7 +591,7 @@ function DeepPSD(node,name){
 function CreateTreeElement(path,groupFlag){
 	var splitPath = path.split("/");
 	splitPath.shift();//先頭の空白を削除
-	console.log(splitPath);
+	//console.log(splitPath);
 	var root = $('#ImageTree');
 	SearchTree(root,0,splitPath,groupFlag);
 	return;
@@ -658,7 +658,8 @@ function CreateNode(name,radioID,groupFlag,value){
 			name=name.slice(1);
 			$input = $("<input>",{
 				type:"checkbox",
-				value:value
+				value:value,
+				checked:true
 			});
 			$input.hide();
 			break;
@@ -678,7 +679,6 @@ function CreateNode(name,radioID,groupFlag,value){
 	}
 	$node.append($input);
 	$node.append($label);
-
 	return $node;
 }
 
@@ -689,15 +689,34 @@ function PSDSet(){
 	}
 	var psd = model.data;
 	var root = psd.tree();
-	
+	var nodePath = $(this).val();
+	var child = root.childrenAtPath(nodePath)[0];
+	var layer = child.get("layer");
+
 	if ($(this).is(':checked')) {
-		alert("on:"+$(this).val());
+		layer.visible = true;
+		layer.blendMode.visible = true;
 		if ($(this).attr('type') === "radio" ){
-			alert("radio");
+			var children = child.siblings();
+			var split = nodePath.split("/");
+			var nodeName =split[split.length-1];
+			children.forEach(function( node ) {
+				layer = node.get("layer");
+				if( node.name === nodeName){
+					layer.visible = true;
+					layer.blendMode.visible = true;
+				}else{
+					layer.visible = false;
+					layer.blendMode.visible = false;
+				}
+			  });
 		}
 	}else{
-		alert("off:"+$(this).val());
+		layer.visible = false;
+		layer.blendMode.visible = false;
 	}
+
+	ShowImage();
 }
 
 $(document).ready(function () {

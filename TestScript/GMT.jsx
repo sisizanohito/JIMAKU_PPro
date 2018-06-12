@@ -22,7 +22,7 @@ if (activeSeq) {
                 var params			= 	moComp.properties;
                 var srcTextParam	=	params.getParamForDisplayName("Source Text");
                 if (srcTextParam){
-                    var val	= srcTextParam.getValue();
+                    //var val	= srcTextParam.getValue();
                     srcTextParam.setValue("New value set by PProPanel!");
                 }
             }
