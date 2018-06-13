@@ -316,6 +316,47 @@ function toBase64(png) {
 	return canvas.toDataURL('image/png');
 }
 
+function DeleteModel(){
+	var res = confirm("現在の[" + JIMAKUData[Preset].modelname + "]を削除しますか?");
+	if (res == true) {
+		var name = JIMAKUData[Preset].modelname;
+		if (name === "") {
+			return;
+		}
+		var options = $('#Image_model').children(); //オプションを取得
+		for (var i = 0; i < options.length; i++) {
+			if (name === options.eq(i).text()) {
+				$('#Image_model').children('[value='+(i+1)+']').remove();
+				break;
+			}
+		}
+
+		var cs = new CSInterface();
+		var model = GetModel(JIMAKUData[Preset].modelname);
+		var dir = PATH.join(cs.getSystemPath(SystemPath.EXTENSION), MODELPath, model.name);
+		if (PathExists(dir)) {
+			RMDIR(dir, function (err, dirs, files) {
+				console.log(dirs);
+				console.log(files);
+				console.log('削除完了');
+			});
+		}else{
+			console.error("削除する対象がありません");
+		}
+		RemoveModel(name);
+		JIMAKUData[Preset].modelname = "";
+		Save();
+		SetCurrentSelect();
+		CreatModelTree();
+		ShowImage();
+	} else {
+		// キャンセル
+
+	}
+
+	
+}
+
 function NewModel() {
 	var filetypes = new Array();
 	filetypes[0] = 'png';
@@ -491,6 +532,15 @@ function GetModel(modelname) {
 	return model;
 }
 
+function RemoveModel(modelname) {
+	var i;
+	for(i = 0;i<ModelData.length;i++){
+		if(ModelData[i].name === modelname){
+			ModelData.splice(i, 1);
+		}
+	}
+	
+}
 
 function ShowImage() {
 	var ImageArea = document.getElementById('ImageArea');
