@@ -122,6 +122,10 @@ div {
     left: 0;
 }
 
+.NotDisp{
+    display: none;
+}
+
 .Tree{
     text-align: left;
     height: 60vh;
