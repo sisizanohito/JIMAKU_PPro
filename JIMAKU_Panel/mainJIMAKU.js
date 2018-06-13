@@ -509,6 +509,7 @@ function ShowImage() {
 			ImageArea.innerHTML = '<img src="file://' + model.data[0] + '" class="Image">';
 			break;
 		case Model_PSD:
+			console.log(model.data.tree().export());
 			ShowPSD(model.data.tree());
 			break;
 		default:
@@ -533,14 +534,16 @@ function ShowPSD(node){
 		var height = node.root().get('height');
 		var canvas = addCanvas(width,height);
 		var ctx = canvas[0].getContext('2d');
-		var png = layer.image.toPng()
+		var top = layer.top;
+		var left = layer.left;
+		var png = layer.image.toPng();
 		var dataUrl = toBase64(png);
 		var image = new Image();
 		image.width = layer.image.width();
 		image.height = layer.image.height();
 		image.src = dataUrl;
 		image.onload = function() {
-			ctx.drawImage(image, 0, 0);
+			ctx.drawImage(image, left, top);
 		}
 		//layer.image.saveAsPng("C:/Users/isiis/Documents/JIMAKU_PPro/"+$("#ImageArea *").length.toString()+".png");
 	}
