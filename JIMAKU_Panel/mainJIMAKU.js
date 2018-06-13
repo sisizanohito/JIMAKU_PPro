@@ -509,7 +509,7 @@ function ShowImage() {
 			ImageArea.innerHTML = '<img src="file://' + model.data[0] + '" class="Image">';
 			break;
 		case Model_PSD:
-			ShowPSD(model.data);
+			ShowPSD(model.data.tree());
 			break;
 		default:
 		console.error("ファイルが読み込めませんでした");
@@ -517,7 +517,36 @@ function ShowImage() {
 	}
 }
 
-function ShowPSD(data){
+function ShowPSD(node){
+	var layer = node.get("layer");
+	if(!node.isRoot()){//ルートじゃないなら
+		if(!layer.visible) return;//描画しない
+	}
+	if(node.hasChildren()){//子を持っているなら
+		var children = node.children();
+		for(var i=children.length-1;i>=0;i--){
+			ShowPSD(children[i]);
+		}
+	}else{//子を持っていないなら
+		console.log(node.get('name')+" : "+node.get('type'));
+		var width = node.root().get('width');
+		var height = node.root().get('height');
+		var canvas = addCanvas(width,height);
+		var ctx = canvas[0].getContext('2d');
+		var png = layer.image.toPng()
+		var dataUrl = toBase64(png);
+		var image = new Image();
+		image.width = layer.image.width();
+		image.height = layer.image.height();
+		image.src = dataUrl;
+		image.onload = function() {
+			ctx.drawImage(image, 0, 0);
+		}
+		//layer.image.saveAsPng("C:/Users/isiis/Documents/JIMAKU_PPro/"+$("#ImageArea *").length.toString()+".png");
+	}
+	return;
+
+	/*
 	var psd = data;
 	var root = psd.tree();
 	var png = psd.image.toPng()
@@ -530,6 +559,23 @@ function ShowPSD(data){
 	image.src = dataUrl;
 	var child = PSDArea.appendChild(image);
 	child.classList.add('Image');
+	*/
+}
+
+function addCanvas(width, height){
+	var id = "Layer"+$("#ImageArea *").length.toString();
+	 $("#ImageArea").append(
+	  $('<canvas></canvas>')
+		.addClass("Image")
+		.attr('id', id)
+		.attr('width', width)
+		.attr('height', height)
+	);
+	var canvas = $("#"+ id);
+  if (!canvas || !canvas[0].getContext){
+    return null;
+  }
+  return canvas;
 }
 
 function PathExists(path) {
@@ -754,6 +800,7 @@ $(document).ready(function () {
 		autoHideScrollbar: true,
 		theme: "dark"
 	});
+
 	
 
 	var select = document.getElementById( 'Image_model' );
