@@ -35,3 +35,14 @@ filecopy<br>
 Copyright (c) 2015 okunishinishi<br>
 The MIT License (MIT)<br>
 https://github.com/okunishinishi/node-filecopy/blob/master/LICENSE<br>
+
+
+Adobe-CEP/Samples<br>
+Copyright 2018 Adobe<br>
+The MIT License (MIT)<br>
+https://github.com/Adobe-CEP/Samples/blob/master/LICENSE<br>
+
+rmdir<br>
+Copyright(c) 2011 dreamerslab & lt; ben@ dreamerslab.com & gt;<br>
+The MIT License (MIT)<br>
+https://www.npmjs.com/package/rmdir
