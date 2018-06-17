@@ -79,6 +79,24 @@ function importWave(event) {
 }
 
 function importWave_MGT(event){
+	var elem = $(event).parents("div");
+	var videoTrack = elem[0].getElementsByTagName('select')[0].value;
+	var audioTrack = elem[0].getElementsByTagName('select')[1].value;
+	var x = elem[0].getElementsByTagName('input')[1].value;
+	var y = elem[0].getElementsByTagName('input')[2].value;
+	var fontSize = elem[0].getElementsByTagName('input')[3].value;
+	var scale = elem[0].getElementsByTagName('input')[4].value;
+	var edgePx = elem[0].getElementsByTagName('input')[5].value;
+	var fontColor = elem[0].getElementsByTagName('input')[6].value;
+	var backColor = elem[0].getElementsByTagName('input')[7].value;
+	var edgeColor = elem[0].getElementsByTagName('input')[8].value;
+	var fontAlpha = 255;
+	var backAlpha = elem[0].getElementsByTagName('input')[9].value;
+
+	var parameter = Preset + ',' + (Number(videoTrack) - 1) + ',' + (Number(audioTrack) - 1) + ',' + x + ',' + y + ',"' + backColor +
+		'","' + fontColor + '","' + edgeColor + '",' + fontSize + ',' + scale + ',' + edgePx+','+backAlpha;
+
+
 	var csInterface = new CSInterface();
 	var extPath = csInterface.getSystemPath(SystemPath.EXTENSION);
 	var OSVersion = csInterface.getOSInformation();
@@ -89,7 +107,7 @@ function importWave_MGT(event){
 			var sep = '\\\\';
 			extPath = extPath.replace(/\//g, sep);
 		}
-		csInterface.evalScript('$._PPP_.importMoGRT("' + extPath + '"'  + ')');
+		csInterface.evalScript('$._PPP_.importWavCaptionMGT("' + extPath+ '",' + parameter + ')');
 	}
 
 }

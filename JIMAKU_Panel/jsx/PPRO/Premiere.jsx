@@ -34,6 +34,14 @@ $._PPP_ = {
 			return '\\';
 		}
 	},
+	hexToRgb : function(hex) {
+		var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+		return result ? {
+			r: parseInt(result[1], 16),
+			g: parseInt(result[2], 16),
+			b: parseInt(result[3], 16)
+		} : null;
+	},
 
 	updateEventPanel: function (message) {
 		//$.writeln(message);
@@ -275,31 +283,126 @@ $._PPP_ = {
 		return color_fixHex;
 	},
 
-	importMoGRT : function (mogrtToImport) {
+	importWavCaptionMGT: function(mogrtToImport , Preset, videoTrack, soundTrack, x, y, bColor, fColor, eColor, size, scale, edgePx, backAlpha){
+		var addtime = 0.5;
+		if (app.project) {
+			var targetBin = $._PPP_.getDeepBin("JIMAKU/"+Preset+"/voices&captions",true);
+			var dataA = $._PPP_.importWav(targetBin);
+			if (targetBin && dataA) {
+				var mgt = $._PPP_.importMoGRT(mogrtToImport,videoTrack,soundTrack);
+				if(!mgt){
+					return;
+				}
+				var seq = app.project.activeSequence;
+				var now = seq.getPlayerPosition();
+				var aTrack = seq.audioTracks[soundTrack];
+				var vTrack = seq.videoTracks[videoTrack];
+				//inser Audio
+				var file_name = dataA.importThese.substring(dataA.importThese.lastIndexOf('\\') + 1, dataA.importThese.length);
+				var targetClip = $._PPP_.getClip(targetBin, file_name);
+				aTrack.insertClip(targetClip, now);
+
+				var AinClip = $._PPP_.getClipFromeSequence(file_name, aTrack);
+
+				var moComp = mgt.getMGTComponent();
+				if (moComp){
+					var params			= 	moComp.properties;
+					$._PPP_.setMGTColor(params,MGT_FONT_RGB,$._PPP_.hexToRgb(fColor),false);
+					$._PPP_.setMGTColor(params,MGT_BACK_RGB,$._PPP_.hexToRgb(bColor),false);
+					$._PPP_.setMGTColor(params,MGT_LINE_RGB,$._PPP_.hexToRgb(eColor),true);
+
+					$._PPP_.setMGTParameter(params,MGT_TEXR,dataA.importJimaku);//set text
+					$._PPP_.setMGTParameter(params,MGT_SCALE,scale);//set scale
+					$._PPP_.setMGTParameter(params,MGT_EDGE_SCALE,edgePx);//set edge px
+					$._PPP_.setMGTParameter(params,MGT_BACK_SCALE,3);//set back scale
+					$._PPP_.setMGTParameter(params,MGT_BACK_ALPHA,(backAlpha/255)*100);//set back alpha
+
+					$._PPP_.setMGTParameter(params,MGT_SHOW_TIME,AinClip.duration.seconds+addtime);//set show duration
+					$._PPP_.setMGTParameter(params,MGT_FADEIN_TIME,0.2);
+					$._PPP_.setMGTParameter(params,MGT_FADEOUT_TIME,0.2);
+					$._PPP_.setMGTParameter(params,MGT_SHOW_SPEED,5);
+				}
+
+				//Trim MGT
+				var endtime = AinClip.end;
+				endtime.seconds += addtime;
+				mgt.end = endtime
+				var motion = mgt.components[1];
+				var motionPosition = motion.properties[0];
+				var motionSize = motion.properties[1];
+				motionPosition.setValue([x, y]);
+				//motionSize.setValue(scale);
+				seq.setPlayerPosition(mgt.end.ticks);
+			} else {
+				$._PPP_.updateEventPanel("import Cancel");
+			}
+		}
+	},
+
+	importMoGRT: function (mogrtToImport,videoTrack,soundTrack) {
 		var activeSeq = app.project.activeSequence;
 		if (activeSeq) {
 			if (mogrtToImport){
 				var targetTime		= activeSeq.getPlayerPosition();
-				var vidTrackOffset  = 0;
-				var audTrackOffset	= 0;
+				var vidTrackOffset  = videoTrack;
+				var audTrackOffset	= soundTrack;
 				var newTrackItem 	= activeSeq.importMGT(	mogrtToImport, 
 															targetTime.ticks, 
 															vidTrackOffset,
 															audTrackOffset);
+				
 				if (newTrackItem){
-					var moComp = newTrackItem.getMGTComponent();
-					if (moComp){
-						var params			= 	moComp.properties;
-						var srcTextParam	=	params.getParamForDisplayName(MGT_TEXR);
-						if (srcTextParam){
-							var val	= srcTextParam.getValue();
-							srcTextParam.setValue("AAAA");
-						}
-					}
+					return newTrackItem;
 				}
 			} else {
 				app.setSDKEventMessage('Unable to import ' + mogrtToImport + '.', 'error');  
 			}
 		} 
+	},
+
+	setMGTParameter:function(params,name,value){
+		var srcTextParam =	params.getParamForDisplayName(name);
+		if (srcTextParam){
+			srcTextParam.setValue(value);
+		}
+	},
+
+	setMGTColor:function(params,name,value,update){
+		var srcTextParam =	params.getParamForDisplayName(name);
+		if (srcTextParam){
+			srcTextParam.setColorValue(1,value.r,value.g,value.b,update);
+		}
+	},
+
+	importWav: function (targetBin) {
+		var fileOrFilesToImport = File.openDialog("音声を選んでください", // title
+			"*.wav", // filter available files? 
+			false); // allow multiple?
+		if (fileOrFilesToImport) {
+			if (targetBin) {
+				targetBin.select();
+				var data = {
+					importThese: [],
+					importJimaku: [],
+				};
+				data.importThese = fileOrFilesToImport.fsName;
+				var fs = data.importThese.split('.');
+				fs[fs.length - 1] = "txt";
+				var importText = fs.join(".");
+				var ftext = File(importText);
+				ftext.open("r");
+				data.importJimaku = ftext.read();
+				ftext.close();
+				app.project.importFiles([data.importThese],
+					1, // suppress warnings 
+					targetBin,
+					0); // import as numbered stills
+				return data;
+			} else {
+				$._PPP_.updateEventPanel("Could not find or create target bin.");
+				return undefined;
+			}
+		}
+		return undefined;
 	}
 };

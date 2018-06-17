@@ -43,4 +43,17 @@ VRSTEREOSCOPICTYPE_Monoscopic		= 0;
 VRSTEREOSCOPICTYPE_OverUnder		= 1;        
 VRSTEREOSCOPICTYPE_SideBySide		= 2;        
  
- MGT_TEXR		= "ソーステキスト";        
+MGT_FONT_RGB = "塗りのカラー";
+MGT_LINE_RGB = "線のカラー";
+MGT_BACK_RGB = "背景色";
+
+MGT_TEXR		    = "ソーステキスト";
+MGT_SCALE		    = "スケール";
+MGT_EDGE_SCALE		= "線幅";
+MGT_FONT_ALPHA		= "文字の透明度";
+MGT_BACK_SCALE		= "背景の大きさ";
+MGT_BACK_ALPHA		= "背景の不透明度";
+MGT_SHOW_TIME		= "表示時間(秒)";
+MGT_FADEIN_TIME     = "フェードイン(秒)";
+MGT_FADEOUT_TIME     = "フェードアウト(秒)";
+MGT_SHOW_SPEED     = "文字並び速度";

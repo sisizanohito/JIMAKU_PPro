@@ -20,11 +20,11 @@ if (activeSeq) {
             //var moComp = newTrackItem.components[2]; // Simple Web Caption.mogrt
             if (moComp){
                 var params			= 	moComp.properties;
-                var srcTextParam	=	params.getParamForDisplayName("表示時間(秒)");
+                var srcTextParam	=	params.getParamForDisplayName("スケール");
                 if (srcTextParam){
                     var val	= srcTextParam.getValue();
                     alert (val);
-                    srcTextParam.setValue(7);
+                    //srcTextParam.setValue(7);
                 }
             }
         }
