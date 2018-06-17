@@ -16,14 +16,15 @@ if (activeSeq) {
                                                     vidTrackOffset,
                                                     audTrackOffset);
         if (newTrackItem){
-            //var moComp = newTrackItem.getMGTComponent();  //this function return Undefined
-            var moComp = newTrackItem.components[2]; // Simple Web Caption.mogrt
+            var moComp = newTrackItem.getMGTComponent();  //this function return Undefined
+            //var moComp = newTrackItem.components[2]; // Simple Web Caption.mogrt
             if (moComp){
                 var params			= 	moComp.properties;
-                var srcTextParam	=	params.getParamForDisplayName("Source Text");
+                var srcTextParam	=	params.getParamForDisplayName("表示時間(秒)");
                 if (srcTextParam){
-                    //var val	= srcTextParam.getValue();
-                    srcTextParam.setValue("New value set by PProPanel!");
+                    var val	= srcTextParam.getValue();
+                    alert (val);
+                    srcTextParam.setValue(7);
                 }
             }
         }
@@ -31,3 +32,4 @@ if (activeSeq) {
         app.setSDKEventMessage('Unable to import ' + mogrtToImport.fsName + '.', 'error');  
     }
 } 
+

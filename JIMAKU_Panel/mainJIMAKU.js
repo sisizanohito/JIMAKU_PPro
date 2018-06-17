@@ -78,6 +78,22 @@ function importWave(event) {
 
 }
 
+function importWave_MGT(event){
+	var csInterface = new CSInterface();
+	var extPath = csInterface.getSystemPath(SystemPath.EXTENSION);
+	var OSVersion = csInterface.getOSInformation();
+
+	if (extPath !== null) {
+		extPath = extPath + '/MGT/Fade(word).mogrt';
+		if (OSVersion.indexOf("Windows") >= 0) {
+			var sep = '\\\\';
+			extPath = extPath.replace(/\//g, sep);
+		}
+		csInterface.evalScript('$._PPP_.importMoGRT("' + extPath + '"'  + ')');
+	}
+
+}
+
 var barElement;
 
 function SetElement(event) {

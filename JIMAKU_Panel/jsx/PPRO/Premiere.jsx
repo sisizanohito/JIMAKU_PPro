@@ -275,21 +275,14 @@ $._PPP_ = {
 		return color_fixHex;
 	},
 
-	importMoGRT : function () {
+	importMoGRT : function (mogrtToImport) {
 		var activeSeq = app.project.activeSequence;
 		if (activeSeq) {
-			var filterString = "";
-			if (Folder.fs === 'Windows'){
-				filterString = "Motion Graphics Templates:*.mogrt";
-			}
-			var mogrtToImport	= 	File.openDialog (	"Choose MoGRT", 	// title
-														filterString, 					// filter available files? 
-														false);				// allow multiple?
 			if (mogrtToImport){
 				var targetTime		= activeSeq.getPlayerPosition();
 				var vidTrackOffset  = 0;
 				var audTrackOffset	= 0;
-				var newTrackItem 	= activeSeq.importMGT(	mogrtToImport.fsName, 
+				var newTrackItem 	= activeSeq.importMGT(	mogrtToImport, 
 															targetTime.ticks, 
 															vidTrackOffset,
 															audTrackOffset);
@@ -297,15 +290,15 @@ $._PPP_ = {
 					var moComp = newTrackItem.getMGTComponent();
 					if (moComp){
 						var params			= 	moComp.properties;
-						var srcTextParam	=	params.getParamForDisplayName("Source Text");
+						var srcTextParam	=	params.getParamForDisplayName(MGT_TEXR);
 						if (srcTextParam){
 							var val	= srcTextParam.getValue();
-							srcTextParam.setValue("New value set by PProPanel!");
+							srcTextParam.setValue("AAAA");
 						}
 					}
 				}
 			} else {
-				app.setSDKEventMessage('Unable to import ' + mogrtToImport.fsName + '.', 'error');  
+				app.setSDKEventMessage('Unable to import ' + mogrtToImport + '.', 'error');  
 			}
 		} 
 	}

@@ -43,3 +43,4 @@ VRSTEREOSCOPICTYPE_Monoscopic		= 0;
 VRSTEREOSCOPICTYPE_OverUnder		= 1;        
 VRSTEREOSCOPICTYPE_SideBySide		= 2;        
  
+ MGT_TEXR		= "ソーステキスト";        

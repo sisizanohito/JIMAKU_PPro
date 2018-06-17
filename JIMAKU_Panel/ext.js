@@ -15,6 +15,7 @@ function onLoaded() {
 	// Update the color of the panel when the theme color of the product changed.
 	csInterface.addEventListener(CSInterface.THEME_COLOR_CHANGED_EVENT, onAppThemeColorChanged);
 	// Listen for event sent in response to rendering a sequence.
+	/*
 	csInterface.addEventListener("com.adobe.csxs.events.PProPanelRenderEvent", function(event){
 		alert(event.data);
 	});
@@ -22,7 +23,7 @@ function onLoaded() {
 	csInterface.addEventListener("com.adobe.csxs.events.WorkspaceChanged", function(event){
 		alert("New workspace selected: " + event.data);
 	});
-
+	*/
 	// register for messages
 	VulcanInterface.addMessageListener(
 	    VulcanMessage.TYPE_PREFIX + "com.DVA.message.sendtext",
