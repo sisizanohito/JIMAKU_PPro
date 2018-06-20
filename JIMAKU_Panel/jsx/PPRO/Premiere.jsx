@@ -283,7 +283,7 @@ $._PPP_ = {
 		return color_fixHex;
 	},
 
-	importWavCaptionMGT: function(mogrtToImport , Preset, videoTrack, soundTrack, x, y, bColor, fColor, eColor, size, scale, edgePx, backAlpha){
+	importWavCaptionMGT: function(mogrtToImport , Preset, videoTrack, soundTrack, x, y, bColor, fColor, eColor, size, scale, edgePx, fontAlpha, backAlpha){
 		var addtime = 0.5;
 		if (app.project) {
 			var targetBin = $._PPP_.getDeepBin("JIMAKU/"+Preset+"/voices&captions",true);
@@ -315,6 +315,7 @@ $._PPP_ = {
 					$._PPP_.setMGTParameter(params,MGT_SCALE,scale);//set scale
 					$._PPP_.setMGTParameter(params,MGT_EDGE_SCALE,edgePx);//set edge px
 					$._PPP_.setMGTParameter(params,MGT_BACK_SCALE,3);//set back scale
+					$._PPP_.setMGTParameter(params,MGT_FONT_ALPHA,(fontAlpha/255)*100);//set font alpha
 					$._PPP_.setMGTParameter(params,MGT_BACK_ALPHA,(backAlpha/255)*100);//set back alpha
 
 					$._PPP_.setMGTParameter(params,MGT_SHOW_TIME,AinClip.duration.seconds+addtime);//set show duration

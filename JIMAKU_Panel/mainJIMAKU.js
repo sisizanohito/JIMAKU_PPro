@@ -1,4 +1,4 @@
-var JIMAKUparameter = function (name, videoTrack, audioTrack, x, y, fontSize, scale, edgePx, fontColor, backColor, edgeColor, backAlpha,
+var JIMAKUparameter = function (name, videoTrack, audioTrack, x, y, fontSize, scale, edgePx, fontColor, backColor, edgeColor, fontAlpha,backAlpha,
 	imageVideoTrack, imageX, imageY, imageScale, imageCheck) {
 	this.name = name;
 	this.videoTrack = videoTrack;
@@ -11,6 +11,7 @@ var JIMAKUparameter = function (name, videoTrack, audioTrack, x, y, fontSize, sc
 	this.fontColor = fontColor;
 	this.backColor = backColor;
 	this.edgeColor = edgeColor;
+	this.fontAlpha = fontAlpha;
 	this.backAlpha = backAlpha;
 	this.imageVideoTrack = imageVideoTrack
 	this.imageX = imageX;
@@ -56,7 +57,7 @@ function importWave(event) {
 	var backColor = elem[0].getElementsByTagName('input')[7].value;
 	var edgeColor = elem[0].getElementsByTagName('input')[8].value;
 	var fontAlpha = 255;
-	var backAlpha = elem[0].getElementsByTagName('input')[9].value;
+	var backAlpha = elem[0].getElementsByTagName('input')[10].value;
 	fontColor = fontColor + ("0" + Number(fontAlpha).toString(16)).slice(-2);
 	backColor = backColor + ("0" + Number(backAlpha).toString(16)).slice(-2);
 	edgeColor = edgeColor + ("0" + Number(255).toString(16)).slice(-2);
@@ -90,11 +91,11 @@ function importWave_MGT(event){
 	var fontColor = elem[0].getElementsByTagName('input')[6].value;
 	var backColor = elem[0].getElementsByTagName('input')[7].value;
 	var edgeColor = elem[0].getElementsByTagName('input')[8].value;
-	var fontAlpha = 255;
-	var backAlpha = elem[0].getElementsByTagName('input')[9].value;
+	var fontAlpha = elem[0].getElementsByTagName('input')[9].value;;
+	var backAlpha = elem[0].getElementsByTagName('input')[10].value;
 
 	var parameter = Preset + ',' + (Number(videoTrack) - 1) + ',' + (Number(audioTrack) - 1) + ',' + x + ',' + y + ',"' + backColor +
-		'","' + fontColor + '","' + edgeColor + '",' + fontSize + ',' + scale + ',' + edgePx+','+backAlpha;
+		'","' + fontColor + '","' + edgeColor + '",' + fontSize + ',' + scale + ',' + edgePx+','+fontAlpha+','+backAlpha;
 
 
 	var csInterface = new CSInterface();
@@ -207,6 +208,8 @@ function SetOption(index) {
 	//非透過率の反映
 	var num = Number(JIMAKUData[index].backAlpha);
 	$("#backAlphaText")[0].innerHTML = Math.round(num / 255 * 100) + "%";
+	var num = Number(JIMAKUData[index].fontAlpha);
+	$("#backAlphaText")[0].innerHTML = Math.round(num / 255 * 100) + "%";
 
 	document.getElementById('Image_video').value = JIMAKUData[index].imageVideoTrack;
 	document.getElementById('Image_pos:x').value = JIMAKUData[index].imageX;
@@ -237,6 +240,7 @@ function SaveOption(index) {
 	JIMAKUData[index].fontColor = document.getElementById('fontColor').value;
 	JIMAKUData[index].backColor = document.getElementById('backColor').value;
 	JIMAKUData[index].edgeColor = document.getElementById('edgeColor').value;
+	JIMAKUData[index].fontAlpha = document.getElementById('fontAlpha').value;
 	JIMAKUData[index].backAlpha = document.getElementById('backAlpha').value;
 
 	JIMAKUData[index].imageVideoTrack = document.getElementById('Image_video').value;
@@ -270,7 +274,7 @@ function LoadJSON() {
 	} else { //失敗
 		var callScript = '$._PPP_.updateEventPanel("' + "JIMAKUの初回起動" + '")';
 		cs.evalScript(callScript);
-		JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 0.5, 0.5, 22, 260, 0, "#000000", "#000000", "#000000", 255, 3, 0.5, 0.5, 100, true));
+		JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 0.5, 0.5, 22, 260, 0, "#000000", "#000000", "#000000", 255, 255, 3, 0.5, 0.5, 100, true));
 		SaveJSON(path, JIMAKUData);
 	}
 
@@ -311,7 +315,7 @@ function AddPreset() {
 	$newRow[0].cells[0].innerText = "---";
 	$newRow.insertAfter($row);
 	Preset = $("#PresetTable tr:not(.inputButton)").length - 1; //プリセットの合計-1
-	JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 0.5, 0.5, 22, 260, 0, "#000000", "#000000", "#000000", 255, 3, 0.5, 0.5, 100, true));
+	JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 0.5, 0.5, 22, 260, 0, "#000000", "#000000", "#000000", 255, 255, 3, 0.5, 0.5, 100, true));
 	SetOption(Preset);
 }
 
