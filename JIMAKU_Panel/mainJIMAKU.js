@@ -651,41 +651,6 @@ function ShowPSD(node) {
 	monitorLoad.counter += 1;
 	var imageElememnt = DrawPSD(node);
 	monitorLoad.counter -= 1;
-
-	/*
-	if(!imageElememnt){
-		console.error("描画オブジェクトなし");
-		return;
-	}
-	imageElememnt.addEventListener('load', function(){ //最後の画像が読み終わったら
-		var img = canvas[0].toDataURL('image/png');
-		var imageBuffer = decodeBase64Image(img);
-		FS.writeFile("C:/Users/isiis/Documents/JIMAKU_PPro/image.png", imageBuffer.data,
-		function () {
-			console.log("保存終了");
-		});
-	});
-
-	*/
-	
-
-	/*
-	//画像の合成
-	var $canvasList = $("#ImageArea *");
-
-	var width = node.root().get('width');
-	var height = node.root().get('height');
-	var canvas = addCanvas(width,height);
-	var ctx = canvas[0].getContext('2d');
-	for(var i=0; i<$canvasList.length;i++){
-		var $canvasElememt = $canvasList[i];
-		var image = createImage($canvasElememt.getContext('2d'));
-		image.onload = function() {
-			ctx.drawImage(image,0,0);
-		}
-		
-	}
-	*/
 }
 
 
