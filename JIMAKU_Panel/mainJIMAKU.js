@@ -45,19 +45,18 @@ var ModelTree = function (text) {
 var TreeData;
 
 function importWave(event) {
-	var elem = $(event).parents("div");
-	var videoTrack = elem[0].getElementsByTagName('select')[0].value;
-	var audioTrack = elem[0].getElementsByTagName('select')[1].value;
-	var x = elem[0].getElementsByTagName('input')[1].value;
-	var y = elem[0].getElementsByTagName('input')[2].value;
-	var fontSize = elem[0].getElementsByTagName('input')[3].value;
-	var scale = elem[0].getElementsByTagName('input')[4].value;
-	var edgePx = elem[0].getElementsByTagName('input')[5].value;
-	var fontColor = elem[0].getElementsByTagName('input')[6].value;
-	var backColor = elem[0].getElementsByTagName('input')[7].value;
-	var edgeColor = elem[0].getElementsByTagName('input')[8].value;
+	var videoTrack = 	$("#video")[0].value;
+	var audioTrack = $("#audio")[0].value;
+	var x = $("#pos:x")[0].value;
+	var y = $("#pos:y")[0].value;
+	var fontSize = $("#fontSize")[0].value;
+	var scale =$("#scale")[0].value;
+	var edgePx = $("#edgePx")[0].value;
+	var fontColor = $("#fontColor")[0].value;
+	var backColor = $("#backColor")[0].value;
+	var edgeColor = $("#edgeColor")[0].value;
 	var fontAlpha = 255;
-	var backAlpha = elem[0].getElementsByTagName('input')[10].value;
+	var backAlpha = $("#backAlpha")[0].value;
 	fontColor = fontColor + ("0" + Number(fontAlpha).toString(16)).slice(-2);
 	backColor = backColor + ("0" + Number(backAlpha).toString(16)).slice(-2);
 	edgeColor = edgeColor + ("0" + Number(255).toString(16)).slice(-2);
@@ -80,19 +79,18 @@ function importWave(event) {
 }
 
 function importWave_MGT(event){
-	var elem = $(event).parents("div");
-	var videoTrack = elem[0].getElementsByTagName('select')[0].value;
-	var audioTrack = elem[0].getElementsByTagName('select')[1].value;
-	var x = elem[0].getElementsByTagName('input')[1].value;
-	var y = elem[0].getElementsByTagName('input')[2].value;
-	var fontSize = elem[0].getElementsByTagName('input')[3].value;
-	var scale = elem[0].getElementsByTagName('input')[4].value;
-	var edgePx = elem[0].getElementsByTagName('input')[5].value;
-	var fontColor = elem[0].getElementsByTagName('input')[6].value;
-	var backColor = elem[0].getElementsByTagName('input')[7].value;
-	var edgeColor = elem[0].getElementsByTagName('input')[8].value;
-	var fontAlpha = elem[0].getElementsByTagName('input')[9].value;;
-	var backAlpha = elem[0].getElementsByTagName('input')[10].value;
+	var videoTrack = 	$("#video")[0].value;
+	var audioTrack = $("#audio")[0].value;
+	var x = $("#pos:x")[0].value;
+	var y = $("#pos:y")[0].value;
+	var fontSize = $("#fontSize")[0].value;
+	var scale =$("#scale")[0].value;
+	var edgePx = $("#edgePx")[0].value;
+	var fontColor = $("#fontColor")[0].value;
+	var backColor = $("#backColor")[0].value;
+	var edgeColor = $("#edgeColor")[0].value;
+	var fontAlpha = $("#fontAlpha")[0].value;;
+	var backAlpha = $("#backAlpha")[0].value;
 
 	var parameter = Preset + ',' + (Number(videoTrack) - 1) + ',' + (Number(audioTrack) - 1) + ',' + x + ',' + y + ',"' + backColor +
 		'","' + fontColor + '","' + edgeColor + '",' + fontSize + ',' + scale + ',' + edgePx+','+fontAlpha+','+backAlpha;
@@ -274,7 +272,7 @@ function LoadJSON() {
 	} else { //失敗
 		var callScript = '$._PPP_.updateEventPanel("' + "JIMAKUの初回起動" + '")';
 		cs.evalScript(callScript);
-		JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 0.5, 0.5, 22, 260, 0, "#000000", "#000000", "#000000", 255, 255, 3, 0.5, 0.5, 100, true));
+		JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 0.5, 0.8, 22, 70, 0, "#000000", "#000000", "#000000", 255, 255, 3, 0.5, 0.5, 100, true));
 		SaveJSON(path, JIMAKUData);
 	}
 
@@ -315,7 +313,7 @@ function AddPreset() {
 	$newRow[0].cells[0].innerText = "---";
 	$newRow.insertAfter($row);
 	Preset = $("#PresetTable tr:not(.inputButton)").length - 1; //プリセットの合計-1
-	JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 0.5, 0.5, 22, 260, 0, "#000000", "#000000", "#000000", 255, 255, 3, 0.5, 0.5, 100, true));
+	JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 0.5, 0.8, 22, 70, 0, "#000000", "#000000", "#000000", 255, 255, 3, 0.5, 0.5, 100, true));
 	SetOption(Preset);
 }
 
@@ -620,15 +618,21 @@ var createImage = function (context) {
 		console.log(counter + ' -> ' + value);
 		counter = value;
 		if(counter==0){
+			var model = GetModel(JIMAKUData[Preset].modelname);
+			if (!model) { //モデルが読み込めないなら
+				return;
+			}
+			var cs = new CSInterface();
+			var dir = PATH.join(cs.getSystemPath(SystemPath.EXTENSION), MODELPath, model.name,"image.png");
 			var canvas = $("#Layer0"); 
 			var img = canvas[0].toDataURL('image/png');
 			var imageBuffer = decodeBase64Image(img);
-			/*
-			FS.writeFile("C:/Users/???/Documents/JIMAKU_PPro/image.png", imageBuffer.data,
+			
+			FS.writeFile(dir, imageBuffer.data,
 			function () {
 				console.log("保存終了");
 			});
-			*/
+			
 		}
       },
       get: function get () {
