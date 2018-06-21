@@ -44,14 +44,17 @@ var ModelTree = function (text) {
 }
 var TreeData;
 
+var startTime = 0;
+var endTime = 0;
+
 function importWave(event) {
 	var videoTrack = 	$("#video")[0].value;
 	var audioTrack = $("#audio")[0].value;
-	var x = $("#pos:x")[0].value;
-	var y = $("#pos:y")[0].value;
-	var fontSize = $("#fontSize")[0].value;
-	var scale =$("#scale")[0].value;
-	var edgePx = $("#edgePx")[0].value;
+	var x = $("#pos_x")[0].val();
+	var y = $("#pos_y")[0].val();
+	var fontSize = $("#fontSize")[0].val;
+	var scale =$("#scale")[0].val;
+	var edgePx = $("#edgePx")[0].val;
 	var fontColor = $("#fontColor")[0].value;
 	var backColor = $("#backColor")[0].value;
 	var edgeColor = $("#edgeColor")[0].value;
@@ -78,36 +81,77 @@ function importWave(event) {
 
 }
 
-function importWave_MGT(event){
-	var videoTrack = 	$("#video")[0].value;
-	var audioTrack = $("#audio")[0].value;
-	var x = $("#pos:x")[0].value;
-	var y = $("#pos:y")[0].value;
-	var fontSize = $("#fontSize")[0].value;
-	var scale =$("#scale")[0].value;
-	var edgePx = $("#edgePx")[0].value;
-	var fontColor = $("#fontColor")[0].value;
-	var backColor = $("#backColor")[0].value;
-	var edgeColor = $("#edgeColor")[0].value;
-	var fontAlpha = $("#fontAlpha")[0].value;;
-	var backAlpha = $("#backAlpha")[0].value;
 
+function importWave_MGT(event){
+	var videoTrack = 	$("#video").val();
+	var audioTrack = $("#audio").val();
+	var x = $("#pos_x").val();
+	var y = $("#pos_y").val();
+	var fontSize = $("#fontSize").val();
+	var scale =$("#scale").val();
+	var edgePx = $("#edgePx").val();
+	var fontColor = $("#fontColor").val();
+	var backColor = $("#backColor").val();
+	var edgeColor = $("#edgeColor").val();
+	var fontAlpha = $("#fontAlpha").val();
+	var backAlpha = $("#backAlpha").val();
 	var parameter = Preset + ',' + (Number(videoTrack) - 1) + ',' + (Number(audioTrack) - 1) + ',' + x + ',' + y + ',"' + backColor +
 		'","' + fontColor + '","' + edgeColor + '",' + fontSize + ',' + scale + ',' + edgePx+','+fontAlpha+','+backAlpha;
 
-
 	var csInterface = new CSInterface();
 	var extPath = csInterface.getSystemPath(SystemPath.EXTENSION);
-	var OSVersion = csInterface.getOSInformation();
 
 	if (extPath !== null) {
 		extPath = extPath + '/MGT/Fade(word).mogrt';
-		if (OSVersion.indexOf("Windows") >= 0) {
-			var sep = '\\\\';
-			extPath = extPath.replace(/\//g, sep);
+		extPath=ConvertFilePath(extPath);
+		csInterface.evalScript('$._PPP_.importWavCaptionMGT("' + extPath+ '",' + parameter + ')',function(result){
+			alert(result);
+		});
+		if($("#Image_check").prop("checked")){//立ち絵を出力
+			var model = GetModel(JIMAKUData[Preset].modelname);
+			if(!model){return;}
+			var canvas = $("#Layer0");
+			csInterface.evalScript('$._PPP_.checkImage("' + model.name + '","' + canvas.attr('name')+".png" + '")',ExportModel);
 		}
-		csInterface.evalScript('$._PPP_.importWavCaptionMGT("' + extPath+ '",' + parameter + ')');
 	}
+}
+
+function ConvertFilePath(filepath){
+	var csInterface = new CSInterface();
+	var OSVersion = csInterface.getOSInformation();
+	if (OSVersion.indexOf("Windows") >= 0) {
+		var sep = '\\\\';
+		filepath = filepath.replace(/\//g, sep);
+	}
+	return filepath;
+}
+
+function ExportModel(result){
+	if(result==="false"){
+		ExportPNG(function (filepath) {
+			var csInterface = new CSInterface();
+			var model = GetModel(JIMAKUData[Preset].modelname);
+			filepath = filepath.replace(/\\/g, "\\\\");
+			csInterface.evalScript('$._PPP_.ImportImage("' + model.name + '","' + filepath + '")',insertModel);
+		});
+	}else{
+		insertModel();
+	}
+}
+
+function insertModel(){
+	var canvas = $("#Layer0");
+	var clipName = canvas.attr('name')+".png"
+	var videoTrack = 	$("#Image_video").val();
+	var x = $("#Image_pos_x").val();
+	var y = $("#Image_pos_y").val();
+	var scale =$("#Image_scale").val();
+
+	var parameter = clipName + ',' + (Number(videoTrack) - 1) + ',' + (Number(audioTrack) - 1) + ',' + x + ',' + y + ',"' + backColor +
+		'","' + fontColor + '","' + edgeColor + '",' + fontSize + ',' + scale + ',' + edgePx+','+fontAlpha+','+backAlpha;
+
+	var csInterface = new CSInterface();
+	csInterface.evalScript('$._PPP_.ImportImage("' + model.name + '",' + parameter + ')');
 
 }
 
@@ -194,8 +238,8 @@ function SetOption(index) {
 	document.getElementById('presetName').innerHTML = JIMAKUData[index].name;
 	document.getElementById('video').value = JIMAKUData[index].videoTrack;
 	document.getElementById('audio').value = JIMAKUData[index].audioTrack;
-	document.getElementById('pos:x').value = JIMAKUData[index].x;
-	document.getElementById('pos:y').value = JIMAKUData[index].y;
+	document.getElementById('pos_x').value = JIMAKUData[index].x;
+	document.getElementById('pos_y').value = JIMAKUData[index].y;
 	document.getElementById('fontSize').value = JIMAKUData[index].fontSize;
 	document.getElementById('scale').value = JIMAKUData[index].scale;
 	document.getElementById('edgePx').value = JIMAKUData[index].edgePx;
@@ -210,8 +254,8 @@ function SetOption(index) {
 	$("#backAlphaText")[0].innerHTML = Math.round(num / 255 * 100) + "%";
 
 	document.getElementById('Image_video').value = JIMAKUData[index].imageVideoTrack;
-	document.getElementById('Image_pos:x').value = JIMAKUData[index].imageX;
-	document.getElementById('Image_pos:y').value = JIMAKUData[index].imageY;
+	document.getElementById('Image_pos_x').value = JIMAKUData[index].imageX;
+	document.getElementById('Image_pos_y').value = JIMAKUData[index].imageY;
 	document.getElementById('Image_scale').value = JIMAKUData[index].imageScale;
 	chk_status = JIMAKUData[index].imageCheck;
 	if (!chk_status) {
@@ -230,8 +274,8 @@ function SaveOption(index) {
 	JIMAKUData[index].name = document.getElementById('presetName').innerHTML;
 	JIMAKUData[index].videoTrack = document.getElementById('video').value;
 	JIMAKUData[index].audioTrack = document.getElementById('audio').value;
-	JIMAKUData[index].x = document.getElementById('pos:x').value;
-	JIMAKUData[index].y = document.getElementById('pos:y').value;
+	JIMAKUData[index].x = document.getElementById('pos_x').value;
+	JIMAKUData[index].y = document.getElementById('pos_y').value;
 	JIMAKUData[index].fontSize = document.getElementById('fontSize').value;
 	JIMAKUData[index].scale = document.getElementById('scale').value;
 	JIMAKUData[index].edgePx = document.getElementById('edgePx').value;
@@ -242,8 +286,8 @@ function SaveOption(index) {
 	JIMAKUData[index].backAlpha = document.getElementById('backAlpha').value;
 
 	JIMAKUData[index].imageVideoTrack = document.getElementById('Image_video').value;
-	JIMAKUData[index].imageX = document.getElementById('Image_pos:x').value;
-	JIMAKUData[index].imageY = document.getElementById('Image_pos:y').value;
+	JIMAKUData[index].imageX = document.getElementById('Image_pos_x').value;
+	JIMAKUData[index].imageY = document.getElementById('Image_pos_y').value;
 	JIMAKUData[index].imageScale = document.getElementById('Image_scale').value;
 	JIMAKUData[index].imageCheck = $("#Image_check").prop("checked");
 }
@@ -618,21 +662,7 @@ var createImage = function (context) {
 		console.log(counter + ' -> ' + value);
 		counter = value;
 		if(counter==0){
-			var model = GetModel(JIMAKUData[Preset].modelname);
-			if (!model) { //モデルが読み込めないなら
-				return;
-			}
-			var cs = new CSInterface();
-			var dir = PATH.join(cs.getSystemPath(SystemPath.EXTENSION), MODELPath, model.name,"image.png");
-			var canvas = $("#Layer0"); 
-			var img = canvas[0].toDataURL('image/png');
-			var imageBuffer = decodeBase64Image(img);
-			
-			FS.writeFile(dir, imageBuffer.data,
-			function () {
-				console.log("保存終了");
-			});
-			
+			//ExportPNG();
 		}
       },
       get: function get () {
@@ -643,14 +673,32 @@ var createImage = function (context) {
     return sample;
   }(Object, Number));
 
+  function ExportPNG(callback){
+			var model = GetModel(JIMAKUData[Preset].modelname);
+			if (!model) { //モデルが読み込めないなら
+				return;
+			}
+			var cs = new CSInterface();
+	
+			var canvas = $("#Layer0"); 
+			var img = canvas[0].toDataURL('image/png');
+			var imageBuffer = decodeBase64Image(img);
+	var filepath = PATH.join(cs.getSystemPath(SystemPath.EXTENSION), MODELPath, model.name,canvas.attr('name')+".png");
+	FS.writeFile(filepath, imageBuffer.data,
+			function () {
+				console.log(filepath+"保存終了");
+				callback(filepath);
+			});
+      }
+
 function ShowPSD(node) {
 	console.log(node.export());
 	var width = node.root().get('width');
 	var height = node.root().get('height');
 	var canvas = addCanvas(width, height);
-	monitorLoad.counter += 1;
-	var imageElememnt = DrawPSD(node);
-	monitorLoad.counter -= 1;
+	//monitorLoad.counter += 1;
+	var imageElememnt = DrawPSD(node,"root");
+	//monitorLoad.counter -= 1;
 }
 
 
@@ -669,7 +717,7 @@ function decodeBase64Image(dataString) {
 	return response;
 }
 
-function DrawPSD(node) {
+function DrawPSD(node,name) {
 	var imageElememnt;
 	var layer = node.get("layer");
 	var type = node.get("type");
@@ -679,17 +727,19 @@ function DrawPSD(node) {
 	if (node.hasChildren()) { //子を持っているなら
 		var children = node.children();
 		for (var i = children.length - 1; i >= 0; i--) {
-			var hoge = DrawPSD(children[i]);
+			var new_name = name +'_'+ i.toString();
+			var hoge = DrawPSD(children[i],new_name);
 			if(hoge){
 				imageElememnt = hoge;//更新
 			}
 		}
 	} else if(type === "layer") { //レイヤーなら
-		console.log(node.get('name') + " : " + node.get('type'));
+		console.log(name + " : " + node.get('type'));
 		var width = node.root().get('width');
 		var height = node.root().get('height');
 		var canvas = $("#Layer0"); //addCanvas(width,height);
 		//canvas.addClass("NotDisp");
+		canvas.attr('name', canvas.attr('name')+name+"#");
 		var ctx = canvas[0].getContext('2d');
 		var top = layer.top;
 		var left = layer.left;
@@ -698,10 +748,10 @@ function DrawPSD(node) {
 		var image = new Image();
 		image.width = layer.image.width();
 		image.height = layer.image.height();
-		monitorLoad.counter += 1;
+		//monitorLoad.counter += 1;
 		image.addEventListener('load', function(){ 
 			ctx.drawImage(image, left, top); 
-			monitorLoad.counter -= 1;
+			//monitorLoad.counter -= 1;
 		});
 		image.src = dataUrl;
 		image.name = node.get("name");	
@@ -718,6 +768,7 @@ function addCanvas(width, height) {
 		.attr('id', id)
 		.attr('width', width)
 		.attr('height', height)
+		.attr('name', '')
 	);
 	var canvas = $("#" + id);
 	if (!canvas || !canvas[0].getContext) {

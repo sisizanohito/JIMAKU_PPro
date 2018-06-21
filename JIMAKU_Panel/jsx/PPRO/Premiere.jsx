@@ -325,6 +325,7 @@ $._PPP_ = {
 				}
 
 				//Trim MGT
+				var starttime = AinClip.start;
 				var endtime = AinClip.end;
 				endtime.seconds += addtime;
 				mgt.end = endtime
@@ -334,11 +335,13 @@ $._PPP_ = {
 				motionPosition.setValue([x, y]);
 				//motionSize.setValue(scale);
 				seq.setPlayerPosition(mgt.end.ticks);
+				return [starttime.seconds,endtime.seconds]
 			} else {
 				$._PPP_.updateEventPanel("import Cancel");
 			}
 		}
 	},
+	
 
 	importMoGRT: function (mogrtToImport,videoTrack,soundTrack) {
 		var activeSeq = app.project.activeSequence;
@@ -405,5 +408,32 @@ $._PPP_ = {
 			}
 		}
 		return undefined;
+	},
+
+	checkImage: function (model_name,file_name) {
+		if (app.project) {
+			var targetBin = $._PPP_.getDeepBin("JIMAKU/model/"+model_name,true);
+			if (targetBin) {
+				var clip =$._PPP_.getClip(targetBin, file_name);
+				if(!clip){
+					return false;
+				}else{
+					return true;
+				}
+			}
+		}
+		return false;
+	},
+
+	ImportImage: function(model_name,file_path){
+		if (app.project) {
+			var targetBin = $._PPP_.getDeepBin("JIMAKU/model/"+model_name,true);
+			if (targetBin) {
+				app.project.importFiles([file_path],
+					1, // suppress warnings 
+					targetBin,
+					0); // import as numbered stills
+			}
+		}
 	}
 };
