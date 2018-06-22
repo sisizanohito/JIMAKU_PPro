@@ -447,9 +447,13 @@ $._PPP_ = {
 				var vTrack = seq.videoTracks[videoTrack];
 				//insert
 				var targetClip = $._PPP_.getClip(targetBin, clipName);
+				targetClip.setOutPoint(endTime-startTime);
+				now.seconds = startTime;
 				vTrack.insertClip(targetClip, now);
 				
+				//Trim MGT
 				var VinClip = $._PPP_.getClipFromeSequence(clipName, vTrack);
+				/*
 				var Vstarttime = VinClip.start;
 				Vstarttime.seconds = startTime;
 				var Vendtime = VinClip.end;
@@ -461,7 +465,7 @@ $._PPP_ = {
 					VinClip.start.seconds = Vstarttime;
 					VinClip.end.seconds = Vendtime;
 				}
-				//Trim MGT
+				*/
 				var motion = VinClip.components[1];
 				var motionPosition = motion.properties[0];
 				var motionSize = motion.properties[1];
