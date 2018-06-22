@@ -1,5 +1,5 @@
 ﻿
-var A = getClip(app.project.rootItem,"001_ONE.xml");
+var A = getClip(app.project.rootItem,"root_3#root_2_3#root_1_3#root_0_2#.png");
 A.setScaleToFrameSize();
 alert (A.findItemsMatchingMediaPath());
   //var myFile=File("C:\\Users\\isiis\\Desktop\\run.xml");

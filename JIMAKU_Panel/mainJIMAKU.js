@@ -105,14 +105,21 @@ function importWave_MGT(event){
 		extPath = extPath + '/MGT/Fade(word).mogrt';
 		extPath=ConvertFilePath(extPath);
 		csInterface.evalScript('$._PPP_.importWavCaptionMGT("' + extPath+ '",' + parameter + ')',function(result){
-			alert(result);
+			if(!result){
+				alert("再生時間が取得できません");
+				return;
+			}
+			var sTime = result.split(",");
+			startTime = sTime[0];
+			endTime = sTime[1];
+			if($("#Image_check").prop("checked")){//立ち絵を出力
+				var model = GetModel(JIMAKUData[Preset].modelname);
+				if(!model){return;}
+				var canvas = $("#Layer0");
+				csInterface.evalScript('$._PPP_.checkImage("' + model.name + '","' + canvas.attr('name')+".png" + '")',ExportModel);
+			}
 		});
-		if($("#Image_check").prop("checked")){//立ち絵を出力
-			var model = GetModel(JIMAKUData[Preset].modelname);
-			if(!model){return;}
-			var canvas = $("#Layer0");
-			csInterface.evalScript('$._PPP_.checkImage("' + model.name + '","' + canvas.attr('name')+".png" + '")',ExportModel);
-		}
+		
 	}
 }
 
@@ -146,13 +153,13 @@ function insertModel(){
 	var x = $("#Image_pos_x").val();
 	var y = $("#Image_pos_y").val();
 	var scale =$("#Image_scale").val();
+	var model = GetModel(JIMAKUData[Preset].modelname);
 
-	var parameter = clipName + ',' + (Number(videoTrack) - 1) + ',' + (Number(audioTrack) - 1) + ',' + x + ',' + y + ',"' + backColor +
-		'","' + fontColor + '","' + edgeColor + '",' + fontSize + ',' + scale + ',' + edgePx+','+fontAlpha+','+backAlpha;
+	var parameter =  '"'+model.name+'","'+clipName + '",' + (Number(videoTrack) - 1) + ','  + x + ',' + y + ',' +
+		scale +','+startTime+','+endTime;
 
 	var csInterface = new CSInterface();
-	csInterface.evalScript('$._PPP_.ImportImage("' + model.name + '",' + parameter + ')');
-
+	csInterface.evalScript('$._PPP_.InsertImage(' + parameter + ')');
 }
 
 var barElement;

@@ -435,5 +435,41 @@ $._PPP_ = {
 					0); // import as numbered stills
 			}
 		}
+	},
+
+	InsertImage: function(model_name,clipName , videoTrack, x, y, scale,startTime,endTime){
+		if (app.project) {
+			var targetBin = $._PPP_.getDeepBin("JIMAKU/model/"+model_name,true);
+			if (targetBin) {
+				
+				var seq = app.project.activeSequence;
+				var now = seq.getPlayerPosition();
+				var vTrack = seq.videoTracks[videoTrack];
+				//insert
+				var targetClip = $._PPP_.getClip(targetBin, clipName);
+				vTrack.insertClip(targetClip, now);
+				
+				var VinClip = $._PPP_.getClipFromeSequence(clipName, vTrack);
+				var Vstarttime = VinClip.start;
+				Vstarttime.seconds = startTime;
+				var Vendtime = VinClip.end;
+				Vendtime.seconds =  endTime;
+				if (startTime < VinClip.end.seconds){
+					VinClip.end = Vendtime;
+					VinClip.start = Vstarttime;
+				}else{
+					VinClip.start.seconds = Vstarttime;
+					VinClip.end.seconds = Vendtime;
+				}
+				//Trim MGT
+				var motion = VinClip.components[1];
+				var motionPosition = motion.properties[0];
+				var motionSize = motion.properties[1];
+				motionPosition.setValue([x, y]);
+				motionSize.setValue(scale);
+			} else {
+				$._PPP_.updateEventPanel("import Cancel");
+			}
+		}
 	}
 };
