@@ -57,3 +57,5 @@ MGT_SHOW_TIME		= "表示時間(秒)";
 MGT_FADEIN_TIME     = "フェードイン(秒)";
 MGT_FADEOUT_TIME     = "フェードアウト(秒)";
 MGT_SHOW_SPEED     = "文字並び速度";
+
+MGT_BIN = "モーショングラフィックステンプレートメディア"; 

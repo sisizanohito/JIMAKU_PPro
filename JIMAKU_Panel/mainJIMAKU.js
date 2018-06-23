@@ -96,7 +96,7 @@ function importWave_MGT(event){
 	var fontAlpha = $("#fontAlpha").val();
 	var backAlpha = $("#backAlpha").val();
 	var parameter = Preset + ',' + (Number(videoTrack) - 1) + ',' + (Number(audioTrack) - 1) + ',' + x + ',' + y + ',"' + backColor +
-		'","' + fontColor + '","' + edgeColor + '",' + fontSize + ',' + scale + ',' + edgePx+','+fontAlpha+','+backAlpha;
+		'","' + fontColor + '","' + edgeColor + '",' + fontSize + ',' + scale + ',' + edgePx+','+fontAlpha+','+backAlpha+',"'+$("#Image_check").prop("checked")+'"';
 
 	var csInterface = new CSInterface();
 	var extPath = csInterface.getSystemPath(SystemPath.EXTENSION);
@@ -105,8 +105,7 @@ function importWave_MGT(event){
 		extPath = extPath + '/MGT/Fade(word).mogrt';
 		extPath=ConvertFilePath(extPath);
 		csInterface.evalScript('$._PPP_.importWavCaptionMGT("' + extPath+ '",' + parameter + ')',function(result){
-			if(!result){
-				alert("再生時間が取得できません");
+			if(result ==="undefined"){
 				return;
 			}
 			var sTime = result.split(",");

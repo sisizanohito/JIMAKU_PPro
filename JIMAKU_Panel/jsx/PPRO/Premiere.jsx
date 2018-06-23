@@ -133,7 +133,12 @@ $._PPP_ = {
 		for (var i = Track.clips.numItems - 1; i >= 0; i--) {
 			var clip = Track.clips[i];
 			if (clip.name == name) {
-				return clip;
+				var seq = app.project.activeSequence;
+				var now = seq.getPlayerPosition();
+				if( clip.start.seconds  >= (now.seconds - 0.01) && clip.start.seconds  <= (now.seconds+ 0.01) ){
+					return clip;
+				}
+				
 			}
 		}
 		return 0;
@@ -283,12 +288,17 @@ $._PPP_ = {
 		return color_fixHex;
 	},
 
-	importWavCaptionMGT: function(mogrtToImport , Preset, videoTrack, soundTrack, x, y, bColor, fColor, eColor, size, scale, edgePx, fontAlpha, backAlpha){
+	importWavCaptionMGT: function(mogrtToImport , Preset, videoTrack, soundTrack, x, y, bColor, fColor, eColor, size, scale, edgePx, fontAlpha, backAlpha, imageFlag){
 		var addtime = 0.5;
 		if (app.project) {
 			var targetBin = $._PPP_.getDeepBin("JIMAKU/"+Preset+"/voices&captions",true);
 			var dataA = $._PPP_.importWav(targetBin);
-			if (targetBin && dataA) {
+			if (dataA) {
+				var mgtBin = $._PPP_.getDeepBin(MGT_BIN,true);
+				var mgtClip = $._PPP_.getClip(mgtBin, "Fade(word)");
+				if(mgtClip){
+					mgtClip.setOutPoint(0.01);
+				}
 				var mgt = $._PPP_.importMoGRT(mogrtToImport,videoTrack,soundTrack);
 				if(!mgt){
 					return;
@@ -334,12 +344,16 @@ $._PPP_ = {
 				var motionSize = motion.properties[1];
 				motionPosition.setValue([x, y]);
 				//motionSize.setValue(scale);
-				seq.setPlayerPosition(mgt.end.ticks);
-				return [starttime.seconds,endtime.seconds]
+				if(imageFlag === "false"){
+					seq.setPlayerPosition(mgt.end.ticks);
+				}
+				return [mgt.start.seconds,mgt.end.seconds]
 			} else {
 				$._PPP_.updateEventPanel("import Cancel");
+				
 			}
 		}
+		return undefined;
 	},
 	
 
@@ -347,13 +361,26 @@ $._PPP_ = {
 		var activeSeq = app.project.activeSequence;
 		if (activeSeq) {
 			if (mogrtToImport){
+				var mgtBin = $._PPP_.getDeepBin(MGT_BIN,true);
+				var mgtClip = $._PPP_.getClip(mgtBin, "Fade(word)");
 				var targetTime		= activeSeq.getPlayerPosition();
 				var vidTrackOffset  = videoTrack;
 				var audTrackOffset	= soundTrack;
-				var newTrackItem 	= activeSeq.importMGT(	mogrtToImport, 
+				var newTrackItem;
+				
+				if(mgtClip){
+					var seq = app.project.activeSequence;
+					var vTrack = seq.videoTracks[videoTrack];
+					vTrack.insertClip(mgtClip,  targetTime);
+					newTrackItem = $._PPP_.getClipFromeSequence("Fade(word)", vTrack);
+				}else{
+					newTrackItem 	= activeSeq.importMGT(	mogrtToImport, 
 															targetTime.ticks, 
 															vidTrackOffset,
 															audTrackOffset);
+				}
+
+				
 				
 				if (newTrackItem){
 					return newTrackItem;
@@ -447,30 +474,22 @@ $._PPP_ = {
 				var vTrack = seq.videoTracks[videoTrack];
 				//insert
 				var targetClip = $._PPP_.getClip(targetBin, clipName);
-				targetClip.setOutPoint(endTime-startTime);
+				targetClip.setOutPoint(0.01);
 				now.seconds = startTime;
 				vTrack.insertClip(targetClip, now);
 				
 				//Trim MGT
 				var VinClip = $._PPP_.getClipFromeSequence(clipName, vTrack);
-				/*
-				var Vstarttime = VinClip.start;
-				Vstarttime.seconds = startTime;
 				var Vendtime = VinClip.end;
 				Vendtime.seconds =  endTime;
-				if (startTime < VinClip.end.seconds){
-					VinClip.end = Vendtime;
-					VinClip.start = Vstarttime;
-				}else{
-					VinClip.start.seconds = Vstarttime;
-					VinClip.end.seconds = Vendtime;
-				}
-				*/
+				VinClip.end = Vendtime;
+
 				var motion = VinClip.components[1];
 				var motionPosition = motion.properties[0];
 				var motionSize = motion.properties[1];
 				motionPosition.setValue([x, y]);
 				motionSize.setValue(scale);
+				seq.setPlayerPosition(VinClip.end.ticks);
 			} else {
 				$._PPP_.updateEventPanel("import Cancel");
 			}
