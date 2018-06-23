@@ -288,8 +288,7 @@ $._PPP_ = {
 		return color_fixHex;
 	},
 
-	importWavCaptionMGT: function(mogrtToImport , Preset, videoTrack, soundTrack, x, y, bColor, fColor, eColor, size, scale, edgePx, fontAlpha, backAlpha, imageFlag){
-		var addtime = 0.5;
+	importWavCaptionMGT: function(mogrtToImport , Preset, videoTrack, soundTrack, x, y, bColor, fColor, eColor, size, scale, edgePx, fontAlpha, backAlpha, imageFlag, fadeInTime, fadeOutTime, showSpeed, captionAddTime){
 		if (app.project) {
 			var targetBin = $._PPP_.getDeepBin("JIMAKU/"+Preset+"/voices&captions",true);
 			var dataA = $._PPP_.importWav(targetBin);
@@ -328,16 +327,16 @@ $._PPP_ = {
 					$._PPP_.setMGTParameter(params,MGT_FONT_ALPHA,(fontAlpha/255)*100);//set font alpha
 					$._PPP_.setMGTParameter(params,MGT_BACK_ALPHA,(backAlpha/255)*100);//set back alpha
 
-					$._PPP_.setMGTParameter(params,MGT_SHOW_TIME,AinClip.duration.seconds+addtime);//set show duration
-					$._PPP_.setMGTParameter(params,MGT_FADEIN_TIME,0.2);
-					$._PPP_.setMGTParameter(params,MGT_FADEOUT_TIME,0.2);
-					$._PPP_.setMGTParameter(params,MGT_SHOW_SPEED,5);
+					$._PPP_.setMGTParameter(params,MGT_SHOW_TIME,AinClip.duration.seconds+captionAddTime);//set show duration
+					$._PPP_.setMGTParameter(params,MGT_FADEIN_TIME,fadeInTime);
+					$._PPP_.setMGTParameter(params,MGT_FADEOUT_TIME,fadeOutTime);
+					$._PPP_.setMGTParameter(params,MGT_SHOW_SPEED,showSpeed);
 				}
 
 				//Trim MGT
 				var starttime = AinClip.start;
 				var endtime = AinClip.end;
-				endtime.seconds += addtime;
+				endtime.seconds += captionAddTime;
 				mgt.end = endtime
 				var motion = mgt.components[1];
 				var motionPosition = motion.properties[0];

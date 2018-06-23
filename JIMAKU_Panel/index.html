@@ -208,6 +208,41 @@
 							<button onClick="importWave_MGT(this)" class="btn btn-primary">Import wav</button>
 						</td>
 					</tr>
+					<tr>
+						<td>フェード</td>
+						<td>文字送り速度</td>
+						<td>字幕延長時間</td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<table align="center">
+								<tr>
+									<td>フェードイン</td>
+									<td>
+										<input type="text" size="3" value="0.2" maxlength="10" id="FadeInTime">
+									</td>
+								</tr>
+								<tr>
+									<td>フェードアウト</td>
+									<td>
+										<input type="text" size="3" value="0.2" maxlength="10" id="FadeOutTime">
+									</td>
+								</tr>
+							</table>
+						</td>
+						<td>
+							<input type="text" size="3" value="5" maxlength="10" id="ShowSpeed">
+						</td>
+						<td>
+							<input type="text" size="3" value="0.5" maxlength="10" id="CaptionAddTime">
+						</td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
 				</table>
 			</div>
 
@@ -274,6 +309,17 @@
 						<td>
 							<input type="text" size="3" value="260" maxlength="10" id="Image_scale">
 						</td>
+					</tr>
+					<tr>
+							<td></td>
+							<td></td>
+							<td>
+									<input type="checkbox" value="" id="ImageInverse" checked>反転
+							</td>
+							<td>
+									<button onClick="importWave_MGT(this)" class="btn btn-primary">Import wav</button>
+							</td>
+							<td></td>
 					</tr>
 				</table>
 				<input type="checkbox" value="" id="Image_check" checked>音声と一緒に立ち絵を出力

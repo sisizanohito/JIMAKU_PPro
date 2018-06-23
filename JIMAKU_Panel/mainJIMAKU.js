@@ -1,5 +1,5 @@
 var JIMAKUparameter = function (name, videoTrack, audioTrack, x, y, fontSize, scale, edgePx, fontColor, backColor, edgeColor, fontAlpha,backAlpha,
-	imageVideoTrack, imageX, imageY, imageScale, imageCheck) {
+	imageVideoTrack, imageX, imageY, imageScale, imageCheck, fadeInTime, fadeOutTime, showSpeed, captionAddTime, inverse) {
 	this.name = name;
 	this.videoTrack = videoTrack;
 	this.audioTrack = audioTrack;
@@ -18,6 +18,12 @@ var JIMAKUparameter = function (name, videoTrack, audioTrack, x, y, fontSize, sc
 	this.imageY = imageY;
 	this.imageScale = imageScale;
 	this.imageCheck = imageCheck;
+	this.fadeInTime = fadeInTime;
+	this.fadeOutTime = fadeOutTime;
+	this.showSpeed = showSpeed;
+	this.captionAddTime = captionAddTime;
+	this.inverse = inverse;
+
 	this.modelname = "";
 }
 var Preset = 0; // Presetの指定
@@ -95,8 +101,14 @@ function importWave_MGT(event){
 	var edgeColor = $("#edgeColor").val();
 	var fontAlpha = $("#fontAlpha").val();
 	var backAlpha = $("#backAlpha").val();
+	var fadeInTime = $("#FadeInTime").val();
+	var fadeOutTime = $("#FadeOutTime").val();
+	var showSpeed = $("#ShowSpeed").val();
+	var captionAddTime = $("#CaptionAddTime").val();
+
 	var parameter = Preset + ',' + (Number(videoTrack) - 1) + ',' + (Number(audioTrack) - 1) + ',' + x + ',' + y + ',"' + backColor +
-		'","' + fontColor + '","' + edgeColor + '",' + fontSize + ',' + scale + ',' + edgePx+','+fontAlpha+','+backAlpha+',"'+$("#Image_check").prop("checked")+'"';
+		'","' + fontColor + '","' + edgeColor + '",' + fontSize + ',' + scale + ',' + edgePx+','+fontAlpha+','+backAlpha+',"'+$("#Image_check").prop("checked")+'",'+
+		fadeInTime+','+fadeOutTime+','+showSpeed+','+captionAddTime;
 
 	var csInterface = new CSInterface();
 	var extPath = csInterface.getSystemPath(SystemPath.EXTENSION);
@@ -253,6 +265,11 @@ function SetOption(index) {
 	document.getElementById('backColor').value = JIMAKUData[index].backColor;
 	document.getElementById('edgeColor').value = JIMAKUData[index].edgeColor;
 	document.getElementById('backAlpha').value = JIMAKUData[index].backAlpha;
+	document.getElementById('FadeInTime').value = JIMAKUData[index].fadeInTime;
+	document.getElementById('FadeOutTime').value = JIMAKUData[index].fadeOutTime;
+	document.getElementById('ShowSpeed').value = JIMAKUData[index].showSpeed;
+	document.getElementById('CaptionAddTime').value = JIMAKUData[index].captionAddTime;
+
 	//非透過率の反映
 	var num = Number(JIMAKUData[index].backAlpha);
 	$("#backAlphaText")[0].innerHTML = Math.round(num / 255 * 100) + "%";
@@ -263,7 +280,7 @@ function SetOption(index) {
 	document.getElementById('Image_pos_x').value = JIMAKUData[index].imageX;
 	document.getElementById('Image_pos_y').value = JIMAKUData[index].imageY;
 	document.getElementById('Image_scale').value = JIMAKUData[index].imageScale;
-	chk_status = JIMAKUData[index].imageCheck;
+	var chk_status = JIMAKUData[index].imageCheck;
 	if (!chk_status) {
 		//チェックボックスをOFFにする（チェックを外す）。
 		$("#Image_check").prop("checked", false);
@@ -271,6 +288,15 @@ function SetOption(index) {
 		//チェックボックスをONにする（チェックする）。
 		$("#Image_check").prop("checked", true);
 	}
+	chk_status = JIMAKUData[index].inverse;
+	if (!chk_status) {
+		//チェックボックスをOFFにする（チェックを外す）。
+		$("#ImageInverse").prop("checked", false);
+	} else {
+		//チェックボックスをONにする（チェックする）。
+		$("#ImageInverse").prop("checked", true);
+	}
+
 	SetCurrentSelect(); //モデルリストを現在のプリセットに変更
 	CreatModelTree();
 	ShowImage();
@@ -290,12 +316,17 @@ function SaveOption(index) {
 	JIMAKUData[index].edgeColor = document.getElementById('edgeColor').value;
 	JIMAKUData[index].fontAlpha = document.getElementById('fontAlpha').value;
 	JIMAKUData[index].backAlpha = document.getElementById('backAlpha').value;
+	JIMAKUData[index].fadeInTime = document.getElementById('FadeInTime').value;
+	JIMAKUData[index].fadeOutTime = document.getElementById('FadeOutTime').value;
+	JIMAKUData[index].showSpeed = document.getElementById('ShowSpeed').value;
+	JIMAKUData[index].captionAddTime = document.getElementById('CaptionAddTime').value;
 
 	JIMAKUData[index].imageVideoTrack = document.getElementById('Image_video').value;
 	JIMAKUData[index].imageX = document.getElementById('Image_pos_x').value;
 	JIMAKUData[index].imageY = document.getElementById('Image_pos_y').value;
 	JIMAKUData[index].imageScale = document.getElementById('Image_scale').value;
 	JIMAKUData[index].imageCheck = $("#Image_check").prop("checked");
+	JIMAKUData[index].inverse = $("#ImageInverse").prop("checked");
 }
 
 //jsonファイルに保存
@@ -322,7 +353,7 @@ function LoadJSON() {
 	} else { //失敗
 		var callScript = '$._PPP_.updateEventPanel("' + "JIMAKUの初回起動" + '")';
 		cs.evalScript(callScript);
-		JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 0.5, 0.8, 22, 70, 0, "#000000", "#000000", "#000000", 255, 255, 3, 0.5, 0.5, 100, true));
+		JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 0.5, 0.9, 22, 50, 0, "#ffffff", "#000000", "#000000", 255, 255, 3, 0.5, 0.5, 100, true, 0.2, 0.2, 5, 0.5, false));
 		SaveJSON(path, JIMAKUData);
 	}
 
@@ -363,7 +394,7 @@ function AddPreset() {
 	$newRow[0].cells[0].innerText = "---";
 	$newRow.insertAfter($row);
 	Preset = $("#PresetTable tr:not(.inputButton)").length - 1; //プリセットの合計-1
-	JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 0.5, 0.8, 22, 70, 0, "#000000", "#000000", "#000000", 255, 255, 3, 0.5, 0.5, 100, true));
+	JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 0.5, 0.9, 22, 50, 0, "#ffffff", "#000000", "#000000", 255, 255, 3, 0.5, 0.5, 100, true, 0.2, 0.2, 5, 0.5, false));
 	SetOption(Preset);
 }
 
@@ -485,6 +516,7 @@ function NewModel() {
 			JIMAKUData[Preset].modelname = basename;
 			SetSelectModel();
 			SetCurrentSelect();
+			CreatModelTree();
 			ShowImage();
 			Save();
 		});
