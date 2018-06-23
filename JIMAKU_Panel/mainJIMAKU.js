@@ -735,7 +735,11 @@ function ShowPSD(node) {
 	var height = node.root().get('height');
 	var canvas = addCanvas(width, height);
 	//monitorLoad.counter += 1;
-	var imageElememnt = DrawPSD(node,"root");
+	if($("#ImageInverse").prop("checked")){
+		DrawPSD(node,"Inverse");
+	}else{
+		DrawPSD(node,"Root");
+	}
 	//monitorLoad.counter -= 1;
 }
 
@@ -811,6 +815,10 @@ function addCanvas(width, height) {
 	var canvas = $("#" + id);
 	if (!canvas || !canvas[0].getContext) {
 		return null;
+	}
+	if($("#ImageInverse").prop("checked")){
+		var ctx = canvas[0].getContext('2d');
+		ctx.transform(-1, 0, 0, 1, width, 0);
 	}
 	return canvas;
 }
