@@ -296,7 +296,7 @@ $._PPP_ = {
 				var mgtBin = $._PPP_.getDeepBin(MGT_BIN,true);
 				var mgtClip = $._PPP_.getClip(mgtBin, "Fade(word)");
 				if(mgtClip){
-					mgtClip.setOutPoint(0.01);
+					mgtClip.setOutPoint(0.05);
 				}
 				var mgt = $._PPP_.importMoGRT(mogrtToImport,videoTrack,soundTrack);
 				if(!mgt){
@@ -473,7 +473,7 @@ $._PPP_ = {
 				var vTrack = seq.videoTracks[videoTrack];
 				//insert
 				var targetClip = $._PPP_.getClip(targetBin, clipName);
-				targetClip.setOutPoint(0.01);
+				targetClip.setOutPoint(0.05);
 				now.seconds = startTime;
 				vTrack.insertClip(targetClip, now);
 				

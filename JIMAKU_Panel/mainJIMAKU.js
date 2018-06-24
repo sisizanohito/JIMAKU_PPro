@@ -748,6 +748,12 @@ var createImage = function (context) {
 		console.log(counter + ' -> ' + value);
 		counter = value;
 		if(counter==0){
+			var canvas = $("#Layer0");
+			var ctx = canvas[0].getContext('2d');
+			ImageList.forEach(function( value ) {
+				ctx.drawImage(value.image, value.left, value.top); 
+			  });
+			
 			//ExportPNG();
 		}
       },
@@ -781,18 +787,20 @@ var createImage = function (context) {
 			});
       }
 
+	  var ImageList = [];
 function ShowPSD(node) {
+	ImageList = [];
 	console.log(node.export());
 	var width = node.root().get('width');
 	var height = node.root().get('height');
 	var canvas = addCanvas(width, height);
-	//monitorLoad.counter += 1;
+	monitorLoad.counter += 1;
 	if($("#ImageInverse").prop("checked")){
 		DrawPSD(node,"Inverse");
 	}else{
 		DrawPSD(node,"Root");
 	}
-	//monitorLoad.counter -= 1;
+	monitorLoad.counter -= 1;
 }
 
 
@@ -834,7 +842,7 @@ function DrawPSD(node,name) {
 		var canvas = $("#Layer0"); //addCanvas(width,height);
 		//canvas.addClass("NotDisp");
 		canvas.attr('name', canvas.attr('name')+name+"#");
-		var ctx = canvas[0].getContext('2d');
+		//var ctx = canvas[0].getContext('2d');
 		var top = layer.top;
 		var left = layer.left;
 		var png = layer.image.toPng();
@@ -842,10 +850,12 @@ function DrawPSD(node,name) {
 		var image = new Image();
 		image.width = layer.image.width();
 		image.height = layer.image.height();
-		//monitorLoad.counter += 1;
+		monitorLoad.counter += 1;
+		var imageObject = {image:image, left:left, top:top};
+		ImageList.push(imageObject);
 		image.addEventListener('load', function(){ 
-			ctx.drawImage(image, left, top); 
-			//monitorLoad.counter -= 1;
+			//ctx.drawImage(image, left, top); 
+			monitorLoad.counter -= 1;
 		});
 		image.src = dataUrl;
 		image.name = node.get("name");	
