@@ -73,7 +73,7 @@ function importWave(event) {
 		'","' + fontColor + '","' + edgeColor + '",' + fontSize + ',' + scale + ',' + edgePx;
 
 	var csInterface = new CSInterface();
-	var extPath = csInterface.getSystemPath(SystemPath.EXTENSION);
+	var extPath = csInterface.getSystemPath(SystemPath.EXTENSION );
 	var OSVersion = csInterface.getOSInformation();
 
 	if (extPath !== null) {
@@ -111,7 +111,7 @@ function importWave_MGT(event){
 		fadeInTime+','+fadeOutTime+','+showSpeed+','+captionAddTime;
 
 	var csInterface = new CSInterface();
-	var extPath = csInterface.getSystemPath(SystemPath.EXTENSION);
+	var extPath = csInterface.getSystemPath(SystemPath.EXTENSION );
 
 	if (extPath !== null) {
 		extPath = extPath + '/MGT/Fade(word).mogrt';
@@ -345,7 +345,7 @@ function SaveJSON(path, data) {
 function LoadJSON() {
 	// CSInterfaceを使ってエクステンションのパスを取得
 	var cs = new CSInterface();
-	var path = cs.getSystemPath(SystemPath.EXTENSION) + JSONPath;
+	var path = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS) ,"JIMAKU", JSONPath);
 
 	var resultRead = window.cep.fs.readFile(path);
 	if (0 == resultRead.err) { //成功
@@ -374,7 +374,7 @@ function LoadJSON() {
 function Save() {
 	// CSInterfaceを使ってエクステンションのパスを取得
 	var cs = new CSInterface();
-	var path = cs.getSystemPath(SystemPath.EXTENSION) + JSONPath;
+	var path = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS) ,"JIMAKU", JSONPath);
 	SaveOption(Preset);
 	var presetTable = document.getElementById('PresetTable');
 	presetTable.rows[Preset].cells[0].innerText = JIMAKUData[Preset].name;
@@ -383,10 +383,35 @@ function Save() {
 
 function Start() {
 	onLoaded();
+	CheckPreference();
 	LoadJSON(); //プロパティのロード及び表示
 	Refresh();
 	LoadModel(); //モデルの読み込み
 }
+
+function CheckPreference(){
+	var cs = new CSInterface();
+	var mainpath =PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS), "JIMAKU");
+	var modelpath =PATH.join(mainpath, MODELPath);
+	//console.log(mainpath);
+	console.log(modelpath);
+	if(!PathExists(mainpath)){
+		console.log("見つからん");
+		mkdir(modelpath);
+	}else{
+		console.log("すでにファルダがあります");
+	}
+}
+
+function mkdir(path) {  
+	MKDIRP(path,function (err) {
+		if (err) {
+		 console.error(err)
+		} else {
+		 console.log('success')
+		}
+	});
+  } 
 
 function AddPreset() {
 	var $row = $("#PresetTable tr:not(.inputButton):last");
@@ -450,7 +475,7 @@ function DeleteModel(){
 
 		var cs = new CSInterface();
 		var model = GetModel(JIMAKUData[Preset].modelname);
-		var dir = PATH.join(cs.getSystemPath(SystemPath.EXTENSION), MODELPath, model.name);
+		var dir = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS), "JIMAKU",MODELPath, model.name);
 		if (PathExists(dir)) {
 			RMDIR(dir, function (err, dirs, files) {
 				console.log(dirs);
@@ -485,7 +510,7 @@ function NewModel() {
 		var extname = PATH.extname(path);
 		var basename = PATH.basename(path, extname);
 		var cs = new CSInterface();
-		var dir = PATH.join(cs.getSystemPath(SystemPath.EXTENSION), MODELPath, basename);
+		var dir = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS),"JIMAKU" ,MODELPath, basename);
 		if (PathExists(dir)) {
 			var callScript = '$._PPP_.updateEventPanel("' + "同じファイル名はロードできません" + '")';
 			cs.evalScript(callScript);
@@ -527,7 +552,7 @@ function LoadModel() {
 	console.log("ロード開始");
 	ModelData = [];
 	var cs = new CSInterface();
-	var path = cs.getSystemPath(SystemPath.EXTENSION) + MODELPath;
+	var path = cs.getSystemPath(SystemPath.MY_DOCUMENTS)+ "/JIMAKU" + MODELPath;
 	try {
 		var list = FS.readdirSync(path);
 		for (var i = 0; i < list.length; i++) {
@@ -721,7 +746,7 @@ var createImage = function (context) {
 			var canvas = $("#Layer0"); 
 			var img = canvas[0].toDataURL('image/png');
 			var imageBuffer = decodeBase64Image(img);
-	var filepath = PATH.join(cs.getSystemPath(SystemPath.EXTENSION), MODELPath, model.name,canvas.attr('name')+".png");
+	var filepath = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS),"JIMAKU" , MODELPath, model.name,canvas.attr('name')+".png");
 	FS.writeFile(filepath, imageBuffer.data,
 			function () {
 				console.log(filepath+"保存終了");
