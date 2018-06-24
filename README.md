@@ -1,5 +1,5 @@
 # JIMAKU_PPro
-これは実況用に作る字幕用プラグイン(Adobe Premiere Pro Plugin)です．
+これは字幕用プラグイン(Adobe Premiere Pro Plugin)です．
 
 アルファ公開中
 
