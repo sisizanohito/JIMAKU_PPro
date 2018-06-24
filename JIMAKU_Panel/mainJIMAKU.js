@@ -130,7 +130,7 @@ function importWave_MGT(event){
 				var canvas = $("#Layer0");
 				var ImageID = canvas.attr('name');
 				var ImageDB = model.parameter.ImageDB;
-				if(!ImageDB[ImageID]){
+				if(ImageDB[ImageID]==undefined){
 					var count = 0;
 					for (var i in ImageDB) {
 						if (ImageDB.hasOwnProperty(i)) count++;
