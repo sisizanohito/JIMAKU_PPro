@@ -1,9 +1,14 @@
 # JIMAKU_PPro
-これは実況用に作る字幕用プラグイン(Adobe Premiere Pro Plugin)です．
+これは字幕用プラグイン(Adobe Premiere Pro Plugin)です．
 
 アルファ公開中
 
 # Credit
+
+PSDTool<br>
+Copyright (c) 2016 oov<br>
+The MIT License (MIT)<br>
+https://github.com/oov/PSDTool/blob/master/LICENSE<br>
 
 jQuery custom content scroller<br>
 Copyright (c) Manos Malihutsakis, http://manos.malihu.gr<br>
