@@ -40,6 +40,7 @@ var Model = function (name, data, parameter) {
 }
 var ModelParameter = function (type) {
 	this.type = type;
+	this.ImageDB = {};
 }
 var ModelData = [];
 
@@ -127,7 +128,19 @@ function importWave_MGT(event){
 				var model = GetModel(JIMAKUData[Preset].modelname);
 				if(!model){return;}
 				var canvas = $("#Layer0");
-				csInterface.evalScript('$._PPP_.checkImage("' + model.name + '","' + canvas.attr('name')+".png" + '")',ExportModel);
+				var ImageID = canvas.attr('name');
+				var ImageDB = model.parameter.ImageDB;
+				if(!ImageDB[ImageID]){
+					var count = 0;
+					for (var i in ImageDB) {
+						if (ImageDB.hasOwnProperty(i)) count++;
+					}
+					ImageDB[ImageID] = count;
+				}
+				model.parameter.ImageDB = ImageDB;
+				Save();
+
+				csInterface.evalScript('$._PPP_.checkImage("' + model.name + '","' + ImageDB[ImageID]+".png" + '")',ExportModel);
 			}
 		});
 		
@@ -159,7 +172,10 @@ function ExportModel(result){
 
 function insertModel(){
 	var canvas = $("#Layer0");
-	var clipName = canvas.attr('name')+".png"
+	var model = GetModel(JIMAKUData[Preset].modelname);
+	var ImageID = canvas.attr('name');
+	var ImageDB = model.parameter.ImageDB;
+	var clipName = ImageDB[ImageID]+".png"
 	var videoTrack = 	$("#Image_video").val();
 	var x = $("#Image_pos_x").val();
 	var y = $("#Image_pos_y").val();
@@ -379,6 +395,13 @@ function Save() {
 	var presetTable = document.getElementById('PresetTable');
 	presetTable.rows[Preset].cells[0].innerText = JIMAKUData[Preset].name;
 	SaveJSON(path, JIMAKUData);
+
+	var model = GetModel(JIMAKUData[Preset].modelname);
+	if (!model) { //モデルが読み込めないならサムネを更新しない
+		return;
+	}
+	var dir = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS),"JIMAKU" ,MODELPath, model.name,ModelJSONPath);
+	SaveJSON(dir, model.parameter);
 }
 
 function Start() {
@@ -742,11 +765,15 @@ var createImage = function (context) {
 				return;
 			}
 			var cs = new CSInterface();
-	
+			
 			var canvas = $("#Layer0"); 
+			var ImageID = canvas.attr('name');
 			var img = canvas[0].toDataURL('image/png');
 			var imageBuffer = decodeBase64Image(img);
-	var filepath = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS),"JIMAKU" , MODELPath, model.name,canvas.attr('name')+".png");
+	
+			var ImageDB = model.parameter.ImageDB;
+
+			var filepath = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS),"JIMAKU" , MODELPath, model.name ,ImageDB[ImageID]+".png");
 	FS.writeFile(filepath, imageBuffer.data,
 			function () {
 				console.log(filepath+"保存終了");
