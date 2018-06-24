@@ -81,15 +81,15 @@
 		<div class="tab-content">
 			<div id="tab1" class="tab-pane active">
 				<table class="OptonTable">
-					<tr>
+					<tr class="TableLabel">
+						<td rowspan="2">字幕情報</td>
 						<td>トラック番号</td>
 						<td>座標</td>
 						<td>サイズ</td>
 						<td>色</td>
 						<td>不透明度</td>
-						<td></td>
 					</tr>
-					<tr>
+					<tr class="TableItem">
 						<td>
 							<table align="center">
 								<tr>
@@ -204,19 +204,16 @@
 								<input type="range" min="0" max="255" step="1" value="255" id="backAlpha">
 							</div>
 						</td>
-						<td>
-							<button onClick="importWave_MGT(this)" class="btn btn-primary">Import wav</button>
-						</td>
 					</tr>
-					<tr>
+					<tr class="TableLabel">
+						<td rowspan="2">アニメーション</td>
 						<td>フェード</td>
 						<td>文字送り速度</td>
 						<td>字幕延長時間</td>
 						<td></td>
 						<td></td>
-						<td></td>
 					</tr>
-					<tr>
+					<tr class="TableItem">
 						<td>
 							<table align="center">
 								<tr>
@@ -241,19 +238,64 @@
 						</td>
 						<td></td>
 						<td></td>
-						<td></td>
 					</tr>
-				</table>
+					<tr class="TableLabel">
+							<td rowspan="2">立ち絵</td>
+							<td>トラック番号</td>
+							<td>座標</td>
+							<td>サイズ</td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr class="TableItem">
+								<td>
+										<table align="center">
+											<tr>
+												<td>ビデオ</td>
+												<td>
+													<form>
+														<select id="Image_video">
+															<option value="1">1</option>
+															<option value="2">2</option>
+															<option value="3" selected>3</option>
+														</select>
+													</form>
+												</td>
+											</tr>
+										</table>
+										<br>
+										<input type="button" value="Refresh" onclick="Refresh()" class="btn btn-default">
+									</td>
+									<td>
+										<table align="center">
+											<tr>
+												<td>X</td>
+												<td>
+													<input type="text" size="3" value="0.5" maxlength="10" id="Image_pos_x">
+												</td>
+											</tr>
+											<tr>
+												<td>Y</td>
+												<td>
+													<input type="text" size="3" value="0.5" maxlength="10" id="Image_pos_y">
+												</td>
+											</tr>
+										</table>
+									</td>
+									<td>
+										<input type="text" size="3" value="260" maxlength="10" id="Image_scale">
+									</td>
+						</tr>
+				</table><br>
+				<button onClick="importWave_MGT(this)" class="btn btn-primary">Import wav</button>
 			</div>
 
 			<div id="tab2" class="tab-pane">
 				<table class="OptonTable">
 					<tr>
 						<td>モデルリスト</td>
-						<td>モデル構造</td>
-						<td>トラック番号</td>
-						<td>座標</td>
-						<td>サイズ</td>
+						<td width="50%">モデル構造</td>
+						<td></td>
 					</tr>
 					<tr>
 						<td>
@@ -273,56 +315,12 @@
 							</div>
 						</td>
 						<td>
-							<table align="center">
-								<tr>
-									<td>ビデオ</td>
-									<td>
-										<form>
-											<select id="Image_video">
-												<option value="1">1</option>
-												<option value="2">2</option>
-												<option value="3" selected>3</option>
-											</select>
-										</form>
-									</td>
-								</tr>
-							</table>
-							<br>
-							<input type="button" value="Refresh" onclick="Refresh()" class="btn btn-default">
+								<button onClick="importWave_MGT(this)" class="btn btn-primary">Import wav</button><br>
+								<input type="checkbox" value="" id="ImageInverse" onchange="ShowImage()">反転<br>
+								<input type="checkbox" value="" id="Image_check" checked>立ち絵を出力
 						</td>
-						<td>
-							<table align="center">
-								<tr>
-									<td>X</td>
-									<td>
-										<input type="text" size="3" value="0.5" maxlength="10" id="Image_pos_x">
-									</td>
-								</tr>
-								<tr>
-									<td>Y</td>
-									<td>
-										<input type="text" size="3" value="0.5" maxlength="10" id="Image_pos_y">
-									</td>
-								</tr>
-							</table>
-						</td>
-						<td>
-							<input type="text" size="3" value="260" maxlength="10" id="Image_scale">
-						</td>
-					</tr>
-					<tr>
-							<td></td>
-							<td></td>
-							<td>
-									<input type="checkbox" value="" id="ImageInverse" onchange="ShowImage()">反転
-							</td>
-							<td>
-									<button onClick="importWave_MGT(this)" class="btn btn-primary">Import wav</button>
-							</td>
-							<td></td>
 					</tr>
 				</table>
-				<input type="checkbox" value="" id="Image_check" checked>音声と一緒に立ち絵を出力
 			</div>
 			<div id="tab3" class="tab-pane">
 				<button onClick="DeletePreset()" id="Delete" class="btn btn-danger">Delete</button>

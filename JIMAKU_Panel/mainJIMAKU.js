@@ -338,7 +338,7 @@ function SaveJSON(path, data) {
 	if (0 == result.err) {
 		//alert("出力成功");
 	} else {
-		alert("保存失敗");
+		console.log("保存失敗");
 	}
 }
 
@@ -353,7 +353,7 @@ function LoadJSON() {
 	} else { //失敗
 		var callScript = '$._PPP_.updateEventPanel("' + "JIMAKUの初回起動" + '")';
 		cs.evalScript(callScript);
-		JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 0.5, 0.9, 22, 50, 0, "#ffffff", "#000000", "#000000", 255, 255, 3, 0.5, 0.5, 100, true, 0.2, 0.2, 5, 0.5, false));
+		JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 960, 900, 22, 50, 0, "#ffffff", "#000000", "#000000", 255, 255, 3, 960, 500, 100, true, 0.2, 0.2, 5, 0.5, false));
 		SaveJSON(path, JIMAKUData);
 	}
 
@@ -419,7 +419,7 @@ function AddPreset() {
 	$newRow[0].cells[0].innerText = "---";
 	$newRow.insertAfter($row);
 	Preset = $("#PresetTable tr:not(.inputButton)").length - 1; //プリセットの合計-1
-	JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 0.5, 0.9, 22, 50, 0, "#ffffff", "#000000", "#000000", 255, 255, 3, 0.5, 0.5, 100, true, 0.2, 0.2, 5, 0.5, false));
+	JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 960, 900, 22, 50, 0, "#ffffff", "#000000", "#000000", 255, 255, 3, 960, 500, 100, true, 0.2, 0.2, 5, 0.5, false));
 	SetOption(Preset);
 }
 

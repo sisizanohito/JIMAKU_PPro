@@ -20,6 +20,16 @@ div {
     clear: both;
 }
 
+.TableItem {
+    font-size: 100%;
+}
+
+.TableLabel {
+    font-size: 120%;
+    font-weight: bold;
+    padding: 10px;
+}
+
 #presetName{
     padding: 0%;
     margin: 0%;
@@ -47,7 +57,6 @@ div {
     border-collapse: collapse;
     text-align: center;
     width: 100%;
-    
 }
 
 #PresetTable td{
@@ -130,7 +139,7 @@ div {
     text-align: left;
     height: 60vh;
     overflow:hidden;
-    font-size: 90%;
+    font-size: 120%;
 }
 
 .TreeNode{

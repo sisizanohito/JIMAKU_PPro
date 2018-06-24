@@ -262,7 +262,7 @@ $._PPP_ = {
 				var motion = VinClip.components[1];
 				var motionPosition = motion.properties[0];
 				var motionSize = motion.properties[1];
-				motionPosition.setValue([x, y]);
+				motionPosition.setValue([x/seq.frameSizeHorizontal, y/seq.frameSizeVertical]);
 				motionSize.setValue(scale);
 				seq.setPlayerPosition(VinClip.end.ticks);
 			} else {
@@ -341,7 +341,7 @@ $._PPP_ = {
 				var motion = mgt.components[1];
 				var motionPosition = motion.properties[0];
 				var motionSize = motion.properties[1];
-				motionPosition.setValue([x, y]);
+				motionPosition.setValue([x/seq.frameSizeHorizontal, y/seq.frameSizeVertical]);
 				//motionSize.setValue(scale);
 				if(imageFlag === "false"){
 					seq.setPlayerPosition(mgt.end.ticks);
@@ -486,7 +486,7 @@ $._PPP_ = {
 				var motion = VinClip.components[1];
 				var motionPosition = motion.properties[0];
 				var motionSize = motion.properties[1];
-				motionPosition.setValue([x, y]);
+				motionPosition.setValue([x/seq.frameSizeHorizontal, y/seq.frameSizeVertical]);
 				motionSize.setValue(scale);
 				seq.setPlayerPosition(VinClip.end.ticks);
 			} else {
