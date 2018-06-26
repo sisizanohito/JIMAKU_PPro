@@ -54,6 +54,14 @@ var TreeData;
 var startTime = 0;
 var endTime = 0;
 
+function Start() {
+	onLoaded();
+	CheckPreference();
+	LoadJSON(); //プロパティのロード及び表示
+	Refresh();
+	LoadModel(); //モデルの読み込み
+}
+
 function importWave(event) {
 	var videoTrack = 	$("#video")[0].value;
 	var audioTrack = $("#audio")[0].value;
@@ -214,19 +222,22 @@ function SetAudio() {
 
 function SetVideoOption(result) {
 	var element = document.getElementById('video');
-	SetSelect(result, element);
+	var value = JIMAKUData[Preset].videoTrack;
+	SetSelect(value, result, element);
 	element = document.getElementById('Image_video');
-	SetSelect(result, element);
+	value = JIMAKUData[Preset].imageVideoTrack;
+	SetSelect(value, result, element);
 }
 
 function SetAudioOption(result) {
 	var element = document.getElementById('audio');
-	SetSelect(result, element);
+	var value = JIMAKUData[Preset].audioTrack;
+	SetSelect(value, result, element);
 }
 
-function SetSelect(result, element) {
-	var index = element.value;
-	if (index > result) {
+function SetSelect(value,result, element) {
+	var index = value;
+	if (Number(index) > Number(result)) {
 		index = result;
 	}
 	element.options.length = 0;
@@ -242,7 +253,7 @@ function SetSelect(result, element) {
 function SetSelectModel() {
 	var element = document.getElementById('Image_model');
 	var index = element.value;
-	if (index > ModelData.length) {
+	if (Number(index) > ModelData.length) {
 		index = ModelData.length;
 	}
 	element.options.length = 0;
@@ -402,14 +413,6 @@ function Save() {
 	}
 	var dir = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS),"JIMAKU" ,MODELPath, model.name,ModelJSONPath);
 	SaveJSON(dir, model.parameter);
-}
-
-function Start() {
-	onLoaded();
-	CheckPreference();
-	LoadJSON(); //プロパティのロード及び表示
-	Refresh();
-	LoadModel(); //モデルの読み込み
 }
 
 function CheckPreference(){
