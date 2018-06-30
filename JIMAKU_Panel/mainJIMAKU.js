@@ -1122,6 +1122,25 @@ $(document).ready(function () {
 		ShowImage();
 	}
 
+	var dragDrop = require('drag-drop')
+
+// You can pass in a DOM node or a selector string!
+dragDrop('body', function (files, pos, fileList, directories) {
+  console.log('Here are the dropped files', files)
+  console.log('Dropped at coordinates', pos.x, pos.y)
+  console.log('Here is the raw FileList object if you need it:', fileList)
+  console.log('Here is the list of directories:', directories)
+
+
+    console.log(files[0].name)
+    console.log(files[0].size)
+    console.log(files[0].type)
+    console.log(files[0].lastModifiedData)
+    console.log(files[0].fullPath) // not real full path due to browser security restrictions
+	console.log(files[0].path) // in Electron, this contains the actual full path
+
+})
+
 	/*
 	TreeData = new ModelTree("ルート");
 	TreeData.children.push(new ModelTree("子1"));
