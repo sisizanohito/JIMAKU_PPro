@@ -50,4 +50,8 @@ https://github.com/Adobe-CEP/Samples/blob/master/LICENSE<br>
 rmdir<br>
 Copyright(c) 2011 dreamerslab & lt; ben@ dreamerslab.com & gt;<br>
 The MIT License (MIT)<br>
-https://www.npmjs.com/package/rmdir
+https://www.npmjs.com/package/rmdir<br>
+
+drag-drop<br>
+MIT. Copyright (c) Feross Aboukhadijeh.<br>
+https://www.npmjs.com/package/drag-drop<br>
