@@ -29,10 +29,7 @@ namespace Voice
                 {"喜び", 0.60m }
             };
 
-            SeikaData seikaData = new SeikaData();
 
- 
-            string json = SeikaConnect.Serialize(seikaData);
 
 
             // 音声発声時
