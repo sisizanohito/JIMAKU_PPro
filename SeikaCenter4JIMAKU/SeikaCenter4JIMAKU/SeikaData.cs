@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using SeikaCenter;
 
 
-namespace SeikaCenter4JIMAKU
+namespace Voice
 {
     [DataContract]
     class SeikaData
@@ -24,7 +24,7 @@ namespace SeikaCenter4JIMAKU
                 int id = kvp.Key;
                 string name = kvp.Value;
                 Data.Add(name, new SeikaStruct(name, id));
-                Console.WriteLine($"{id}:{name}");
+                //Console.WriteLine($"{id}:{name}");
                 
             }
         }
@@ -81,7 +81,7 @@ namespace SeikaCenter4JIMAKU
                     pramName.Add(name);
                     //Console.WriteLine(@"あたり:"+name);
                 }
-                Console.WriteLine($"{pram}:{value}");
+                //Console.WriteLine($"{pram}:{value}");
             }
             foreach (string name in pramName)
             {

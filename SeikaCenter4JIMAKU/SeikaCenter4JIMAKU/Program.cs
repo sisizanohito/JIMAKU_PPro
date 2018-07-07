@@ -6,13 +6,17 @@ using System.Text;
 using System.Threading.Tasks;
 using SeikaCenter;
 using System.IO;
+using Microsoft.Extensions.CommandLineUtils;
 
-namespace SeikaCenter4JIMAKU
+namespace Voice
 {
     class Program
     {
         static void Main(string[] args)
         {
+
+            var command = new ReadCommand(args);
+
             double len = 0.0;
 
             decimal volume = 1.0m;

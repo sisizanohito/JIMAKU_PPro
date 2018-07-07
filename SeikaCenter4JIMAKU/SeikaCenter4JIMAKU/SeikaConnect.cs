@@ -7,7 +7,7 @@ using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SeikaCenter4JIMAKU
+namespace Voice
 {
     class  SeikaConnect
     {

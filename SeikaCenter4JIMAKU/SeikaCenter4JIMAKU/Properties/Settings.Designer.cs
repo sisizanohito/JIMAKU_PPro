@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SeikaCenter4JIMAKU.Properties {
+namespace Voice.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
