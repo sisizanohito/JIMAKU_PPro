@@ -8,7 +8,8 @@
 そのため，本プラグインに同梱されている“SeikaCenterAPI.dll”，“SeikaCenterAPI.xml”は下記のサイトにて配布されているものとなります．<br>
 https://hgotoh.jp/wiki/doku.php/documents/voiceroid/seikacenter
 
-公開，使用許可はk896951氏に頂いているもののため，本プラグインに同梱されている“SeikaCenterAPI.dll”，“SeikaCenterAPI.xml”を使った三次配布は禁止します．
+公開，使用許可はk896951氏に頂いているもののため，本プラグインに同梱されている<br>
+“SeikaCenterAPI.dll”，“SeikaCenterAPI.xml”を使った三次配布は禁止します．
 # Credit
 
 PSDTool<br>
