@@ -4,7 +4,7 @@
 アルファ公開中
 
 # 合成音声ソフトとの連携について
-本プログラムはk896951氏が制作されたSeikaCenterを使用して合成音声ソフトソフト(voiceroid及びcevio)を動かしております．<br>
+本プログラムはk896951氏が制作されたSeikaCenterを使用して合成音声ソフトソフト(voiceroid及びcevio)を動かしております．
 そのため，本プラグインに同梱されている“SeikaCenterAPI.dll”，“SeikaCenterAPI.xml”は下記のサイトにて配布されているものとなります．<br>
 https://hgotoh.jp/wiki/doku.php/documents/voiceroid/seikacenter
 
