@@ -3,6 +3,13 @@
 
 アルファ公開中
 
+# 合成音声ソフトとの連携APIについて
+本プログラムはk896951氏が制作されたSeikaCenterを使用して合成音声ソフト(voiceroid及びcevio)を動かしております．
+そのため，本プラグインに同梱されている“SeikaCenterAPI.dll”，“SeikaCenterAPI.xml”は下記のサイトにて配布されているものとなります．<br>
+https://hgotoh.jp/wiki/doku.php/documents/voiceroid/seikacenter
+
+公開，使用許可はk896951氏に頂いているもののため，本プラグインに同梱されている<br>
+“SeikaCenterAPI.dll”，“SeikaCenterAPI.xml”を使った三次配布は禁止します．
 # Credit
 
 PSDTool<br>
@@ -55,3 +62,11 @@ https://www.npmjs.com/package/rmdir<br>
 drag-drop<br>
 MIT. Copyright (c) Feross Aboukhadijeh.<br>
 https://www.npmjs.com/package/drag-drop<br>
+
+Microsoft.Extensions.CommandLineUtils<br>
+Copyright © Microsoft Corporation<br>
+https://www.nuget.org/packages/Microsoft.Extensions.CommandLineUtils/<br>
+
+SeikaCenter<br>
+Copyright © k896951 <br>
+https://hgotoh.jp/wiki/doku.php/documents/voiceroid/seikacenter/seikacenter-001<br>
