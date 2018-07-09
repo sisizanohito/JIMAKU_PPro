@@ -52,7 +52,10 @@ namespace Voice
                 {
                     SeikaData seikaData = new SeikaData();
                     string json = SeikaConnect.Serialize(seikaData);
+                    Console.OutputEncoding = Encoding.UTF8;
                     Console.WriteLine(json);
+
+
                     return 0;
                 });
             });

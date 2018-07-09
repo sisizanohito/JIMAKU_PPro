@@ -6,4 +6,5 @@ const FILECOPY = require('filecopy')
 const JSONPath = "/JIMAKU.json";
 const ModelJSONPath = "/model.json";
 const MODELPath = "/model";
+const VOICEPath  = "/voice/Voice.exe";
 const MKDIRP = require('mkdirp');

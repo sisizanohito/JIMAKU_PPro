@@ -307,3 +307,5 @@ Sample/
 CEPBuild/
 JIMAKU_Panel/Model/
 SeikaCenter4JIMAKU/SeikaCenter4JIMAKU/dll/
+JIMAKU_Panel/voice/SeikaCenterAPI.dll
+JIMAKU_Panel/voice/Microsoft.Extensions.CommandLineUtils.dll

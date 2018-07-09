@@ -1075,6 +1075,20 @@ function PSDSet() {
 	ShowImage();
 }
 
+function GetSeikaCenter() {
+	var cs = new CSInterface();
+	var mainpath =cs.getSystemPath(SystemPath.EXTENSION);
+	var voicePth =PATH.join(mainpath, VOICEPath);
+
+	var result = window.cep.process.createProcess(voicePth,'get'); 
+
+	//zip a file
+	window.cep.process.stdout(result.data,function(value){
+		var data = JSON.parse(value);
+		alert(data);
+	});
+}
+
 $(document).ready(function () {
 	var elem = document.getElementsByClassName('range');
 	var rangeValue = function (elem, target) {
