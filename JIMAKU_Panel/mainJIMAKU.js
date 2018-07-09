@@ -1081,11 +1081,13 @@ function GetSeikaCenter() {
 	var voicePth =PATH.join(mainpath, VOICEPath);
 
 	var result = window.cep.process.createProcess(voicePth,'get'); 
-
-	//zip a file
 	window.cep.process.stdout(result.data,function(value){
 		var data = JSON.parse(value);
 		alert(data);
+	});
+
+	window.cep.process.stderr(result.data,function(value){
+		alert("seikacenterを起動してください");
 	});
 }
 
