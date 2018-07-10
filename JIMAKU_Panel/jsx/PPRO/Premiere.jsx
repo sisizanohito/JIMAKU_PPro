@@ -135,7 +135,7 @@ $._PPP_ = {
 			if (clip.name == name) {
 				var seq = app.project.activeSequence;
 				var now = seq.getPlayerPosition();
-				if( clip.start.seconds  >= (now.seconds - 0.01) && clip.start.seconds  <= (now.seconds+ 0.01) ){
+				if( Number(clip.end.seconds)  >= Number(now.seconds-0.01) && Number(clip.start.seconds)  <= Number(now.seconds+0.01) ){
 					return clip;
 				}
 				
@@ -346,7 +346,7 @@ $._PPP_ = {
 				if(imageFlag === "false"){
 					seq.setPlayerPosition(mgt.end.ticks);
 				}
-				return [mgt.start.seconds,mgt.end.seconds]
+				return [mgt.start.ticks,mgt.end.ticks]
 			} else {
 				$._PPP_.updateEventPanel("import Cancel");
 				
@@ -474,13 +474,13 @@ $._PPP_ = {
 				//insert
 				var targetClip = $._PPP_.getClip(targetBin, clipName);
 				targetClip.setOutPoint(0.05);
-				now.seconds = startTime;
+				now.ticks = String(startTime);
 				vTrack.insertClip(targetClip, now);
 				
 				//Trim MGT
 				var VinClip = $._PPP_.getClipFromeSequence(clipName, vTrack);
 				var Vendtime = VinClip.end;
-				Vendtime.seconds =  endTime;
+				Vendtime.ticks =  String(endTime);
 				VinClip.end = Vendtime;
 
 				var motion = VinClip.components[1];
