@@ -54,6 +54,12 @@ var TreeData;
 var startTime = 0;
 var endTime = 0;
 
+var VOICEData = [];
+var VOICE = function () {
+	var cs = new CSInterface();
+	this.savePath = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS) ,"JIMAKU", VOICESavePath);
+}
+
 function Start() {
 	onLoaded();
 	CheckPreference();
@@ -384,6 +390,16 @@ function LoadJSON() {
 		SaveJSON(path, JIMAKUData);
 	}
 
+	path = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS) ,"JIMAKU", VOICEJSONPath);
+
+	var resultRead = window.cep.fs.readFile(path);
+	if (0 == resultRead.err) { //成功
+		VOICEData = JSON.parse(resultRead.data);
+	} else { //失敗
+		VOICEData = new VOICE();
+		SaveJSON(path, VOICEData);
+	}
+
 	var $row = $("#PresetTable tr:not(.inputButton):last");
 	$row[0].cells[0].innerText = JIMAKUData[0].name; //1つ目に代入
 
@@ -419,13 +435,18 @@ function CheckPreference(){
 	var cs = new CSInterface();
 	var mainpath =PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS), "JIMAKU");
 	var modelpath =PATH.join(mainpath, MODELPath);
+	var voicepath =PATH.join(mainpath, VOICESavePath);
 	//console.log(mainpath);
 	console.log(modelpath);
 	if(!PathExists(mainpath)){
-		console.log("見つからん");
 		mkdir(modelpath);
 	}else{
-		console.log("すでにファルダがあります");
+		console.log("JIMAKUファルダはすでにあります");
+	}
+	if(!PathExists(voicepath)){
+		mkdir(voicepath);
+	}else{
+		console.log("VOICEファルダはすでにあります");
 	}
 }
 

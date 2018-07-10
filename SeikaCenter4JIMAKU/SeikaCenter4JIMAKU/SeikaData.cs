@@ -14,16 +14,16 @@ namespace Voice
     class SeikaData
     {
         [DataMember]
-        public Dictionary<string, SeikaStruct> Data;
+        public Dictionary<int, SeikaStruct> Data;
 
         public SeikaData()
         {
-            Data = new Dictionary<string, SeikaStruct>();
+            Data = new Dictionary<int, SeikaStruct>();
             foreach (KeyValuePair<int, string> kvp in SeikaConnect.Instance().scc.AvatorList)
             {
                 int id = kvp.Key;
                 string name = kvp.Value;
-                Data.Add(name, new SeikaStruct(name, id));
+                Data.Add(id, new SeikaStruct(name, id));
                 //Console.WriteLine($"{id}:{name}");
                 
             }
