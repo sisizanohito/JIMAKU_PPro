@@ -844,7 +844,6 @@ function decodeBase64Image(dataString) {
 }
 
 function DrawPSD(node,name) {
-	var imageElememnt;
 	var layer = node.get("layer");
 	var type = node.get("type");
 	if (!node.isRoot()) { //ルートじゃないなら
@@ -854,10 +853,7 @@ function DrawPSD(node,name) {
 		var children = node.children();
 		for (var i = children.length - 1; i >= 0; i--) {
 			var new_name = name +'_'+ i.toString();
-			var hoge = DrawPSD(children[i],new_name);
-			if(hoge){
-				imageElememnt = hoge;//更新
-			}
+			DrawPSD(children[i],new_name);
 		}
 	} else if(type === "layer") { //レイヤーなら
 		//console.log(name + " : " + node.get('type'));
@@ -870,9 +866,12 @@ function DrawPSD(node,name) {
 		var top = layer.top;
 		var left = layer.left;
 		var png = layer.image.toPng();
+		if(layer.image.width() == 0 || layer.image.height() ==0){//空白画像
+			return;
+		}
 		var dataUrl = toBase64(png);
 		var image = new Image();
-
+		
 		if(layer.clipped){
 
 			console.log(node.get("name")+":mask");
@@ -888,9 +887,8 @@ function DrawPSD(node,name) {
 		});
 		image.src = dataUrl;
 		image.name = node.get("name");	
-		imageElememnt = image;
 	}
-	return imageElememnt;
+	return;
 }
 
 function addCanvas(width, height) {
@@ -1088,6 +1086,9 @@ function PSDSet() {
 			var split = nodePath.split("/");
 			var nodeName = split[split.length - 1];
 			children.forEach(function (node) {
+				var name = node.get("name");
+				var top = name.slice(0, 1); //先頭文字
+				if(top != "*"){return;}//*のみ処理する
 				layer = node.get("layer");
 				if (node.name === nodeName) {
 					layer.visible = true;
