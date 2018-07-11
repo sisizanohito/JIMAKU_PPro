@@ -746,7 +746,7 @@ function ShowImage() {
 			ImageArea.innerHTML = '<img src="file://' + model.data[0] + '" class="Image">';
 			break;
 		case Model_PSD:
-
+			console.log(model.data.tree().export());
 			ShowPSD(model.data.tree());
 			break;
 		default:
@@ -769,7 +769,7 @@ var createImage = function (context) {
     Object.defineProperty(sample, 'counter', {
       set: function set (value) {
 		value = Number(value);
-		console.log(counter + ' -> ' + value);
+		//console.log(counter + ' -> ' + value);
 		counter = value;
 		if(counter==0){
 			var canvas = $("#Layer0");
@@ -814,7 +814,7 @@ var createImage = function (context) {
 	  var ImageList = [];
 function ShowPSD(node) {
 	ImageList = [];
-	console.log(node.export());
+	//console.log(node.export());
 	var width = node.root().get('width');
 	var height = node.root().get('height');
 	var canvas = addCanvas(width, height);
@@ -860,7 +860,7 @@ function DrawPSD(node,name) {
 			}
 		}
 	} else if(type === "layer") { //レイヤーなら
-		console.log(name + " : " + node.get('type'));
+		//console.log(name + " : " + node.get('type'));
 		var width = node.root().get('width');
 		var height = node.root().get('height');
 		var canvas = $("#Layer0"); //addCanvas(width,height);
@@ -872,6 +872,11 @@ function DrawPSD(node,name) {
 		var png = layer.image.toPng();
 		var dataUrl = toBase64(png);
 		var image = new Image();
+
+		if(layer.clipped){
+
+			console.log(node.get("name")+":mask");
+		}
 		image.width = layer.image.width();
 		image.height = layer.image.height();
 		monitorLoad.counter += 1;
@@ -978,10 +983,13 @@ function SearchTree(node, index, splitPath, groupFlag) {
 	if (splitPath.length > index) {
 		var name = splitPath[index];
 		var target = node.children('[name="' + name + '"]');
-		var radioID = node.attr("name");
+		var radioID = "";
 		var value = "";
 		for (var i = index; i >= 0; i--) {
 			value = PATH.posix.join(splitPath[i], value);
+		}
+		for (var i = index-1; i >= 0; i--) {
+			radioID = PATH.posix.join(splitPath[i], radioID);
 		}
 		if (target.length == 0) { //見つからなかった場合
 			if (index == splitPath.length - 1) { //終端の場合
@@ -1035,8 +1043,7 @@ function CreateNode(name, radioID, groupFlag, value) {
 			name = name.slice(1);
 			$input = $("<input>", {
 				type: "checkbox",
-				value: value,
-				checked: true
+				value: value
 			});
 			$input.hide();
 			break;
@@ -1046,6 +1053,9 @@ function CreateNode(name, radioID, groupFlag, value) {
 				value: value
 			});
 			break;
+	}
+	if(layer.clipped){
+		name = "↓:"+name;
 	}
 	$input.on('change', PSDSet);
 	var $label = $("<labl>", {
