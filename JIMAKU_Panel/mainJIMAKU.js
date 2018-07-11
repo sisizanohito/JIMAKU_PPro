@@ -505,6 +505,47 @@ function toBase64(png) {
 	return canvas.toDataURL('image/png');
 }
 
+var Loader = function(expectedCnt, callback){
+	var cnt = 0;
+	return function(){
+	  if(++cnt == expectedCnt){ callback(); }
+	}
+  };
+
+//mask画像と主に
+function toBase64Mask(orign,mask,width,height) {
+	var canvas, context, i, j, len, pixel, pixelData, ref;
+	canvas = document.createElement('canvas');
+	canvas.width = width;
+	canvas.height = height;
+	context = canvas.getContext('2d');
+	var imageData = new Image(orign.image.width(), orign.image.height());
+	imageData.src =toBase64(orign.image.toPng()); ;
+	var maskData = new Image(mask.image.width(), mask.image.height());
+	maskData.src=toBase64(mask.image.toPng());
+
+	var Data = new Image();
+	Data.width = width;
+	Data.height = height;
+	monitorLoad.counter += 1;
+	var imageObject = {image:Data, left:0, top:0};
+	ImageList.push(imageObject);
+	Data.addEventListener('load', function(){
+		monitorLoad.counter -= 1;
+	});
+	//Data.name = node.get("name");	
+	
+	var loader = Loader(2, function(){ 
+		context.drawImage(imageData, orign.left, orign.top);
+		context.globalCompositeOperation = 'destination-in';
+		context.drawImage(maskData, mask.left, mask.top);
+		Data.src = canvas.toDataURL('image/png');
+	});
+	
+	imageData.onload = loader;
+	maskData.onload = loader;
+}
+
 function DeleteModel(){
 	var res = confirm("現在の[" + JIMAKUData[Preset].modelname + "]を削除しますか?");
 	if (res == true) {
@@ -859,36 +900,59 @@ function DrawPSD(node,name) {
 		//console.log(name + " : " + node.get('type'));
 		var width = node.root().get('width');
 		var height = node.root().get('height');
-		var canvas = $("#Layer0"); //addCanvas(width,height);
-		//canvas.addClass("NotDisp");
+		var layerWidth = layer.image.width();
+		var layerHeight = layer.image.height();
+		var canvas = $("#Layer0"); 
 		canvas.attr('name', canvas.attr('name')+name+"#");
-		//var ctx = canvas[0].getContext('2d');
 		var top = layer.top;
 		var left = layer.left;
 		var png = layer.image.toPng();
 		if(layer.image.width() == 0 || layer.image.height() ==0){//空白画像
 			return;
 		}
-		var dataUrl = toBase64(png);
+		var dataUrl;
 		var image = new Image();
-		
-		if(layer.clipped){
 
-			console.log(node.get("name")+":mask");
+		if(layer.clipped){
+			var masknode = SearchMask(node);
+			var masklayer = masknode.get("layer");
+			if(!masklayer.visible || masklayer.image.width() == 0 || masklayer.image.height() ==0){//マスクが描画されていなと描画しない
+				return;
+			}
+			var maskpng = masklayer.image.toPng();
+			dataUrl=toBase64Mask(layer,masklayer,width,height);
+			layerWidth = width;
+			layerHeight = height;
+			top = 0;
+			left = 0;
+			//console.log(node.get("name")+":mask->"+masknode.get("name"));
+			return;
+		}else{
+			dataUrl=toBase64(png);
 		}
-		image.width = layer.image.width();
-		image.height = layer.image.height();
+		image.width = layerWidth;
+		image.height = layerHeight;
 		monitorLoad.counter += 1;
 		var imageObject = {image:image, left:left, top:top};
 		ImageList.push(imageObject);
-		image.addEventListener('load', function(){ 
-			//ctx.drawImage(image, left, top); 
+		image.addEventListener('load', function(){
 			monitorLoad.counter -= 1;
 		});
 		image.src = dataUrl;
-		image.name = node.get("name");	
+		//image.name = node.get("name");	
 	}
 	return;
+}
+
+function SearchMask(node){
+	if(!node.get("layer").clipped){//クリッピングじゃないやつ
+		return node;
+	}
+	var next = node.nextSibling();
+	if(next){//端でない限り
+		return SearchMask(next);
+	}
+	return undefined;
 }
 
 function addCanvas(width, height) {
