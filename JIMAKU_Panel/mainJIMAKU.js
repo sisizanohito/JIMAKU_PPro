@@ -528,7 +528,7 @@ function toBase64Mask(orign,mask,width,height) {
 	Data.width = width;
 	Data.height = height;
 	monitorLoad.counter += 1;
-	var imageObject = {image:Data, left:0, top:0};
+	var imageObject = {image:Data, left:0, top:0, alpha:orign.opacity};
 	ImageList.push(imageObject);
 	Data.addEventListener('load', function(){
 		monitorLoad.counter -= 1;
@@ -787,7 +787,6 @@ function ShowImage() {
 			ImageArea.innerHTML = '<img src="file://' + model.data[0] + '" class="Image">';
 			break;
 		case Model_PSD:
-			console.log(model.data.tree().export());
 			ShowPSD(model.data.tree());
 			break;
 		default:
@@ -816,6 +815,7 @@ var createImage = function (context) {
 			var canvas = $("#Layer0");
 			var ctx = canvas[0].getContext('2d');
 			ImageList.forEach(function( value ) {
+				ctx.globalAlpha = value.alpha/255;
 				ctx.drawImage(value.image, value.left, value.top); 
 			  });
 			
@@ -920,11 +920,7 @@ function DrawPSD(node,name) {
 				return;
 			}
 			var maskpng = masklayer.image.toPng();
-			dataUrl=toBase64Mask(layer,masklayer,width,height);
-			layerWidth = width;
-			layerHeight = height;
-			top = 0;
-			left = 0;
+			toBase64Mask(layer,masklayer,width,height);
 			//console.log(node.get("name")+":mask->"+masknode.get("name"));
 			return;
 		}else{
@@ -933,7 +929,7 @@ function DrawPSD(node,name) {
 		image.width = layerWidth;
 		image.height = layerHeight;
 		monitorLoad.counter += 1;
-		var imageObject = {image:image, left:left, top:top};
+		var imageObject = {image:image, left:left, top:top, alpha:layer.opacity};
 		ImageList.push(imageObject);
 		image.addEventListener('load', function(){
 			monitorLoad.counter -= 1;
