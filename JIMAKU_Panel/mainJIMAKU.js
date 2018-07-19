@@ -528,7 +528,7 @@ function toBase64Mask(orign,mask,width,height) {
 	Data.width = width;
 	Data.height = height;
 	monitorLoad.counter += 1;
-	var imageObject = {image:Data, left:0, top:0, alpha:orign.opacity};
+	var imageObject = {image:Data, left:0, top:0, alpha:orign.opacity, blendMode:orign.blendingMode()};
 	ImageList.push(imageObject);
 	Data.addEventListener('load', function(){
 		monitorLoad.counter -= 1;
@@ -815,11 +815,23 @@ var createImage = function (context) {
 			var canvas = $("#Layer0");
 			var ctx = canvas[0].getContext('2d');
 			ImageList.forEach(function( value ) {
+				switch( value.blendMode ) {
+					case 'normal':
+					ctx.globalCompositeOperation = "source-over";
+						break;
+
+					case 'multiply':
+					ctx.globalCompositeOperation = "multiply";
+						break;
+				 
+					default:
+						console.error(value.blendMode+"は実装されていない描画モードです");
+						ctx.globalCompositeOperation = "source-over";
+						break;
+				}
 				ctx.globalAlpha = value.alpha/255;
 				ctx.drawImage(value.image, value.left, value.top); 
 			  });
-			
-			//ExportPNG();
 		}
       },
       get: function get () {
@@ -855,7 +867,7 @@ var createImage = function (context) {
 	  var ImageList = [];
 function ShowPSD(node) {
 	ImageList = [];
-	//console.log(node.export());
+	console.log(node.export());
 	var width = node.root().get('width');
 	var height = node.root().get('height');
 	var canvas = addCanvas(width, height);
@@ -929,7 +941,7 @@ function DrawPSD(node,name) {
 		image.width = layerWidth;
 		image.height = layerHeight;
 		monitorLoad.counter += 1;
-		var imageObject = {image:image, left:left, top:top, alpha:layer.opacity};
+		var imageObject = {image:image, left:left, top:top, alpha:layer.opacity, blendMode:layer.blendingMode()};
 		ImageList.push(imageObject);
 		image.addEventListener('load', function(){
 			monitorLoad.counter -= 1;
