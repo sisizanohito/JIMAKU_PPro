@@ -33,7 +33,7 @@ namespace Voice
 
 
             // 音声発声時
-            len = SeikaConnect.Instance().scc.Talk(2000, "あー嬉しーなー", "", effects, emotions);
+            //len = SeikaConnect.Instance().scc.Talk(2000, "あー嬉しーなー", "", effects, emotions);
 
             // 音声保存時
             //len = SeikaConnect.Instance().scc.Talk(2001, "あー嬉しいなー", @"C:\Users\isiis\Desktop\test1.wav", volume, speed, pitch, alpha, intonation, emotions);
