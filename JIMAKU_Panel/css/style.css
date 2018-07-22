@@ -157,3 +157,9 @@ div {
 .Tree .mCSB_inside > .mCSB_container{
     margin: 0%
 }
+
+.VoiceUI{
+    font-size: 100%;
+    margin: auto;
+    text-align: center;
+}

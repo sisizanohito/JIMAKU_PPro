@@ -18,6 +18,7 @@ namespace Voice
             var command = new ReadCommand(args);
 
 
+            /*
 
             double len = 0.0;
 
@@ -28,15 +29,15 @@ namespace Voice
             };
             Dictionary<string, decimal> emotions = new Dictionary<string, decimal>()
             {
-                //{"喜び", 0.00m }
+                {"喜び", 1.00m }
             };
-
+            */
 
             // 音声発声時
             //len = SeikaConnect.Instance().scc.Talk(2000, "あー嬉しーなー", "", effects, emotions);
 
             // 音声保存時
-            //len = SeikaConnect.Instance().scc.Talk(2001, "あー嬉しいなー", @"C:\Users\isiis\Desktop\test1.wav", volume, speed, pitch, alpha, intonation, emotions);
+            //len = SeikaConnect.Instance().scc.Talk(2001, "あー嬉しいなー", @"test1.wav", effects, emotions);
         }
     }
 }

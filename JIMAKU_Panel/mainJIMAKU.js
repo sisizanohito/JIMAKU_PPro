@@ -25,6 +25,7 @@ var JIMAKUparameter = function (name, videoTrack, audioTrack, x, y, fontSize, sc
 	this.inverse = inverse;
 
 	this.modelname = "";
+	this.actor = "";
 }
 var Preset = 0; // Presetの指定
 var JIMAKUData = []; // 空の配列
@@ -329,6 +330,10 @@ function SetOption(index) {
 	} else {
 		//チェックボックスをONにする（チェックする）。
 		$("#ImageInverse").prop("checked", true);
+	}
+
+	if(VOICEData){
+		$("#VoiceSelect").val(JIMAKUData[index].actor);
 	}
 
 	SetCurrentSelect(); //モデルリストを現在のプリセットに変更
@@ -1184,19 +1189,33 @@ function GetSeikaCenter() {
 	} else { //失敗
 		var result = window.cep.process.createProcess(voicePth,'get'); 
 		window.cep.process.stdout(result.data,function(value){
-			var data = JSON.parse(value);
-			VOICEData = new VOICE(data);
-			SaveJSON(path, VOICEData);
-			CreateVoiceContents();
+			window.cep.process.onquit(result.data,function(){
+				console.log("終了");
+				console.log(value);
+				var data = JSON.parse(value || "null");
+				VOICEData = new VOICE(data);
+				SaveJSON(path, VOICEData);
+				CreateVoiceContents();
+			});
+	
+			window.cep.process.stderr(result.data,function(value){
+				alert("seikacenterを起動してください");
+			});
 		});
-
-		window.cep.process.stderr(result.data,function(value){
-			alert("seikacenterを起動してください");
-		});
+			
+		
 		
 	}
+}
 
-	
+function CatchStdout(result, str, callback){
+	window.cep.process.stdout(result.data,function(value){
+		if(value ===""){
+			callback(str);
+		}else{
+			CatchStdout(result, str+value, callback);
+		}
+	});
 }
 
 function CreateVoiceContents(){
@@ -1204,12 +1223,56 @@ function CreateVoiceContents(){
 		return;
 	}
 	$("#VoiceSelect option").remove();
-	var actor = VOICEData.actor.Data;
-	for (var i in actor) {
-		var key = actor[i].Key;
+	var actors = VOICEData.actor.Data;
+	for (var i in actors) {
+		var key = actors[i].Key;
 		$("#VoiceSelect").append($("<option>").val(key).text(key));
 	}
+	$("#VoiceSelect").val(JIMAKUData[Preset].actor);
+	CreateVoiceUI();
 }
+
+function CreateVoiceUI(){
+	var key = $("#VoiceSelect").val();
+	var actors = VOICEData.actor.Data;
+	for (var i in actors) {
+		if(actors[i].Key===key){
+			CreateVoiceElement(actors[i]);
+			return;
+		}
+	}
+	console.error("voiceの対象リストに存在しませんでした");
+}
+
+function CreateVoiceElement(actor){
+	var parameters = actor.Value.parameter;
+	var $voiceArea = $("#voice-content");
+	$voiceArea.empty();
+	for (var i in parameters) {
+		console.log(parameters[i].Key);
+		Addbar(parameters[i]);
+	}
+
+	function Addbar(parameter){
+		var $elem = $("<div></div>", {
+			"class": "VoiceUI"
+			//name:parameter.Key
+		  }).appendTo($voiceArea);
+		  $("<labl>", {
+			text: parameter.Key+":"
+		  }).appendTo($elem);
+		  $("<br>").appendTo($elem);
+		  $("<input>", {
+			type: 'range',
+			id: parameter.Key,
+			value: parameter.Value.value,
+			min:parameter.Value.min, 
+			max:parameter.Value.max, 
+			step:parameter.Value.step
+		  }).appendTo($elem);
+	}
+}
+
 
 $(document).ready(function () {
 	var elem = document.getElementsByClassName('range');
@@ -1256,6 +1319,13 @@ $(document).ready(function () {
 		JIMAKUData[Preset].modelname = selectedItem.innerHTML;
 		CreatModelTree();
 		ShowImage();
+	}
+	
+	select = document.getElementById('VoiceSelect');
+	select.onchange = function () {
+		// 選択されているoption要素を取得する
+		var selectedItem = this.options[this.selectedIndex];
+		JIMAKUData[Preset].actor = selectedItem.innerHTML;
 	}
 
 	var dragDrop = require('drag-drop')

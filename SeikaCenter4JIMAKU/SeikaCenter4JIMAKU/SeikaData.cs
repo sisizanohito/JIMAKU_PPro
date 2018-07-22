@@ -23,8 +23,9 @@ namespace Voice
             {
                 int id = kvp.Key;
                 string name = kvp.Value;
-                Data.Add(name, new SeikaStruct(name, id));
+                //Console.WriteLine($"-------------------------------------------------------");
                 //Console.WriteLine($"{id}:{name}");
+                Data.Add(name, new SeikaStruct(name, id));
                 
             }
         }
@@ -68,7 +69,7 @@ namespace Voice
 
             Dictionary<string, decimal>  parameterList = new Dictionary<string, decimal>();
             List<string> pramName = new List<string>();
-            foreach (KeyValuePair<string, decimal> kvp in SeikaConnect.Instance().scc.GetAvatorParams(cid))
+            foreach (KeyValuePair<string, decimal> kvp in SeikaConnect.Instance().scc.GetAvatorParams_current(cid))
             {
 
                 string pram = kvp.Key;
