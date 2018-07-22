@@ -55,9 +55,10 @@ var startTime = 0;
 var endTime = 0;
 
 var VOICEData = [];
-var VOICE = function () {
+var VOICE = function (data) {
 	var cs = new CSInterface();
 	this.savePath = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS) ,"JIMAKU", VOICESavePath);
+	this.actor = data;
 }
 
 function Start() {
@@ -388,16 +389,6 @@ function LoadJSON() {
 		cs.evalScript(callScript);
 		JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 960, 900, 22, 50, 0, "#ffffff", "#000000", "#000000", 255, 255, 3, 960, 500, 100, true, 0.2, 0.2, 5, 0.5, false));
 		SaveJSON(path, JIMAKUData);
-	}
-
-	path = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS) ,"JIMAKU", VOICEJSONPath);
-
-	var resultRead = window.cep.fs.readFile(path);
-	if (0 == resultRead.err) { //成功
-		VOICEData = JSON.parse(resultRead.data);
-	} else { //失敗
-		VOICEData = new VOICE();
-		SaveJSON(path, VOICEData);
 	}
 
 	var $row = $("#PresetTable tr:not(.inputButton):last");
@@ -1183,16 +1174,33 @@ function GetSeikaCenter() {
 	var cs = new CSInterface();
 	var mainpath =cs.getSystemPath(SystemPath.EXTENSION);
 	var voicePth =PATH.join(mainpath, VOICEPath);
+	
+	path = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS) ,"JIMAKU", VOICEJSONPath);
 
-	var result = window.cep.process.createProcess(voicePth,'get'); 
-	window.cep.process.stdout(result.data,function(value){
-		var data = JSON.parse(value);
-		alert(data);
-	});
+	var resultRead = window.cep.fs.readFile(path);
+	if (0 == resultRead.err) { //成功
+		VOICEData = JSON.parse(resultRead.data);
+		CreateVoiceContents();
+	} else { //失敗
+		var result = window.cep.process.createProcess(voicePth,'get'); 
+		window.cep.process.stdout(result.data,function(value){
+			var data = JSON.parse(value);
+			VOICEData = new VOICE(data);
+			SaveJSON(path, VOICEData);
+			CreateVoiceContents();
+		});
 
-	window.cep.process.stderr(result.data,function(value){
-		alert("seikacenterを起動してください");
-	});
+		window.cep.process.stderr(result.data,function(value){
+			alert("seikacenterを起動してください");
+		});
+		
+	}
+
+	
+}
+
+function CreateVoiceContents(){
+
 }
 
 $(document).ready(function () {
