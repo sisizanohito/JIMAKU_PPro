@@ -1200,7 +1200,15 @@ function GetSeikaCenter() {
 }
 
 function CreateVoiceContents(){
-
+	if(!VOICEData){
+		return;
+	}
+	$("#VoiceSelect option").remove();
+	var actor = VOICEData.actor.Data;
+	for (var i in actor) {
+		var key = actor[i].Key;
+		$("#VoiceSelect").append($("<option>").val(key).text(key));
+	}
 }
 
 $(document).ready(function () {
