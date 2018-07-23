@@ -1188,8 +1188,7 @@ function GetSeikaCenter() {
 		CreateVoiceContents();
 	} else { //失敗
 		var result = window.cep.process.createProcess(voicePth,'get'); 
-		window.cep.process.stdout(result.data,function(value){
-			window.cep.process.onquit(result.data,function(){
+		CatchStdout(result,"",function(value){
 				console.log("終了");
 				console.log(value);
 				var data = JSON.parse(value || "null");
@@ -1201,7 +1200,7 @@ function GetSeikaCenter() {
 			window.cep.process.stderr(result.data,function(value){
 				alert("seikacenterを起動してください");
 			});
-		});
+
 			
 		
 		
@@ -1210,8 +1209,9 @@ function GetSeikaCenter() {
 
 function CatchStdout(result, str, callback){
 	window.cep.process.stdout(result.data,function(value){
-		if(value ===""){
-			callback(str);
+		var isrun = cep.process.isRunning(result.data);   
+		if(isrun.data == false){
+			callback(str+value);
 		}else{
 			CatchStdout(result, str+value, callback);
 		}
@@ -1262,7 +1262,7 @@ function CreateVoiceElement(actor){
 			text: parameter.Key+":"
 		  }).appendTo($elem);
 		  $("<br>").appendTo($elem);
-		  $("<input>", {
+		  var $bar = $("<input>", {
 			type: 'range',
 			id: parameter.Key,
 			value: parameter.Value.value,
@@ -1270,6 +1270,25 @@ function CreateVoiceElement(actor){
 			max:parameter.Value.max, 
 			step:parameter.Value.step
 		  }).appendTo($elem);
+
+		  var $txt = $("<input>", {
+			type: 'text',
+			value: parameter.Value.value,
+			max:parameter.Value.max, 
+			size:3,
+			maxlength:10,
+			step:parameter.Value.step
+		  }).appendTo($elem);
+
+		  $bar.on('input', function(event) {
+			var value = $bar.val();
+			$txt.val(value);
+		  });
+
+		  $txt.on('change', function(event) {
+			var value = $txt.val();
+			$bar.val(value);
+		  });
 	}
 }
 
