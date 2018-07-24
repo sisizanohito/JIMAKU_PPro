@@ -1191,12 +1191,10 @@ function SavaVOICE(){
 
 function SaveActor(){
 	var actors = VOICEData.actor.Data;
-	console.log(Preset);
 	var parameters = JIMAKUData[Preset].voice.Value.parameter;
 	for (var j in parameters) {
 		var $ele = $("#"+parameters[j].Key);
 		parameters[j].Value.value = $ele.val();
-		console.log(parameters[j].Key+":"+$ele.val());
 	}
 }
 
@@ -1424,19 +1422,4 @@ dragDrop('body', function (files, pos, fileList, directories) {
 	console.log(files[0].path) // in Electron, this contains the actual full path
 
 })
-
-	/*
-	TreeData = new ModelTree("ルート");
-	TreeData.children.push(new ModelTree("子1"));
-	TreeData.children.push(new ModelTree("子2"));
-	console.log("データツリー");
-	console.log(TreeData);
-	$('#tree1').jstree({"plugins" : ["checkbox","wholerow"],
-						"core" : {'themes':{'stripes':true},
-								  'data':TreeData,
-								  multiple: false
-								}
-					});
-	*/
-
 });
