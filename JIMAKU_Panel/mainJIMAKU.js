@@ -1181,6 +1181,23 @@ function SavaVOICE(){
 	var path = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS) ,"JIMAKU", VOICEJSONPath);
 	SaveJSON(path, VOICEData);
 }
+var oldActor;
+function SaveActor(){
+	var actors = VOICEData.actor.Data;
+	console.log(oldActor);
+	for (var i in actors) {
+		if(actors[i].Key===oldActor){
+			var parameters = actors[i].Value.parameter;
+			for (var j in parameters) {
+				var $ele = $("#"+parameters[j].Key);
+				parameters[j].Value.value = $ele.val();
+				console.log(parameters[j].Key+":"+$ele.val());
+			}
+			SavaVOICE();
+			return;
+		}
+	}
+}
 
 function GetSeikaCenter() {
 	var cs = new CSInterface();
@@ -1207,10 +1224,6 @@ function GetSeikaCenter() {
 			window.cep.process.stderr(result.data,function(value){
 				alert("seikacenterを起動してください");
 			});
-
-			
-		
-		
 	}
 }
 
@@ -1239,11 +1252,16 @@ function CreateVoiceContents(){
 	CreateVoiceUI();
 }
 
+
 function CreateVoiceUI(){
 	var key = $("#VoiceSelect").val();
 	if(!VOICEData || !key){
 		return;
 	}
+	if(oldActor){
+		SaveActor();
+	}
+	oldActor = key;
 	var actors = VOICEData.actor.Data;
 	for (var i in actors) {
 		if(actors[i].Key===key){
@@ -1262,7 +1280,6 @@ function CreateVoiceElement(actor){
 	$emotionArea.empty();
 	for (var i in parameters) {
 		var result = parameters[i].Key.split('_')[0];
-		console.log(result);
 		if(result === "effect"){
 			Addbar(parameters[i],$parameterArea);
 		}else{
@@ -1283,10 +1300,10 @@ function CreateVoiceElement(actor){
 		  var $bar = $("<input>", {
 			type: 'range',
 			id: parameter.Key,
-			value: parameter.Value.value,
 			min:parameter.Value.min, 
 			max:parameter.Value.max, 
-			step:parameter.Value.step
+			step:parameter.Value.step,
+			value:parameter.Value.value,
 		  }).appendTo($elem);
 
 		  var $txt = $("<input>", {
@@ -1295,7 +1312,6 @@ function CreateVoiceElement(actor){
 			max:parameter.Value.max, 
 			size:3,
 			maxlength:10,
-			step:parameter.Value.step
 		  }).appendTo($elem);
 
 		  $bar.on('input', function(event) {
