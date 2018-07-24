@@ -1345,9 +1345,10 @@ $(document).ready(function () {
 		// 選択されているoption要素を取得する
 		var selectedItem = this.options[this.selectedIndex];
 		JIMAKUData[Preset].actor = selectedItem.innerHTML;
+		CreateVoiceUI();
 	}
 
-	var dragDrop = require('drag-drop')
+	var dragDrop = require('drag-drop');
 
 // You can pass in a DOM node or a selector string!
 dragDrop('body', function (files, pos, fileList, directories) {
