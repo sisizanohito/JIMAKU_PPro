@@ -26,6 +26,7 @@ var JIMAKUparameter = function (name, videoTrack, audioTrack, x, y, fontSize, sc
 
 	this.modelname = "";
 	this.actor = "";
+	this.voice;
 }
 var Preset = 0; // Presetの指定
 var JIMAKUData = []; // 空の配列
@@ -420,12 +421,20 @@ function Save() {
 	presetTable.rows[Preset].cells[0].innerText = JIMAKUData[Preset].name;
 	SaveJSON(path, JIMAKUData);
 
+	if(VOICEData){
+		path = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS) ,"JIMAKU", VOICEJSONPath);
+		SaveJSON(path, VOICEData);
+	}
+
 	var model = GetModel(JIMAKUData[Preset].modelname);
 	if (!model) { //モデルが読み込めないならサムネを更新しない
 		return;
 	}
 	var dir = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS),"JIMAKU" ,MODELPath, model.name,ModelJSONPath);
 	SaveJSON(dir, model.parameter);
+
+
+
 }
 
 function CheckPreference(){
@@ -1177,25 +1186,17 @@ function PSDSet() {
 }
 
 function SavaVOICE(){
-	var cs = new CSInterface();
-	var path = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS) ,"JIMAKU", VOICEJSONPath);
-	SaveJSON(path, VOICEData);
+	Save();
 }
-var oldActor;
+
 function SaveActor(){
 	var actors = VOICEData.actor.Data;
-	console.log(oldActor);
-	for (var i in actors) {
-		if(actors[i].Key===oldActor){
-			var parameters = actors[i].Value.parameter;
-			for (var j in parameters) {
-				var $ele = $("#"+parameters[j].Key);
-				parameters[j].Value.value = $ele.val();
-				console.log(parameters[j].Key+":"+$ele.val());
-			}
-			SavaVOICE();
-			return;
-		}
+	console.log(Preset);
+	var parameters = JIMAKUData[Preset].voice.Value.parameter;
+	for (var j in parameters) {
+		var $ele = $("#"+parameters[j].Key);
+		parameters[j].Value.value = $ele.val();
+		console.log(parameters[j].Key+":"+$ele.val());
 	}
 }
 
@@ -1258,18 +1259,9 @@ function CreateVoiceUI(){
 	if(!VOICEData || !key){
 		return;
 	}
-	if(oldActor){
-		SaveActor();
-	}
-	oldActor = key;
-	var actors = VOICEData.actor.Data;
-	for (var i in actors) {
-		if(actors[i].Key===key){
-			CreateVoiceElement(actors[i]);
-			return;
-		}
-	}
-	console.error("voiceの対象リストに存在しませんでした");
+	//var actors = VOICEData.actor.Data;
+	var actor = JIMAKUData[Preset].voice;
+	CreateVoiceElement(actor);
 }
 
 function CreateVoiceElement(actor){
@@ -1300,10 +1292,10 @@ function CreateVoiceElement(actor){
 		  var $bar = $("<input>", {
 			type: 'range',
 			id: parameter.Key,
-			min:parameter.Value.min, 
-			max:parameter.Value.max, 
-			step:parameter.Value.step,
-			value:parameter.Value.value,
+			min:Number(parameter.Value.min), 
+			max:Number(parameter.Value.max), 
+			step:Number(parameter.Value.step),
+			value:Number(parameter.Value.value),
 		  }).appendTo($elem);
 
 		  var $txt = $("<input>", {
@@ -1321,7 +1313,7 @@ function CreateVoiceElement(actor){
 
 		  $txt.on('change', function(event) {
 			var value = $txt.val();
-			$bar.val(value);
+			$bar.val(Number(value));
 		  });
 	}
 }
@@ -1365,6 +1357,7 @@ $(document).ready(function () {
 	}
 
 	$("#PresetTable tr:not(.inputButton)").on('click', function () { //プリセットの切り替え
+		SaveActor();
 		Save(); //移動するため現状を保存
 		var $tag_tr = $(this)[0];
 		Preset = $tag_tr.rowIndex;
@@ -1402,7 +1395,15 @@ $(document).ready(function () {
 		// 選択されているoption要素を取得する
 		var selectedItem = this.options[this.selectedIndex];
 		JIMAKUData[Preset].actor = selectedItem.innerHTML;
-		CreateVoiceUI();
+		var key = JIMAKUData[Preset].actor;
+		var actors = VOICEData.actor.Data;
+		for (var i in actors) {
+			if(actors[i].Key===key){
+				JIMAKUData[Preset].voice=JSON.parse(JSON.stringify(actors[i], null, '    '));
+				CreateVoiceUI();
+				return;
+			}
+		}
 	}
 
 	var dragDrop = require('drag-drop');
