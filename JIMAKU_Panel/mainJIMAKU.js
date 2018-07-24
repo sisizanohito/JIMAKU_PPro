@@ -1175,12 +1175,18 @@ function PSDSet() {
 	ShowImage();
 }
 
+function SavaVOICE(){
+	var cs = new CSInterface();
+	var path = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS) ,"JIMAKU", VOICEJSONPath);
+	SaveJSON(path, VOICEData);
+}
+
 function GetSeikaCenter() {
 	var cs = new CSInterface();
 	var mainpath =cs.getSystemPath(SystemPath.EXTENSION);
 	var voicePth =PATH.join(mainpath, VOICEPath);
 	
-	path = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS) ,"JIMAKU", VOICEJSONPath);
+	var path = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS) ,"JIMAKU", VOICEJSONPath);
 
 	var resultRead = window.cep.fs.readFile(path);
 	if (0 == resultRead.err) { //成功
@@ -1193,7 +1199,7 @@ function GetSeikaCenter() {
 				console.log(value);
 				var data = JSON.parse(value || "null");
 				VOICEData = new VOICE(data);
-				SaveJSON(path, VOICEData);
+				SavaVOICE();
 				CreateVoiceContents();
 			});
 	
@@ -1289,6 +1295,29 @@ function CreateVoiceElement(actor){
 			var value = $txt.val();
 			$bar.val(value);
 		  });
+	}
+}
+
+function DeleteVoiceActor(){
+	var key = $("#VoiceSelect").val();
+	if(!VOICEData || !key){
+		return;
+	}
+	var res = confirm("現在の[" + key + "]を削除しますか?");
+	if (res == true) {
+		var actors = VOICEData.actor.Data;
+		for (var i in actors) {
+			if(actors[i].Key===key){
+				actors.splice(i, 1);
+				JIMAKUData[Preset].actor = "";
+				SavaVOICE();
+				CreateVoiceContents();
+				return;
+			}
+		}
+	} else {
+		// キャンセル
+
 	}
 }
 
