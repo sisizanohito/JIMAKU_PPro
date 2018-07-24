@@ -159,8 +159,12 @@ div {
 }
 
 .VoiceUI{
+    /*border: solid 2px rgb(138, 138, 138);*/
     font-size: 100%;
-    margin: auto;
+    margin: 1px 10%;
     text-align: center;
-    width: 40%
+}
+
+.VoiceContents{
+    margin: 50% auto;
 }

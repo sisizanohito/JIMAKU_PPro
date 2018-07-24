@@ -339,6 +339,7 @@ function SetOption(index) {
 	SetCurrentSelect(); //モデルリストを現在のプリセットに変更
 	CreatModelTree();
 	ShowImage();
+	CreateVoiceUI();
 }
 
 function SaveOption(index) {
@@ -1240,6 +1241,9 @@ function CreateVoiceContents(){
 
 function CreateVoiceUI(){
 	var key = $("#VoiceSelect").val();
+	if(!VOICEData || !key){
+		return;
+	}
 	var actors = VOICEData.actor.Data;
 	for (var i in actors) {
 		if(actors[i].Key===key){
@@ -1252,20 +1256,28 @@ function CreateVoiceUI(){
 
 function CreateVoiceElement(actor){
 	var parameters = actor.Value.parameter;
-	var $voiceArea = $("#voice-content");
-	$voiceArea.empty();
+	var $parameterArea = $("#voice-parameter");
+	var $emotionArea = $("#voice-emotion");
+	$parameterArea.empty();
+	$emotionArea.empty();
 	for (var i in parameters) {
-		console.log(parameters[i].Key);
-		Addbar(parameters[i]);
+		var result = parameters[i].Key.split('_')[0];
+		console.log(result);
+		if(result === "effect"){
+			Addbar(parameters[i],$parameterArea);
+		}else{
+			Addbar(parameters[i],$emotionArea);
+		}
+		
 	}
 
-	function Addbar(parameter){
+	function Addbar(parameter,$area){
 		var $elem = $("<div></div>", {
 			"class": "VoiceUI"
 			//name:parameter.Key
-		  }).appendTo($voiceArea);
+		  }).appendTo($area);
 		  $("<labl>", {
-			text: parameter.Key+":"
+			text: parameter.Key.split('_')[1]
 		  }).appendTo($elem);
 		  $("<br>").appendTo($elem);
 		  var $bar = $("<input>", {
