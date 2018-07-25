@@ -111,12 +111,16 @@ namespace Voice
                     {
                         savePath = outputOption.Value();
                     }
+                    if (savePath != "")
+                    {
+                        Encoding utf = Encoding.UTF8;
+                        StreamWriter writer =
+                          new StreamWriter(Path.GetDirectoryName(savePath) + Path.GetFileNameWithoutExtension(savePath) + ".txt", false, utf);
+                        writer.WriteLine(text);
+                        writer.Close();
 
-                    Encoding utf = Encoding.UTF8;
-                    StreamWriter writer =
-                      new StreamWriter(Path.GetDirectoryName(savePath)+ Path.GetFileNameWithoutExtension(savePath)+".txt", false, utf);
-                    writer.WriteLine(text);
-                    writer.Close();
+                    }
+                    
                     SeikaConnect.Instance().scc.Talk(cid, text, savePath, effects, emotions);
 
                     
