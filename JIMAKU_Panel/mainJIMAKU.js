@@ -1190,11 +1190,10 @@ function SavaVOICE(){
 }
 
 function SaveActor(){
-	var actors = VOICEData.actor.Data;
 	var parameters = JIMAKUData[Preset].voice.Value.parameter;
 	for (var j in parameters) {
 		var $ele = $("#"+parameters[j].Key);
-		parameters[j].Value.value =number($ele.val());
+		parameters[j].Value.value =Number($ele.val());
 	}
 }
 
@@ -1340,7 +1339,55 @@ function DeleteVoiceActor(){
 }
 
 function PlayVIOCE(){
-	
+	var key = $("#VoiceSelect").val();
+	if(!VOICEData || !key){
+		return;
+	}
+	SaveActor();
+	$text = $("#voice-text").val();
+	var actor = JIMAKUData[Preset].voice;
+	SendVOICE(actor,$text,false);
+}
+
+function SendVOICE(actor,text,saveFlag){
+	var cs = new CSInterface();
+	var mainpath =cs.getSystemPath(SystemPath.EXTENSION);
+	var voicePth =PATH.join(mainpath, VOICEPath);
+	var name = actor.Key;
+	var effects ="";
+	var emotions ="";
+	var savePath = "";
+
+	var parameters = actor.Value.parameter;
+	for (var i in parameters) {
+		var result = parameters[i].Key.split('_')[0];
+		if(result === "effect"){
+			effects=effects+` -effect="${parameters[i].Key.split('_')[1]},${parameters[i].Value.value}"`
+		}else if(result === "emotion"){
+			emotions=emotions+` -emotion="${parameters[i].Key.split('_')[1]},${parameters[i].Value.value}"`
+		}else{
+			console.error("未確認のパラメータ"+result)
+		}
+	}
+	if(saveFlag){
+		//保存パスを指定
+	}
+	var command=`"${voicePth}" talk "${name}" "${text}"${effects}${emotions} -o="${savePath}"`;
+	//console.log(command);
+	EXEC(command, (err, stdout, stderr) => {
+		if (err) { console.log(err); }
+	  });
+	/*
+	var result = window.cep.process.createProcess(voicePth,command); 
+	window.cep.process.stdout(result.data,function(value){
+		console.log(value);
+	});
+
+	window.cep.process.stderr(result.data,function(value){
+		alert("Voice.exeの呼び出しに失敗しました");
+		console.error(value);
+	});
+	*/
 }
 
 $(document).ready(function () {

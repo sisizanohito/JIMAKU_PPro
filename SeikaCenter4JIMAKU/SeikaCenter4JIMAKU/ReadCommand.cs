@@ -81,6 +81,7 @@ namespace Voice
 
                 command.OnExecute(() =>
                 {
+                    //Console.WriteLine(talkArgs.Value);
                     if(talkArgs.Values.Count != 2)
                     {
                         return 0;
