@@ -1194,7 +1194,7 @@ function SaveActor(){
 	var parameters = JIMAKUData[Preset].voice.Value.parameter;
 	for (var j in parameters) {
 		var $ele = $("#"+parameters[j].Key);
-		parameters[j].Value.value = $ele.val();
+		parameters[j].Value.value =number($ele.val());
 	}
 }
 
@@ -1339,6 +1339,9 @@ function DeleteVoiceActor(){
 	}
 }
 
+function PlayVIOCE(){
+	
+}
 
 $(document).ready(function () {
 	var elem = document.getElementsByClassName('range');

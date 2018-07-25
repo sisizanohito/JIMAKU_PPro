@@ -29,6 +29,12 @@ namespace Voice
                 
             }
         }
+        //登録名からSeikaStructを検索
+        public SeikaStruct GetActor(string name)
+        {
+            SeikaStruct seikaStruct = Data[name];
+            return seikaStruct;
+        }
     }
 
     [DataContract]

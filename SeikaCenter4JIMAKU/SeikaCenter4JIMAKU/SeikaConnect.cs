@@ -35,6 +35,5 @@ namespace Voice
                 return Encoding.UTF8.GetString(stream.ToArray());
             }
         }
-        
     }
 }
