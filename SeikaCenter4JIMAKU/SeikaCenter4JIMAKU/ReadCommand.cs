@@ -116,7 +116,7 @@ namespace Voice
                     {
                         Encoding utf = Encoding.UTF8;
                         StreamWriter writer =
-                          new StreamWriter(Path.GetDirectoryName(savePath) + Path.GetFileNameWithoutExtension(savePath) + ".txt", false, utf);
+                          new StreamWriter(Path.GetDirectoryName(savePath) +@"/"+ Path.GetFileNameWithoutExtension(savePath) + ".txt", false, utf);
                         writer.WriteLine(text);
                         writer.Close();
 

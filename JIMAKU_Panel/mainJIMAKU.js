@@ -1420,7 +1420,6 @@ function SendVOICE(actor,text,saveFlag){
 function SaveVOICEwave(command){
 	var cs = new CSInterface();
 	var savepath =VOICEData.savePath;
-	console.log(savepath);
 	if(!PathExists(savepath)){
 		alert("保存先のフォルダが存在しません:"+savepath)
 	}
@@ -1429,8 +1428,19 @@ function SaveVOICEwave(command){
 		if(!PathExists(path)){
 			mkdir(path);
 		}
-		console.log(path)
-		command=command+` -o=""`;//追加
+		var res = window.cep.fs.readdir(path);
+		if (res.err == 0) {
+			var len = parseInt(res.data.length/2);
+			var num = ( ("000") + len ).substr(-4);
+			var pre = ( ("0") + Preset ).substr(-2);
+			var name = $("#VoiceSelect").val();
+			
+			command=command+` -o="${PATH.join(path,`${num}_${pre}_${name}.wav`)}"`;//追加
+		} else {
+			alert("保存フォルダが生成できませんでした");
+			console.log(res.err);
+			return;
+		}
 		console.log(command);
 		EXEC(command, (err, stdout, stderr) => {
 			if (err) { 
