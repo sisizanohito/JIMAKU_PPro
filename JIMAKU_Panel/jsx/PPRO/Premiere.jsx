@@ -13,6 +13,10 @@ $._PPP_ = {
 		return userName;
 	},
 
+	getProjectName: function () {
+		return app.project.name;
+	},
+
 	keepPanelLoaded: function () {
 		app.setExtensionPersistent("name.sisiza.JIMAKU", 0); // 0, while testing (to enable rapid reload); 1 for "Never unload me, even when not visible."
 	},

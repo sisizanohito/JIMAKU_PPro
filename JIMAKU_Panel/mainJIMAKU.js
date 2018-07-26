@@ -333,7 +333,7 @@ function SetOption(index) {
 		$("#ImageInverse").prop("checked", true);
 	}
 
-	if(VOICEData){
+	if(VOICEData.length != 0){
 		$("#VoiceSelect").val(JIMAKUData[index].actor);
 	}
 
@@ -598,7 +598,7 @@ function NewModel() {
 	filetypes[0] = 'png';
 	filetypes[1] = 'jpg';
 	filetypes[1] = 'psd';
-	var result = window.cep.fs.showOpenDialog(false, false, "SELECT IMAGE", "", filetypes);
+	var result = window.cep.fs.showOpenDialog(false, false, "SELECT PSD", "psd", filetypes);
 	var path = result.data[0];
 	if (PathExists(path)) { //モデルファイルをコピー
 		var extname = PATH.extname(path);
@@ -1237,9 +1237,10 @@ function CatchStdout(result, str, callback){
 }
 
 function CreateVoiceContents(){
-	if(!VOICEData){
+	if(VOICEData.length==0){
 		return;
 	}
+	$("#voice-savepath").val(VOICEData.savePath);
 	$("#VoiceSelect option").remove();
 	var actors = VOICEData.actor.Data;
 	for (var i in actors) {
@@ -1253,7 +1254,7 @@ function CreateVoiceContents(){
 
 function CreateVoiceUI(){
 	var key = $("#VoiceSelect").val();
-	if(!VOICEData || !key){
+	if(VOICEData.length==0 || !key){
 		return;
 	}
 	//var actors = VOICEData.actor.Data;
@@ -1317,7 +1318,7 @@ function CreateVoiceElement(actor){
 
 function DeleteVoiceActor(){
 	var key = $("#VoiceSelect").val();
-	if(!VOICEData || !key){
+	if(VOICEData.length==0 || !key){
 		return;
 	}
 	var res = confirm("現在の[" + key + "]を削除しますか?");
@@ -1340,13 +1341,24 @@ function DeleteVoiceActor(){
 
 function PlayVIOCE(){
 	var key = $("#VoiceSelect").val();
-	if(!VOICEData || !key){
+	if(VOICEData.length==0 || !key){
 		return;
 	}
 	SaveActor();
 	$text = $("#voice-text").val();
 	var actor = JIMAKUData[Preset].voice;
 	SendVOICE(actor,$text,false);
+}
+
+function PlaySaveVIOCE(){
+	var key = $("#VoiceSelect").val();
+	if(VOICEData.length==0 || !key){
+		return;
+	}
+	SaveActor();
+	$text = $("#voice-text").val();
+	var actor = JIMAKUData[Preset].voice;
+	SendVOICE(actor,$text,true);
 }
 
 function SendVOICE(actor,text,saveFlag){
@@ -1356,7 +1368,6 @@ function SendVOICE(actor,text,saveFlag){
 	var name = actor.Key;
 	var effects ="";
 	var emotions ="";
-	var savePath = "";
 
 	var parameters = actor.Value.parameter;
 	for (var i in parameters) {
@@ -1369,27 +1380,58 @@ function SendVOICE(actor,text,saveFlag){
 			console.error("未確認のパラメータ"+result)
 		}
 	}
+	var command=`"${voicePth}" talk "${name}" "${text}"${effects}${emotions}`;
 	if(saveFlag){
-		//保存パスを指定
+		SaveVOICEwave(command);
+	}else{
+		//console.log(command);
+		EXEC(command, (err, stdout, stderr) => {
+			if (err) { console.log(err); }
+		});
 	}
-	var command=`"${voicePth}" talk "${name}" "${text}"${effects}${emotions} -o="${savePath}"`;
-	//console.log(command);
-	EXEC(command, (err, stdout, stderr) => {
-		if (err) { console.log(err); }
-	  });
-	/*
-	var result = window.cep.process.createProcess(voicePth,command); 
-	window.cep.process.stdout(result.data,function(value){
-		console.log(value);
-	});
-
-	window.cep.process.stderr(result.data,function(value){
-		alert("Voice.exeの呼び出しに失敗しました");
-		console.error(value);
-	});
-	*/
+	
 }
 
+function SaveVOICEwave(command){
+	var cs = new CSInterface();
+	var savepath =VOICEData.savePath;
+	console.log(savepath);
+	if(!PathExists(savepath)){
+		alert("保存先のフォルダが存在しません:"+savepath)
+	}
+	cs.evalScript('$._PPP_.getProjectName()',function(result){
+		var path = PATH.join(savepath, PATH.basename(result, PATH.extname(result)),Preset.toString());
+		if(!PathExists(path)){
+			mkdir(path);
+		}
+		console.log(path)
+		command=command+` -o=""`;//追加
+		console.log(command);
+		EXEC(command, (err, stdout, stderr) => {
+			if (err) { console.log(err); }
+		});
+	});
+}
+
+function setVOICESavePath(){
+	if(VOICEData.length==0){
+		alert("VOICEを開始してください")
+		return;
+	}
+	var path = window.cep.fs.showOpenDialog(false, true, "choose save folder", VOICEData.savePath);
+	if (path.err == 0) {
+		if (path.data[0] !== undefined) {
+			console.log(path.data[0]);
+			VOICEData.savePath = path.data[0];
+			$("#voice-savepath").val(VOICEData.savePath);
+			Save();
+		} else {
+			console.log("cancelled");
+		}
+	} else {
+		console.log(path.err);
+	}
+}
 $(document).ready(function () {
 	var elem = document.getElementsByClassName('range');
 	var rangeValue = function (elem, target) {

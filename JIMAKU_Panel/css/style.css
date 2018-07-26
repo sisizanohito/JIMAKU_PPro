@@ -168,3 +168,7 @@ div {
 .VoiceContents{
     margin: 50% auto;
 }
+
+.settings{
+    text-align: center;
+}

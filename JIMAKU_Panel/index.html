@@ -337,6 +337,7 @@
 								<div class="VoiceContents">
 										<input type="text" id="voice-text">
 										<button onClick="PlayVIOCE()" class="btn btn-default">再生</button>
+										<button onClick="PlaySaveVIOCE()" class="btn btn-default">挿入</button>
 								</div>
 							</div>
 							<div id="voice-parameter" class="col-xs-4"></div>
@@ -345,7 +346,11 @@
 				</div>
 			</div>
 			<div id="tab4" class="tab-pane">
-					<button onClick="DeletePreset()" id="Delete" class="btn btn-danger">Delete</button>
+					<button onClick="DeletePreset()" id="Delete" class="btn btn-danger">Delete</button><br>
+					<div class="settings">
+						<input type="text" id="voice-savepath" disabled="disabled">
+						<button onClick="setVOICESavePath()" class="btn btn-primary">音声の保存先を指定</button>
+				</div>
 			</div>
 		</div>
 	</div>
