@@ -1225,6 +1225,28 @@ function GetSeikaCenter() {
 	}
 }
 
+function RefreshVOICE(){
+	if(VOICEData.length==0){
+		return;
+	}
+	var cs = new CSInterface();
+	var mainpath =cs.getSystemPath(SystemPath.EXTENSION);
+	var voicePth =PATH.join(mainpath, VOICEPath);
+	var result = window.cep.process.createProcess(voicePth,'get'); 
+	CatchStdout(result,"",function(value){
+			console.log("終了");
+			console.log(value);
+			var data = JSON.parse(value || "null");
+			VOICEData.actor = data;
+			SavaVOICE();
+			CreateVoiceContents();
+		});
+
+		window.cep.process.stderr(result.data,function(value){
+			alert("seikacenterを起動してください");
+		});
+}
+
 function CatchStdout(result, str, callback){
 	window.cep.process.stdout(result.data,function(value){
 		var isrun = cep.process.isRunning(result.data);   
@@ -1386,7 +1408,10 @@ function SendVOICE(actor,text,saveFlag){
 	}else{
 		//console.log(command);
 		EXEC(command, (err, stdout, stderr) => {
-			if (err) { console.log(err); }
+			if (err) {
+				SendPrMessage("SeikaCenterとの連携に失敗しました"); 
+				console.log(err); 
+			}
 		});
 	}
 	
@@ -1408,7 +1433,10 @@ function SaveVOICEwave(command){
 		command=command+` -o=""`;//追加
 		console.log(command);
 		EXEC(command, (err, stdout, stderr) => {
-			if (err) { console.log(err); }
+			if (err) { 
+				SendPrMessage("SeikaCenterとの連携に失敗しました");
+				console.log(err); 
+			}
 		});
 	});
 }
@@ -1431,6 +1459,12 @@ function setVOICESavePath(){
 	} else {
 		console.log(path.err);
 	}
+}
+
+function SendPrMessage(message){
+	var callScript = '$._PPP_.updateEventPanel("' + message + '")';
+	var cs = new CSInterface();
+	cs.evalScript(callScript);
 }
 $(document).ready(function () {
 	var elem = document.getElementsByClassName('range');
