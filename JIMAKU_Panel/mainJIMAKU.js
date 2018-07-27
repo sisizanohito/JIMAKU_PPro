@@ -106,7 +106,7 @@ function importWave(event) {
 }
 
 
-function importWave_MGT(event){
+function importWave_MGT(wavpath){
 	var videoTrack = 	$("#video").val();
 	var audioTrack = $("#audio").val();
 	var x = $("#pos_x").val();
@@ -134,7 +134,8 @@ function importWave_MGT(event){
 	if (extPath !== null) {
 		extPath = extPath + '/MGT/Fade(word).mogrt';
 		extPath=ConvertFilePath(extPath);
-		csInterface.evalScript('$._PPP_.importWavCaptionMGT("' + extPath+ '",' + parameter + ')',function(result){
+		wavpath = ConvertFilePath(wavpath);
+		csInterface.evalScript('$._PPP_.importWavCaptionMGT("' +wavpath+'","'+ extPath+ '",' + parameter + ')',function(result){
 			if(result ==="undefined"){
 				return;
 			}
@@ -165,11 +166,16 @@ function importWave_MGT(event){
 }
 
 function ConvertFilePath(filepath){
+	if(filepath===""||filepath==null){
+		return filepath;
+	}
 	var csInterface = new CSInterface();
 	var OSVersion = csInterface.getOSInformation();
 	if (OSVersion.indexOf("Windows") >= 0) {
+		console.log(filepath);
 		var sep = '\\\\';
-		filepath = filepath.replace(/\//g, sep);
+		filepath = filepath.replace(/\/|\\/g, sep);
+		console.log(filepath);
 	}
 	return filepath;
 }
@@ -421,7 +427,7 @@ function Save() {
 	presetTable.rows[Preset].cells[0].innerText = JIMAKUData[Preset].name;
 	SaveJSON(path, JIMAKUData);
 
-	if(VOICEData){
+	if(VOICEData.length !=0){
 		path = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS) ,"JIMAKU", VOICEJSONPath);
 		SaveJSON(path, VOICEData);
 	}
@@ -456,12 +462,15 @@ function CheckPreference(){
 	}
 }
 
-function mkdir(path) {  
+function mkdir(path,callback) {  
 	MKDIRP(path,function (err) {
 		if (err) {
 		 console.error(err)
 		} else {
-		 console.log('success')
+		 console.log('success');
+		 if(callback){
+			callback();
+		 }
 		}
 	});
   } 
@@ -1425,8 +1434,12 @@ function SaveVOICEwave(command){
 	}
 	cs.evalScript('$._PPP_.getProjectName()',function(result){
 		var path = PATH.join(savepath, PATH.basename(result, PATH.extname(result)),Preset.toString());
+		var wavepath = "";
 		if(!PathExists(path)){
-			mkdir(path);
+			mkdir(path,function(){
+				SaveVOICEwave(command);
+			});
+			return;
 		}
 		var res = window.cep.fs.readdir(path);
 		if (res.err == 0) {
@@ -1434,8 +1447,8 @@ function SaveVOICEwave(command){
 			var num = ( ("000") + len ).substr(-4);
 			var pre = ( ("0") + Preset ).substr(-2);
 			var name = $("#VoiceSelect").val();
-			
-			command=command+` -o="${PATH.join(path,`${num}_${pre}_${name}.wav`)}"`;//追加
+			wavepath=PATH.join(path,`${num}_${pre}_${name}.wav`);
+			command=command+` -o="${wavepath}"`;//追加
 		} else {
 			alert("保存フォルダが生成できませんでした");
 			console.log(res.err);
@@ -1445,8 +1458,10 @@ function SaveVOICEwave(command){
 		EXEC(command, (err, stdout, stderr) => {
 			if (err) { 
 				SendPrMessage("SeikaCenterとの連携に失敗しました");
-				console.log(err); 
+				console.log(err);
+				return; 
 			}
+			importWave_MGT(wavepath);
 		});
 	});
 }

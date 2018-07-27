@@ -292,10 +292,16 @@ $._PPP_ = {
 		return color_fixHex;
 	},
 
-	importWavCaptionMGT: function(mogrtToImport , Preset, videoTrack, soundTrack, x, y, bColor, fColor, eColor, size, scale, edgePx, fontAlpha, backAlpha, imageFlag, fadeInTime, fadeOutTime, showSpeed, captionAddTime){
+	importWavCaptionMGT: function(wavPath,mogrtToImport , Preset, videoTrack, soundTrack, x, y, bColor, fColor, eColor, size, scale, edgePx, fontAlpha, backAlpha, imageFlag, fadeInTime, fadeOutTime, showSpeed, captionAddTime){
 		if (app.project) {
 			var targetBin = $._PPP_.getDeepBin("JIMAKU/"+Preset+"/voices&captions",true);
-			var dataA = $._PPP_.importWav(targetBin);
+			var dataA;
+			if(wavPath===""){
+				dataA = $._PPP_.importWav(targetBin);
+			}else{
+				dataA = $._PPP_.importWavpath(targetBin,wavPath);
+			}
+			
 			if (dataA) {
 				var mgtBin = $._PPP_.getDeepBin(MGT_BIN,true);
 				var mgtClip = $._PPP_.getClip(mgtBin, "Fade(word)");
@@ -420,6 +426,36 @@ $._PPP_ = {
 					importJimaku: [],
 				};
 				data.importThese = fileOrFilesToImport.fsName;
+				var fs = data.importThese.split('.');
+				fs[fs.length - 1] = "txt";
+				var importText = fs.join(".");
+				var ftext = File(importText);
+				ftext.open("r");
+				data.importJimaku = ftext.read();
+				ftext.close();
+				app.project.importFiles([data.importThese],
+					1, // suppress warnings 
+					targetBin,
+					0); // import as numbered stills
+				return data;
+			} else {
+				$._PPP_.updateEventPanel("Could not find or create target bin.");
+				return undefined;
+			}
+		}
+		return undefined;
+	},
+
+	importWavpath: function (targetBin,path) {
+		var fileOrFilesToImport = path;
+		if (fileOrFilesToImport) {
+			if (targetBin) {
+				targetBin.select();
+				var data = {
+					importThese: [],
+					importJimaku: [],
+				};
+				data.importThese = fileOrFilesToImport;
 				var fs = data.importThese.split('.');
 				fs[fs.length - 1] = "txt";
 				var importText = fs.join(".");
