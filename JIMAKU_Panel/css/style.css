@@ -172,3 +172,9 @@ div {
 .settings{
     text-align: center;
 }
+
+.VoiceText{
+    height: 100px;
+    resize: both;
+    overflow: auto;
+}

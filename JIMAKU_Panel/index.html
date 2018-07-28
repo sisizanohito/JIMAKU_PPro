@@ -67,7 +67,7 @@
 				<a href="#tab2" class="nav-link" data-toggle="tab">立ち絵</a>
 			</li>
 			<li class="nav-item">
-				<a href="#tab3" class="nav-link" data-toggle="tab">VOICE</a>
+				<a href="#tab3" class="nav-link" data-toggle="tab">ボイス</a>
 			</li>
 			<li class="nav-item">
 				<a href="#tab4" class="nav-link" data-toggle="tab">設定</a>
@@ -76,7 +76,7 @@
 
 		<div class="Utils">
 				<div contenteditable="true" id="presetName">---</div>
-				<button onClick="Save()" id="Save" class="btn default">Save</button>
+				<button onClick="Save()" id="Save" class="btn default">保存</button>
 		</div>
 		
 
@@ -121,7 +121,7 @@
 								</tr>
 							</table>
 							<br>
-							<input type="button" value="Refresh" onclick="Refresh()" class="btn btn-default">
+							<input type="button" value="トラックを更新" onclick="Refresh()" class="btn btn-default">
 						</td>
 						<td>
 							<table align="center">
@@ -267,7 +267,7 @@
 											</tr>
 										</table>
 										<br>
-										<input type="button" value="Refresh" onclick="Refresh()" class="btn btn-default">
+										<input type="button" value="トラックを更新" onclick="Refresh()" class="btn btn-default">
 									</td>
 									<td>
 										<table align="center">
@@ -290,7 +290,7 @@
 									</td>
 						</tr>
 				</table><br>
-				<button onClick='importWave_MGT("")' class="btn btn-primary">Import wav</button>
+				<button onClick='importWave_MGT("")' class="btn btn-primary">音声を選択</button>
 			</div>
 
 			<div id="tab2" class="tab-pane">
@@ -308,8 +308,8 @@
 							</form>
 							<br>
 							<div id="ImageArea" class="ShowImage"></div><br>
-							<button onClick="NewModel()" type="button" class="btn btn-primary">Load Model</button>
-							<button onClick="DeleteModel()" type="button" class="btn btn-danger">Delete Model</button>
+							<button onClick="NewModel()" type="button" class="btn btn-primary">モデルを追加</button>
+							<button onClick="DeleteModel()" type="button" class="btn btn-danger">モデルを削除</button>
 						</td>
 						<td>
 							<div class="Tree">
@@ -318,7 +318,7 @@
 							</div>
 						</td>
 						<td>
-								<button onClick="importWave_MGT(this)" class="btn btn-primary">Import wav</button><br>
+								<button onClick='importWave_MGT("")' class="btn btn-primary">音声を選択</button><br>
 								<input type="checkbox" value="" id="ImageInverse" onchange="ShowImage()">反転<br>
 								<input type="checkbox" value="" id="Image_check" checked>立ち絵を出力
 						</td>
@@ -326,8 +326,8 @@
 				</table>
 			</div>
 			<div id="tab3" class="tab-pane">
-				<button onClick="GetSeikaCenter()" class="btn btn-primary">VOICEを開始</button>
-				<button onClick="RefreshVOICE()" class="btn btn-primary">VOICEリストを更新</button>
+				<button onClick="GetSeikaCenter()" class="btn btn-primary">ボイスを開始</button>
+				<button onClick="RefreshVOICE()" class="btn btn-primary">ボイスリストを更新</button>
 				<div>
 					<select id="VoiceSelect">
 					</select>
@@ -336,9 +336,9 @@
 						<div class="row">
 							<div id="voice-content" class="col-xs-4">
 								<div class="VoiceContents">
-										<input type="text" id="voice-text">
+										<textarea  id="voice-text" class="VoiceText"></textarea><br>
 										<button onClick="PlayVIOCE()" class="btn btn-default">再生</button>
-										<button onClick="PlaySaveVIOCE()" class="btn btn-default">挿入</button>
+										<button onClick="PlaySaveVIOCE()" class="btn btn-primary">挿入</button>
 								</div>
 							</div>
 							<div id="voice-parameter" class="col-xs-4"></div>
@@ -347,7 +347,7 @@
 				</div>
 			</div>
 			<div id="tab4" class="tab-pane">
-					<button onClick="DeletePreset()" id="Delete" class="btn btn-danger">Delete</button><br>
+					<button onClick="DeletePreset()" id="Delete" class="btn btn-danger">現在のプリセットを削除</button><br>
 					<div class="settings">
 						<input type="text" id="voice-savepath" disabled="disabled">
 						<button onClick="setVOICESavePath()" class="btn btn-primary">音声の保存先を指定</button>

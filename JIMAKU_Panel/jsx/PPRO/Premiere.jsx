@@ -324,6 +324,7 @@ $._PPP_ = {
 				var AinClip = $._PPP_.getClipFromeSequence(file_name, aTrack);
 
 				var moComp = mgt.getMGTComponent();
+				mgt.name =dataA.importJimaku;
 				if (moComp){
 					var params			= 	moComp.properties;
 					$._PPP_.setMGTColor(params,MGT_FONT_RGB,$._PPP_.hexToRgb(fColor),false);
@@ -354,7 +355,8 @@ $._PPP_ = {
 				motionPosition.setValue([x/seq.frameSizeHorizontal, y/seq.frameSizeVertical]);
 				//motionSize.setValue(scale);
 				if(imageFlag === "false"){
-					seq.setPlayerPosition(mgt.end.ticks);
+					endtime.seconds += 0.01;
+					seq.setPlayerPosition(endtime.ticks);
 				}
 				return [mgt.start.ticks,mgt.end.ticks]
 			} else {
@@ -519,6 +521,7 @@ $._PPP_ = {
 				
 				//Trim MGT
 				var VinClip = $._PPP_.getClipFromeSequence(clipName, vTrack);
+				VinClip.name = model_name+clipName;
 				var Vendtime = VinClip.end;
 				Vendtime.ticks =  String(endTime);
 				VinClip.end = Vendtime;
@@ -528,7 +531,8 @@ $._PPP_ = {
 				var motionSize = motion.properties[1];
 				motionPosition.setValue([x/seq.frameSizeHorizontal, y/seq.frameSizeVertical]);
 				motionSize.setValue(scale);
-				seq.setPlayerPosition(VinClip.end.ticks);
+				Vendtime.seconds += 0.01;
+				seq.setPlayerPosition(Vendtime.ticks);
 			} else {
 				$._PPP_.updateEventPanel("import Cancel");
 			}

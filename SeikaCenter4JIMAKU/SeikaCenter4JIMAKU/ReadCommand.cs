@@ -93,6 +93,7 @@ namespace Voice
                     string savePath = "";
                     int cid = seikaStruct.cid;
 
+                    text=text.Replace("<br>", "\r\n").Replace("\r\r", "\r");
 
                     Dictionary<string, decimal> effects = new Dictionary<string, decimal>();
                     foreach (var value in effectOption.Values)
@@ -123,8 +124,8 @@ namespace Voice
                     }
                     
                     SeikaConnect.Instance().scc.Talk(cid, text, savePath, effects, emotions);
+                    SeikaConnect.Instance().scc.Talk(cid, "", "",new Dictionary<string, decimal>(), new Dictionary<string, decimal>());
 
-                    
 
                     return 0;
                 });

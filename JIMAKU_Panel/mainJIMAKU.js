@@ -324,18 +324,18 @@ function SetOption(index) {
 	document.getElementById('Image_scale').value = JIMAKUData[index].imageScale;
 	var chk_status = JIMAKUData[index].imageCheck;
 	if (!chk_status) {
-		//チェックボックスをOFFにする（チェックを外す）。
+		//チェックボックスをOFFにする（チェックを外す）
 		$("#Image_check").prop("checked", false);
 	} else {
-		//チェックボックスをONにする（チェックする）。
+		//チェックボックスをONにする（チェックする）
 		$("#Image_check").prop("checked", true);
 	}
 	chk_status = JIMAKUData[index].inverse;
 	if (!chk_status) {
-		//チェックボックスをOFFにする（チェックを外す）。
+		//チェックボックスをOFFにする（チェックを外す）
 		$("#ImageInverse").prop("checked", false);
 	} else {
-		//チェックボックスをONにする（チェックする）。
+		//チェックボックスをONにする（チェックする）
 		$("#ImageInverse").prop("checked", true);
 	}
 
@@ -1199,6 +1199,10 @@ function SavaVOICE(){
 }
 
 function SaveActor(){
+	var key = $("#VoiceSelect").val();
+	if(VOICEData.length==0 || !key){
+		return;
+	}
 	var parameters = JIMAKUData[Preset].voice.Value.parameter;
 	for (var j in parameters) {
 		var $ele = $("#"+parameters[j].Key);
@@ -1378,6 +1382,10 @@ function PlayVIOCE(){
 	SaveActor();
 	$text = $("#voice-text").val();
 	var actor = JIMAKUData[Preset].voice;
+	$text = $text.replace(/\n/g, "<br>");
+	if($text===""){
+		return;
+	}
 	SendVOICE(actor,$text,false);
 }
 
@@ -1388,6 +1396,10 @@ function PlaySaveVIOCE(){
 	}
 	SaveActor();
 	$text = $("#voice-text").val();
+	$text = $text.replace(/\n/g, "<br>");
+	if($text===""){
+		return;
+	}
 	var actor = JIMAKUData[Preset].voice;
 	SendVOICE(actor,$text,true);
 }
@@ -1431,6 +1443,7 @@ function SaveVOICEwave(command){
 	var savepath =VOICEData.savePath;
 	if(!PathExists(savepath)){
 		alert("保存先のフォルダが存在しません:"+savepath)
+		return;
 	}
 	cs.evalScript('$._PPP_.getProjectName()',function(result){
 		var path = PATH.join(savepath, PATH.basename(result, PATH.extname(result)),Preset.toString());
@@ -1528,8 +1541,6 @@ $(document).ready(function () {
 		theme: "dark"
 	});
 
-
-
 	var select = document.getElementById('Image_model');
 	select.onchange = function () {
 		// 選択されているoption要素を取得する
@@ -1572,5 +1583,8 @@ dragDrop('body', function (files, pos, fileList, directories) {
     console.log(files[0].fullPath) // not real full path due to browser security restrictions
 	console.log(files[0].path) // in Electron, this contains the actual full path
 
+	if("audio/wav"===files[0].type){
+		importWave_MGT(files[0].path);
+	}
 })
 });
