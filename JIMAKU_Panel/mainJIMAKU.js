@@ -46,7 +46,6 @@ var ModelParameter = function (type) {
 }
 var ModelData = [];
 
-
 var ModelTree = function (text) {
 	this.text = text;
 	this.children = [];
@@ -596,10 +595,7 @@ function DeleteModel(){
 		ShowImage();
 	} else {
 		// キャンセル
-
 	}
-
-	
 }
 
 function NewModel() {

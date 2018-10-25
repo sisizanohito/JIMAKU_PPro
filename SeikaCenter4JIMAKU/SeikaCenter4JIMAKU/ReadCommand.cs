@@ -124,7 +124,7 @@ namespace Voice
                     }
                     
                     SeikaConnect.Instance().scc.Talk(cid, text, savePath, effects, emotions);
-                    SeikaConnect.Instance().scc.Talk(cid, "", "",new Dictionary<string, decimal>(), new Dictionary<string, decimal>());
+                    //SeikaConnect.Instance().scc.Talk(cid, "", "",new Dictionary<string, decimal>(), new Dictionary<string, decimal>());
 
 
                     return 0;
