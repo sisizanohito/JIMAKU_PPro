@@ -2,7 +2,7 @@
   "name": "jimaku",
   "version": "1.0.0",
   "description": "==============================",
-  "main": "JIMAKULoad.js",
+  "main": "js/JIMAKULoad.js",
   "directories": {
     "lib": "lib"
   },
