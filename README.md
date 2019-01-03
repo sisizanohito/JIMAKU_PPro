@@ -10,6 +10,11 @@ https://hgotoh.jp/wiki/doku.php/documents/voiceroid/seikacenter
 
 公開，使用許可はk896951氏に頂いているもののため，本プラグインに同梱されている<br>
 “SeikaCenterAPI.dll”，“SeikaCenterAPI.xml”を使った三次配布は禁止します．
+
+# 制作動画を使った収益化について
+私からは特に制限していません．<br>
+ただ，ボイス機能を使った場合，各種合成音声ソフトのライセンス規約に則って判断してください．
+
 # Credit
 
 PSDTool<br>
