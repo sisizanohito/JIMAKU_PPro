@@ -252,3 +252,124 @@ function CreateTreeElement(path, groupFlag) {
     SearchTree(root, 0, splitPath, groupFlag);
     return;
 }
+
+
+var ImageList = [];
+function ShowPSD(node) {
+    ImageList = [];
+    console.log(node.export());
+    var width = node.root().get('width');
+    var height = node.root().get('height');
+    var canvas = addCanvas(width, height);
+    monitorLoad.counter += 1;
+    if($("#ImageInverse").prop("checked")){
+        DrawPSD(node,"Inverse");
+    }else{
+        DrawPSD(node,"Root");
+    }
+    monitorLoad.counter -= 1;
+}
+
+
+// Decoding base-64 image
+function decodeBase64Image(dataString) {
+    var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    var response = {};
+
+    if (matches.length !== 3) {
+        return new Error('Invalid input string');
+    }
+
+    response.type = matches[1];
+    response.data = new Buffer(matches[2], 'base64');
+
+    return response;
+}
+
+function DrawPSD(node,name) {
+    var layer = node.get("layer");
+    var type = node.get("type");
+    if (!node.isRoot()) { //ルートじゃないなら
+        if (!layer.visible) return; //描画しない
+    }
+    if (node.hasChildren()) { //子を持っているなら
+        var children = node.children();
+        for (var i = children.length - 1; i >= 0; i--) {
+            var new_name = name +'_'+ i.toString();
+            DrawPSD(children[i],new_name);
+        }
+    } else if(type === "layer") { //レイヤーなら
+        //console.log(name + " : " + node.get('type'));
+        var width = node.root().get('width');
+        var height = node.root().get('height');
+        var layerWidth = layer.image.width();
+        var layerHeight = layer.image.height();
+        var canvas = $("#Layer0");
+        canvas.attr('name', canvas.attr('name')+name+"#");
+        var top = layer.top;
+        var left = layer.left;
+        var png = layer.image.toPng();
+        if(layer.image.width() == 0 || layer.image.height() ==0){//空白画像
+            return;
+        }
+        var dataUrl;
+        var image = new Image();
+
+        if(layer.clipped){
+            var masknode = SearchMask(node);
+            var masklayer = masknode.get("layer");
+            if(!masklayer.visible || masklayer.image.width() == 0 || masklayer.image.height() ==0){//マスクが描画されていなと描画しない
+                return;
+            }
+            var maskpng = masklayer.image.toPng();
+            toBase64Mask(layer,masklayer,width,height);
+            //console.log(node.get("name")+":mask->"+masknode.get("name"));
+            return;
+        }else{
+            dataUrl=toBase64(png);
+        }
+        image.width = layerWidth;
+        image.height = layerHeight;
+        monitorLoad.counter += 1;
+        var imageObject = {image:image, left:left, top:top, alpha:layer.opacity, blendMode:layer.blendingMode()};
+        ImageList.push(imageObject);
+        image.addEventListener('load', function(){
+            monitorLoad.counter -= 1;
+        });
+        image.src = dataUrl;
+        //image.name = node.get("name");
+    }
+    return;
+}
+
+function SearchMask(node){
+    if(!node.get("layer").clipped){//クリッピングじゃないやつ
+        return node;
+    }
+    var next = node.nextSibling();
+    if(next){//端でない限り
+        return SearchMask(next);
+    }
+    return undefined;
+}
+
+function addCanvas(width, height) {
+    var id = "Layer" + $("#ImageArea *").length.toString();
+    $("#ImageArea").append(
+        $('<canvas></canvas>')
+            .addClass("Image")
+            .attr('id', id)
+            .attr('width', width)
+            .attr('height', height)
+            .attr('name', '')
+    );
+    var canvas = $("#" + id);
+    if (!canvas || !canvas[0].getContext) {
+        return null;
+    }
+    if($("#ImageInverse").prop("checked")){
+        var ctx = canvas[0].getContext('2d');
+        ctx.transform(-1, 0, 0, 1, width, 0);
+    }
+    return canvas;
+}

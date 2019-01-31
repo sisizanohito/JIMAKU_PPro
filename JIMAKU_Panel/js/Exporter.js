@@ -13,6 +13,28 @@ function SaveJSON(path, data) {
     }
 }
 
+function ExportPNG(callback){
+    var model = GetModel(JIMAKUData[Preset].modelname);
+    if (!model) { //モデルが読み込めないなら
+        return;
+    }
+    var cs = new CSInterface();
+
+    var canvas = $("#Layer0");
+    var ImageID = canvas.attr('name');
+    var img = canvas[0].toDataURL('image/png');
+    var imageBuffer = decodeBase64Image(img);
+
+    var ImageDB = model.parameter.ImageDB;
+
+    var filepath = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS),"JIMAKU" , MODELPath, model.name ,ImageDB[ImageID]+".png");
+    FS.writeFile(filepath, imageBuffer.data,
+        function () {
+            console.log(filepath+"保存終了");
+            callback(filepath);
+        });
+}
+
 function ExportModel(result){
     if(result==="false"){
         ExportPNG(function (filepath) {

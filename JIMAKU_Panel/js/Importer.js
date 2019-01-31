@@ -1,3 +1,28 @@
+function LoadModel() {
+    console.log("ロード開始");
+    ModelData = [];
+    var cs = new CSInterface();
+    var path = cs.getSystemPath(SystemPath.MY_DOCUMENTS)+ "/JIMAKU" + MODELPath;
+    try {
+        var list = FS.readdirSync(path);
+        for (var i = 0; i < list.length; i++) {
+            var modelPath = PATH.join(path, list[i]);
+            if (isDir(modelPath)) {
+                //console.log(list[i]);
+                AddModel(list[i], modelPath);
+            }
+        }
+    } catch (err) {
+        console.error(err);
+        console.error("モデル一覧の取得に失敗しました");
+        return;
+    }
+    console.log("ロード完了");
+    SetSelectModel();
+    SetCurrentSelect();
+    CreatModelTree();
+    ShowImage(); //サムネの表示
+}
 
 function LoadJSON() {
     // CSInterfaceを使ってエクステンションのパスを取得

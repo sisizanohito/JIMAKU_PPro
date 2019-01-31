@@ -176,6 +176,18 @@ function CreateVoiceUI(){
     CreateVoiceElement(actor);
 }
 
+
+function CreatModelTree() {
+    $('#ImageTree').empty(); //空にする
+    var model = GetModel(JIMAKUData[Preset].modelname);
+    if (!model) { //モデルが読み込めないなら
+        return;
+    }
+    if (model.parameter.type === Model_PSD) {
+        CreatePSDTree();
+    }
+}
+
 function CreateVoiceElement(actor){
     var parameters = actor.Value.parameter;
     var $parameterArea = $("#voice-parameter");
@@ -238,6 +250,58 @@ function removeChildren(x) {
     }
 }
 
+function RemoveModel(modelname) {
+    var i;
+    for(i = 0;i<ModelData.length;i++){
+        if(ModelData[i].name === modelname){
+            ModelData.splice(i, 1);
+        }
+    }
+}
+
+function SavaVOICE(){
+    Save();
+}
+
+
+function SetCurrentSelect() {
+    var select = document.getElementById('Image_model');
+    var name = JIMAKUData[Preset].modelname;
+    if (name === "") {
+        select.selectedIndex = -1;
+        return;
+    }
+
+    var options = $('#Image_model').children(); //オプションを取得
+    for (var i = 0; i < options.length; i++) {
+        if (name === options.eq(i).text()) {
+            $('#Image_model').val(i + 1);
+            return;
+        }
+    }
+}
+
+function ShowImage() {
+    var ImageArea = document.getElementById('ImageArea');
+    ImageArea.innerHTML = "";
+    var model = GetModel(JIMAKUData[Preset].modelname);
+
+    if (!model) { //モデルが読み込めないならサムネを更新しない
+        return;
+    }
+    switch (model.parameter.type) {
+        case Model_KYARA:
+        case Model_ZIP:
+            ImageArea.innerHTML = '<img src="file://' + model.data[0] + '" class="Image">';
+            break;
+        case Model_PSD:
+            ShowPSD(model.data.tree());
+            break;
+        default:
+            console.error("ファイルが読み込めませんでした");
+            break;
+    }
+}
 
 //////////////////////////---------------------ボタン----------------------------------//////////////////////////
 function Refresh() {
@@ -331,6 +395,7 @@ function NewModel() {
         });
     }
 }
+
 
 function AddPreset() {
     var $row = $("#PresetTable tr:not(.inputButton):last");
@@ -477,4 +542,33 @@ function RefreshVOICE(){
     window.cep.process.stderr(result.data,function(value){
         alert("seikacenterを起動してください");
     });
+}
+
+
+function GetSeikaCenter() {
+    var cs = new CSInterface();
+    var mainpath =cs.getSystemPath(SystemPath.EXTENSION);
+    var voicePth =PATH.join(mainpath, VOICEPath);
+
+    var path = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS) ,"JIMAKU", VOICEJSONPath);
+
+    var resultRead = window.cep.fs.readFile(path);
+    if (0 === resultRead.err) { //成功
+        VOICEData = JSON.parse(resultRead.data);
+        CreateVoiceContents();
+    } else { //失敗
+        var result = window.cep.process.createProcess(voicePth,'get');
+        CatchStdout(result,"",function(value){
+            console.log("終了");
+            console.log(value);
+            var data = JSON.parse(value || "null");
+            VOICEData = new VOICE(data);
+            SavaVOICE();
+            CreateVoiceContents();
+        });
+
+        window.cep.process.stderr(result.data,function(value){
+            alert("seikacenterを起動してください");
+        });
+    }
 }
