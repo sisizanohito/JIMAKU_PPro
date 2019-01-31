@@ -27,6 +27,67 @@ function LoadPSD(path) {
     return data;
 }
 
+//pngデータをBase64に変換
+function toBase64(png) {
+    var canvas, context, i, imageData, j, len, pixel, pixelData, ref;
+    canvas = document.createElement('canvas');
+    canvas.width = png.width;
+    canvas.height = png.height;
+    context = canvas.getContext('2d');
+    imageData = context.getImageData(0, 0, png.width, png.height);
+    pixelData = imageData.data;
+    ref = png.data;
+    for (i = j = 0, len = ref.length; j < len; i = ++j) {
+        pixel = ref[i];
+        pixelData[i] = pixel;
+    }
+    context.putImageData(imageData, 0, 0);
+    return canvas.toDataURL('image/png');
+}
+
+
+
+var Loader = function(expectedCnt, callback){
+    var cnt = 0;
+    return function(){
+        if(++cnt == expectedCnt){ callback(); }
+    }
+};
+
+//mask画像と主に
+function toBase64Mask(orign,mask,width,height) {
+    var canvas, context, i, j, len, pixel, pixelData, ref;
+    canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    context = canvas.getContext('2d');
+    var imageData = new Image(orign.image.width(), orign.image.height());
+    imageData.src =toBase64(orign.image.toPng()); ;
+    var maskData = new Image(mask.image.width(), mask.image.height());
+    maskData.src=toBase64(mask.image.toPng());
+
+    var Data = new Image();
+    Data.width = width;
+    Data.height = height;
+    monitorLoad.counter += 1;
+    var imageObject = {image:Data, left:0, top:0, alpha:orign.opacity, blendMode:orign.blendingMode()};
+    ImageList.push(imageObject);
+    Data.addEventListener('load', function(){
+        monitorLoad.counter -= 1;
+    });
+    //Data.name = node.get("name");
+
+    var loader = Loader(2, function(){
+        context.drawImage(imageData, orign.left, orign.top);
+        context.globalCompositeOperation = 'destination-in';
+        context.drawImage(maskData, mask.left, mask.top);
+        Data.src = canvas.toDataURL('image/png');
+    });
+
+    imageData.onload = loader;
+    maskData.onload = loader;
+}
+
 function PSDSet() {
     var model = GetModel(JIMAKUData[Preset].modelname);
     if (!model) { //モデルが読み込めないなら

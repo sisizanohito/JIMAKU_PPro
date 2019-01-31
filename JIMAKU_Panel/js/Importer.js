@@ -1,4 +1,86 @@
 
+function LoadJSON() {
+    // CSInterfaceを使ってエクステンションのパスを取得
+    var cs = new CSInterface();
+    var path = PATH.join(cs.getSystemPath(SystemPath.MY_DOCUMENTS) ,"JIMAKU", JSONPath);
+
+    var resultRead = window.cep.fs.readFile(path);
+    if (0 == resultRead.err) { //成功
+        JIMAKUData = JSON.parse(resultRead.data);
+    } else { //失敗
+        var callScript = '$._PPP_.updateEventPanel("' + "JIMAKUの初回起動" + '")';
+        cs.evalScript(callScript);
+        JIMAKUData.push(new JIMAKUparameter("---", 2, 2, 960, 900, 22, 50, 0, "#ffffff", "#000000", "#000000", 255, 255, 3, 960, 500, 100, true, 0.2, 0.2, 5, 0.5, false));
+        SaveJSON(path, JIMAKUData);
+    }
+
+    var $row = $("#PresetTable tr:not(.inputButton):last");
+    $row[0].cells[0].innerText = JIMAKUData[0].name; //1つ目に代入
+
+    for (var i = 1; i < JIMAKUData.length; i++) { //2つ目以上のPreset名を設定
+        var $row = $("#PresetTable tr:not(.inputButton):last");
+        var $newRow = $row.clone(true);
+        $newRow.insertAfter($row);
+        $newRow[0].cells[0].innerText = JIMAKUData[i].name;
+
+    }
+    Preset = 0;
+    SetOption(Preset);
+}
+
+function AddModel(name, modelPath) {
+    var json = PATH.join(modelPath, ModelJSONPath);
+    var resultRead = window.cep.fs.readFile(json);
+    if (0 == resultRead.err) { //成功
+        var parameter = JSON.parse(resultRead.data);
+        var data;
+        switch (parameter.type) {
+            case Model_ZIP:
+                data = LoadZip(modelPath);
+                break;
+            case Model_PSD:
+                data = LoadPSD(modelPath);
+                break;
+            default:
+                console.error("対応したファイルではありません");
+                return;
+                break;
+        }
+    }
+    ModelData.push(new Model(name, data, parameter));
+    console.log(name + "ロード完了");
+}
+
+//仮
+function LoadZip(path) {
+    var data = [];
+    try {
+        var list = FS.readdirSync(path);
+        for (var i = 0; i < list.length; i++) {
+            var FilePath = PATH.join(path, list[i]);
+            if (isFile(FilePath)) {
+                //console.log(list[i]);
+                var extname = PATH.extname(list[i]);
+                switch (extname) {
+                    case ".png": //仮
+                    case ".jpg": //仮
+                        data.push(FilePath);
+                        break;
+                    default:
+                        console.log("対応したファイルではありません");
+                        break;
+                }
+            }
+        }
+    } catch (err) {
+        console.error(err);
+        console.error("モデルファイル一覧の取得に失敗しました(zip)");
+        return;
+    }
+
+    return data;
+}
+
 function importWave(event) {
     var videoTrack = 	$("#video")[0].value;
     var audioTrack = $("#audio")[0].value;
