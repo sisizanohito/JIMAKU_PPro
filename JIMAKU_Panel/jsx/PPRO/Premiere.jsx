@@ -292,7 +292,7 @@ $._PPP_ = {
 		return color_fixHex;
 	},
 
-	importWavCaptionMGT: function(wavPath,mogrtToImport , Preset, videoTrack, soundTrack, x, y, bColor, fColor, eColor, size, scale, edgePx, fontAlpha, backAlpha, imageFlag, fadeInTime, fadeOutTime, showSpeed, captionAddTime){
+	importWavCaptionMGT: function(wavPath,mogrtToImport , Preset, videoTrack, soundTrack, x, y, bColor, fColor, eColor, bgScale, scale, edgePx, fontAlpha, backAlpha, imageFlag, fadeInTime, fadeOutTime, showSpeed, captionAddTime){
 		if (app.project) {
 			var targetBin = $._PPP_.getDeepBin("JIMAKU/"+Preset+"/voices&captions",true);
 			var dataA;
@@ -331,10 +331,10 @@ $._PPP_ = {
 					$._PPP_.setMGTColor(params,MGT_BACK_RGB,$._PPP_.hexToRgb(bColor),false);
 					$._PPP_.setMGTColor(params,MGT_LINE_RGB,$._PPP_.hexToRgb(eColor),true);
 
-					$._PPP_.setMGTParameter(params,MGT_TEXR,dataA.importJimaku);//set text
+					$._PPP_.setMGTText(params,MGT_TEXR,dataA.importJimaku);//set text
 					$._PPP_.setMGTParameter(params,MGT_SCALE,scale);//set scale
 					$._PPP_.setMGTParameter(params,MGT_EDGE_SCALE,edgePx);//set edge px
-					$._PPP_.setMGTParameter(params,MGT_BACK_SCALE,3);//set back scale
+					$._PPP_.setMGTParameter(params,MGT_BACK_SCALE,bgScale);//set back scale
 					$._PPP_.setMGTParameter(params,MGT_FONT_ALPHA,(fontAlpha/255)*100);//set font alpha
 					$._PPP_.setMGTParameter(params,MGT_BACK_ALPHA,(backAlpha/255)*100);//set back alpha
 
@@ -348,7 +348,7 @@ $._PPP_ = {
 				var starttime = AinClip.start;
 				var endtime = AinClip.end;
 				endtime.seconds += captionAddTime;
-				mgt.end = endtime
+				mgt.end = endtime;
 				var motion = mgt.components[1];
 				var motionPosition = motion.properties[0];
 				var motionSize = motion.properties[1];
@@ -406,6 +406,18 @@ $._PPP_ = {
 		var srcTextParam =	params.getParamForDisplayName(name);
 		if (srcTextParam){
 			srcTextParam.setValue(value);
+		}
+	},
+
+	setMGTText:function(params,name,text){
+
+		var srcTextParam =	params.getParamForDisplayName(name);
+		if (srcTextParam){
+			$.writeln(srcTextParam.getValue());
+			var textJSON =JSON.parse(srcTextParam.getValue());
+			textJSON.fonteditinfo.fontEditValue = "MeiryoUI";
+			textJSON.textEditValue = text;
+			srcTextParam.setValue(JSON.stringify(textJSON));
 		}
 	},
 
