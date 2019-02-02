@@ -65,7 +65,7 @@ var ModelTree = function (text) {
     this.text = text;
     this.children = [];
 }
-var TreeData;
+var TreeData=[];
 
 var startTime = 0;
 var endTime = 0;
