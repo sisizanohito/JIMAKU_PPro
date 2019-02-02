@@ -410,14 +410,16 @@ $._PPP_ = {
 	},
 
 	setMGTText:function(params,name,text){
-
+		var TJSON = '{"fonteditinfo":{"capPropFontEdit":true,"capPropFontFauxStyleEdit":true,"capPropFontSizeEdit":true,"fontEditValue":"MeiryoUI","fontFSAllCapsValue":false,"fontFSBoldValue":false,"fontFSItalicValue":false,"fontFSSmallCapsValue":false,"fontSizeEditValue":180},"textEditValue":"AAA"}';
 		var srcTextParam =	params.getParamForDisplayName(name);
 		if (srcTextParam){
-			$.writeln(srcTextParam.getValue());
-			var textJSON =JSON.parse(srcTextParam.getValue());
-			textJSON.fonteditinfo.fontEditValue = "MeiryoUI";
+			//$.writeln(srcTextParam.getValue());
+			var textJSON =JSON.parse(TJSON);
+			//var textJSON =JSON.parse(srcTextParam.getValue());
+			//textJSON.fonteditinfo.fontEditValue = "MeiryoUI";
 			textJSON.textEditValue = text;
 			srcTextParam.setValue(JSON.stringify(textJSON));
+			//srcTextParam.setValue(value);
 		}
 	},
 
