@@ -1,10 +1,10 @@
-﻿var b = app.project.activeSequence.videoTracks[1].clips[0];
-var d = b.getMGTComponent();
-var e= d.properties.getParamForDisplayName("ソーステキスト");
-var c = e.getValue();
+﻿var a = app.project.activeSequence.videoTracks[2].clips[0];
+var b = a.getMGTComponent();
+var c= b.properties.getParamForDisplayName("ソーステキスト");
+var d = c.getValue();
 
-var a =JSON.parse(c);
-a.fonteditinfo.fontEditValue = "MeiryoUI";
-a.textEditValue = "こんにちは";
-var f=JSON.stringify(a);
+var e =JSON.parse(d);
+e.fonteditinfo.fontEditValue = "MeiryoUI";
+e.textEditValue = "こんにちは";
+var f=JSON.stringify(e);
 app.project.activeSequence.videoTracks[1].clips[0].components[2].properties[0].setValue(f);

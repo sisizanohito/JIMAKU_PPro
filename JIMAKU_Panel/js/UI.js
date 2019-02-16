@@ -17,9 +17,9 @@ function SetOption(index) {
     document.getElementById('CaptionAddTime').value = JIMAKUData[index].captionAddTime;
 
     //非透過率の反映
-    var num = Number(JIMAKUData[index].backAlpha);
-    $("#backAlphaText")[0].innerHTML = Math.round(num / 255 * 100) + "%";
     var num = Number(JIMAKUData[index].fontAlpha);
+    $("#fontAlphaText")[0].innerHTML = Math.round(num / 255 * 100) + "%";
+    var num = Number(JIMAKUData[index].backAlpha);
     $("#backAlphaText")[0].innerHTML = Math.round(num / 255 * 100) + "%";
 
     document.getElementById('Image_video').value = JIMAKUData[index].imageVideoTrack;
