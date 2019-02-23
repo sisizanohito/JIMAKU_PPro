@@ -6,7 +6,7 @@ var text = fileInfo.read();
 alert (replaceTemplate(text,"ああ","00:00:00.000","00:00:10","10%" ,"40.925925925925924%"));
 fileInfo.close();
 
-  var myFile=File("C:\\Users\\isiis\\Desktop\\run.xml");
+  var myFile=File("???");
   myFile.open ("w");
   var content="ABCDEF";
   myFile.write(content);

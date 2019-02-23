@@ -2,11 +2,6 @@
 var A = getClip(app.project.rootItem,"Fade(word)");
 A.setScaleToFrameSize();
 alert (A.getOutPoint().seconds);
-  //var myFile=File("C:\\Users\\isiis\\Desktop\\run.xml");
-  //myFile.open ("w");
-  //var content=A.getMediaPath();
-  //myFile.write(content);
-  //myFile.close();
 function getClip(root,name){
         for (var i=root.children.numItems-1;i>=0;i--){
                 if(root.children[i].type==ProjectItemType.BIN){

@@ -15,7 +15,7 @@ var clipFat = getClipFromeSequence("001_ONE.xml");
 var time=clipFat.duration;
 alert (time.seconds)
 
-var fileInfo = File("C:\\Users\\isiis\\Documents\\PProPluginProject\\JIMAKU_Panel\\Template.xml");
+var fileInfo = File("???");
 //alert (fileInfo.path);
 fileInfo.open ("r");
 var text = fileInfo.read();
