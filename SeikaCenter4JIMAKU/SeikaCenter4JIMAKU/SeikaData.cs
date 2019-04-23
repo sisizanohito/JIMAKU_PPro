@@ -73,30 +73,17 @@ namespace Voice
             this.cid = _cid;
             parameter = new Dictionary<string, Pram>();
 
-            Dictionary<string, decimal>  parameterList = new Dictionary<string, decimal>();
-            List<string> pramName = new List<string>();
-            foreach (KeyValuePair<string, decimal> kvp in SeikaConnect.Instance().scc.GetAvatorParams_current(cid))
+            var avatorParam = SeikaConnect.Instance().scc.GetAvatorParams_current2(cid);
+            foreach (KeyValuePair<string, Dictionary<string, Dictionary<string, decimal>>> prams in avatorParam)
             {
-
-                string pram = kvp.Key;
-                decimal value = kvp.Value;
-                parameterList.Add(pram, value);
-                if(Regex.IsMatch(pram, ".*_value$"))
+                foreach (KeyValuePair<string, Dictionary<string, decimal>> effectsEmotions in prams.Value)
                 {
-                    string[] vs = { "_value" };
-                    string name = pram.Split(vs, StringSplitOptions.None)[0];
-                    pramName.Add(name);
-                    //Console.WriteLine(@"あたり:"+name);
+                    decimal value = effectsEmotions.Value["value"];
+                    decimal max = effectsEmotions.Value["max"];
+                    decimal min = effectsEmotions.Value["min"];
+                    decimal step = effectsEmotions.Value["step"];
+                    parameter.Add(prams.Key+"_"+effectsEmotions.Key, new Pram(value, max, min, step));
                 }
-                //Console.WriteLine($"{pram}:{value}");
-            }
-            foreach (string name in pramName)
-            {
-                decimal value = parameterList[name+ "_value"];
-                decimal max = parameterList[name + "_value_max"];
-                decimal min = parameterList[name + "_value_min"];
-                decimal step = parameterList[name + "_value_step"];
-                parameter.Add( name,new Pram(value, max, min, step));
             }
         }
     }
