@@ -3,7 +3,10 @@ function onLoaded() {
 	var csInterface = new CSInterface();
 	var appName = csInterface.hostEnvironment.appName;
 	var appVersion = csInterface.hostEnvironment.appVersion;
-	
+
+	var APIVersion	= csInterface.getCurrentApiVersion();
+	var locale	 	= csInterface.hostEnvironment.appUILocale;
+
 	document.getElementById("dragthing").style.backgroundColor = "lightblue";
 	var caps = csInterface.getHostCapabilities();
 	
@@ -22,6 +25,16 @@ function onLoaded() {
 		alert("New workspace selected: " + event.data);
 	});
 
+	csInterface.addEventListener("com.adobe.ccx.start.handleLicenseBanner", function(event){
+		alert("User chose to go \'Home\', wherever that is...");
+	});
+
+	csInterface.addEventListener("ApplicationBeforeQuit", function(event){
+		csInterface.evalScript('$._PPP_.closeLog()');
+	});
+
+	
+
 	// register for messages
 	VulcanInterface.addMessageListener(
 	    VulcanMessage.TYPE_PREFIX + "com.DVA.message.sendtext",
@@ -33,17 +46,46 @@ function onLoaded() {
 	csInterface.evalScript('$._PPP_.getVersionInfo()', myVersionInfoFunction);	
 	csInterface.evalScript('$._PPP_.getActiveSequenceName()', myCallBackFunction);		
 	csInterface.evalScript('$._PPP_.getUserName()', myUserNameFunction);  
-	csInterface.evalScript('$._PPP_.getSequenceProxySetting()', myGetProxyFunction);
+	csInterface.evalScript('$._PPP_.getProjectProxySetting()', myGetProxyFunction);
 	csInterface.evalScript('$._PPP_.keepPanelLoaded()');
 	csInterface.evalScript('$._PPP_.disableImportWorkspaceWithProjects()');
-	// register project item selected callback
-	csInterface.evalScript('$._PPP_.registerProjectPanelChangedFxn()');
+	
+	csInterface.evalScript('$._PPP_.registerProjectPanelSelectionChangedFxn()');  	// Project panel selection changed
+	csInterface.evalScript('$._PPP_.registerItemAddedFxn()');					  	// Item added to project
+	csInterface.evalScript('$._PPP_.registerProjectChangedFxn()');					// Project changed
+	csInterface.evalScript('$._PPP_.registerSequenceSelectionChangedFxn()');		// Selection within the active sequence changed
+	csInterface.evalScript('$._PPP_.registerSequenceActivatedFxn()');				// The active sequence changed
+	csInterface.evalScript('$._PPP_.registerActiveSequenceStructureChangedFxn()');	// Clips within the active sequence changed
+	csInterface.evalScript('$._PPP_.registerSequenceMessaging()');			
+	csInterface.evalScript('$._PPP_.registerActiveSequenceChangedFxn()');			
+
+	csInterface.evalScript('$._PPP_.confirmPProHostVersion()');
+	
+	// New in 13.1
+	csInterface.evalScript('$._PPP_.clearESTKConsole()');
+	csInterface.evalScript('$._PPP_.forceLogfilesOn()');  // turn on log files when launching
+
+	// Good idea from our friends at Evolphin; make the ExtendScript locale match the JavaScript locale!
+	
+	var prefix	= '$._PPP_.setLocale(\'';
+	var postfix	= '\');';
+	var entireCallWithParams = prefix + locale + postfix;
+	csInterface.evalScript(entireCallWithParams);
 }
 
 function dragHandler(event){
 	var csInterface = new CSInterface();
 	var extPath 	= csInterface.getSystemPath(SystemPath.EXTENSION);
 	var OSVersion	= csInterface.getOSInformation();
+
+	/*
+		Note: PPro displays different behavior, depending on where the drag ends (and over which the panel has no control):
+
+		Project panel?	Import into project.
+		Sequence?		Import into project, add to sequence.
+		Source monitor? Open in source, but do NOT import into project.
+	
+	*/
 	
 	if (extPath !== null){
 		extPath = extPath + '/payloads/test.jpg';
@@ -71,7 +113,7 @@ function myUserNameFunction (data) {
 
 function myGetProxyFunction (data) {
 	// Updates proxy_display based on current sequence's value.
-	var boilerPlate		   = "Proxies enabled for sequence: ";
+	var boilerPlate		   = "Proxies enabled for project: ";
 	var proxy_display	   = document.getElementById("proxies_on");
 
 	if (proxy_display !== null) {
@@ -82,13 +124,12 @@ function myGetProxyFunction (data) {
 function mySetProxyFunction (data) {
 	var csInterface = new CSInterface();
 	csInterface.evalScript('$._PPP_.getActiveSequenceName()', myCallBackFunction);
-	csInterface.evalScript('$._PPP_.getSequenceProxySetting()', myGetProxyFunction);
+	csInterface.evalScript('$._PPP_.getProjectProxySetting()', myGetProxyFunction);
 }
 	 
 function myVersionInfoFunction (data) {
-	var boilerPlate		= "PPro Version: ";
 	var v_string		= document.getElementById("version_string");
-	v_string.innerHTML	= boilerPlate + data;
+	v_string.innerHTML	= data;
 }
 
 /**
@@ -134,6 +175,8 @@ function updateThemeWithAppSkinInfo(appSkinInfo) {
 		addRule(styleId, ".default", "font-size:" + appSkinInfo.baseFontSize + "px" + "; color:" + fontColor + "; background-color:" + toHex(panelBackgroundColor) + ";");
 		addRule(styleId, "button, select, input[type=text], input[type=button], input[type=submit]", borderColor);	   
 		addRule(styleId, "p", "color:" + fontColor + ";");	  
+		addRule(styleId, "h1", "color:" + fontColor + ";");	  
+		addRule(styleId, "h2", "color:" + fontColor + ";");	  
 		addRule(styleId, "button", "font-family: " + appSkinInfo.baseFontFamily + ", Arial, sans-serif;");	  
 		addRule(styleId, "button", "color:" + fontColor + ";");	   
 		addRule(styleId, "button", "font-size:" + (1.2 * appSkinInfo.baseFontSize) + "px;");	
