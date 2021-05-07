@@ -9,7 +9,7 @@
   "dependencies": {
     "drag-drop": "^4.2.0",
     "filecopy": "^4.0.1",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.21",
     "psd": "^3.2.0",
     "rmdir": "^1.2.0"
   },
